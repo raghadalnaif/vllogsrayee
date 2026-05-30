@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="description" content="vllogsraye.com — جدولك الرياضي جاهز. تدخلين وتعرفين وش تسوين من أول لحظة.">
+<title>vllogsraye.com | جداول التدريب الرياضية</title>
+<link rel="canonical" href="https://vllogsraye.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.moyasar.com/mpf/1.14.0/moyasar.css">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg0:#080808;--bg1:#111;--bg2:#181818;--bg3:#222;
+  --gold:#c9a96e;--gold2:#e8c98e;--goldL:rgba(201,169,110,.1);--goldB:rgba(201,169,110,.22);
+  --green:#4ade80;--greenL:rgba(74,222,128,.08);--greenB:rgba(74,222,128,.2);
+  --white:#fff;--g1:#ccc;--g2:#888;--g3:#444;
+  --border:rgba(255,255,255,.07);--font:'Cairo',sans-serif;--r:18px;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg0);color:var(--white);direction:rtl;overflow-x:hidden}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg0)}::-webkit-scrollbar-thumb{background:var(--gold);border-radius:3px}
+a{text-decoration:none;color:inherit}
+
+/* ── NAV ── */
+.nav{position:fixed;top:0;width:100%;z-index:900;padding:16px 48px;display:flex;justify-content:space-between;align-items:center;background:rgba(8,8,8,.88);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);transition:.3s}
+.nav.solid{padding:11px 48px;background:rgba(8,8,8,.97)}
+.nav-brand{font-size:1.55rem;font-weight:900;color:var(--gold)}
+.nav-links{display:flex;gap:24px;list-style:none;align-items:center}
+.nav-links a{font-size:.87rem;font-weight:600;color:var(--g1);transition:.3s;position:relative}
+.nav-links a::after{content:'';position:absolute;bottom:-3px;right:0;width:0;height:1.5px;background:var(--gold);transition:.3s}
+.nav-links a:hover{color:var(--gold)}
+.nav-links a:hover::after{width:100%}
+.nav-cta{background:var(--gold)!important;color:var(--bg0)!important;padding:8px 20px;border-radius:22px;font-weight:700!important}
+.nav-cta::after{display:none!important}
+.nav-cta:hover{background:var(--gold2)!important;transform:translateY(-2px)}
+.nav-wa{background:var(--greenL)!important;border:1px solid var(--greenB)!important;color:var(--green)!important;padding:8px 18px;border-radius:22px;font-weight:700!important;display:flex!important;align-items:center;gap:6px}
+.nav-wa::after{display:none!important}
+.nav-wa:hover{background:rgba(74,222,128,.15)!important;transform:translateY(-2px)}
+.hbg{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+.hbg span{width:23px;height:2px;background:var(--gold);display:block;border-radius:2px}
+.mob-menu{display:none;position:fixed;top:62px;inset-inline:0;background:rgba(8,8,8,.97);border-bottom:1px solid var(--border);padding:18px 28px;z-index:899;flex-direction:column;gap:14px}
+.mob-menu.open{display:flex}
+.mob-menu a{font-size:.95rem;font-weight:600;color:var(--g1);padding:9px 0;border-bottom:1px solid var(--border)}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:110px 48px 80px;background:var(--bg0)}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(201,169,110,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(201,169,110,.04) 1px,transparent 1px);background-size:65px 65px;pointer-events:none}
+.hero-glow{position:absolute;top:-150px;left:50%;transform:translateX(-50%);width:900px;height:700px;border-radius:50%;background:radial-gradient(ellipse,rgba(201,169,110,.06) 0%,transparent 68%);pointer-events:none}
+.hero-in{max-width:1200px;margin:0 auto;width:100%;display:grid;grid-template-columns:1.15fr .85fr;gap:60px;align-items:center;position:relative;z-index:1}
+.h-badge{display:inline-flex;align-items:center;gap:7px;background:var(--goldL);border:1px solid var(--goldB);color:var(--gold);padding:5px 14px;border-radius:22px;font-size:.78rem;font-weight:700;margin-bottom:20px}
+.h-h1{font-size:3.5rem;font-weight:900;line-height:1.13;margin-bottom:16px}
+.h-h1 .accent{color:var(--gold);display:block}
+.h-sub{font-size:1rem;color:var(--g1);line-height:1.85;margin-bottom:28px;max-width:500px}
+.h-btns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:32px}
+.btn-gold{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:var(--bg0);padding:13px 26px;border-radius:28px;font-size:.93rem;font-weight:700;border:none;cursor:pointer;font-family:var(--font);transition:.3s}
+.btn-gold:hover{background:var(--gold2);transform:translateY(-3px);box-shadow:0 12px 32px rgba(201,169,110,.4)}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--white);padding:13px 26px;border-radius:28px;font-size:.93rem;font-weight:700;border:1.5px solid var(--border);cursor:pointer;font-family:var(--font);transition:.3s}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-3px)}
+.btn-wa{display:inline-flex;align-items:center;gap:8px;background:var(--greenL);color:var(--green);padding:13px 26px;border-radius:28px;font-size:.93rem;font-weight:700;border:1px solid var(--greenB);cursor:pointer;font-family:var(--font);transition:.3s}
+.btn-wa:hover{background:rgba(74,222,128,.14);transform:translateY(-3px);box-shadow:0 10px 28px rgba(74,222,128,.2)}
+/* hero card */
+.hero-card-wrap{position:relative}
+.hero-card{background:var(--bg2);border:1px solid var(--border);border-radius:22px;padding:26px;overflow:hidden;position:relative}
+.hero-card::before{content:'';position:absolute;top:0;right:0;left:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.hc-logo{font-size:1.9rem;font-weight:900;color:var(--gold);margin-bottom:5px}
+.hc-ttl{font-size:.95rem;font-weight:700;margin-bottom:2px}
+.hc-sub{font-size:.76rem;color:var(--g2);margin-bottom:18px}
+.hc-pkg{border-radius:13px;padding:13px 16px;margin-bottom:10px;border:1px solid var(--border)}
+.hc-pkg.p1{background:rgba(201,169,110,.05);border-color:var(--goldB)}
+.hc-pkg.p2{background:rgba(74,222,128,.04);border-color:rgba(74,222,128,.18)}
+.hc-pkg .pkg-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.hc-pkg .pkg-name{font-size:.83rem;font-weight:700}
+.hc-pkg .pkg-price{font-size:1.1rem;font-weight:900}
+.hc-pkg.p1 .pkg-price{color:var(--gold)}
+.hc-pkg.p2 .pkg-price{color:var(--green)}
+.hc-pkg .pkg-desc{font-size:.72rem;color:var(--g2)}
+.float-p{position:absolute;background:var(--bg2);border:1px solid var(--goldB);border-radius:12px;padding:9px 14px;font-size:.76rem;font-weight:600;display:flex;align-items:center;gap:7px;box-shadow:0 10px 30px rgba(0,0,0,.5);animation:bob 3s ease-in-out infinite}
+.float-p.fp1{top:-16px;left:-22px;animation-delay:0s}
+.float-p.fp2{bottom:-16px;right:-22px;animation-delay:1.5s}
+.float-p i{color:var(--gold)}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+/* ── TICKER ── */
+.ticker{background:var(--gold);padding:13px 0;overflow:hidden;white-space:nowrap}
+.ticker-track{display:inline-flex;gap:45px;animation:tick 20s linear infinite}
+.ticker-track span{font-size:.83rem;font-weight:700;color:var(--bg0);display:flex;align-items:center;gap:7px}
+@keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ── SECTION BASE ── */
+.sec{padding:90px 48px}
+.sec-in{max-width:1200px;margin:0 auto}
+.sec-hd{text-align:center;margin-bottom:54px}
+.sec-tag{display:inline-block;background:var(--goldL);border:1px solid var(--goldB);color:var(--gold);padding:4px 14px;border-radius:18px;font-size:.75rem;font-weight:700;margin-bottom:12px}
+.sec-h2{font-size:2.3rem;font-weight:900;margin-bottom:11px}
+.sec-h2 span{color:var(--gold)}
+.sec-p{color:var(--g1);font-size:.9rem;max-width:470px;margin:0 auto;line-height:1.8}
+
+/* ── PACKAGES ── */
+.pkgs-sec{background:var(--bg1)}
+.pkgs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;max-width:1200px;margin:0 auto}
+.pkg-card{background:var(--bg2);border:1px solid var(--border);border-radius:24px;overflow:hidden;transition:.3s;position:relative}
+.pkg-card:hover{transform:translateY(-6px);box-shadow:0 25px 60px rgba(0,0,0,.5)}
+.pkg-card.premium{border-color:var(--goldB)}
+.pkg-card.premium::before{content:'الأكثر طلباً';position:absolute;top:16px;left:16px;background:var(--gold);color:var(--bg0);padding:3px 11px;border-radius:15px;font-size:.7rem;font-weight:700;z-index:1}
+.pkg-card.nutr{border-color:rgba(56,189,248,.22)}
+.pkg-card.nutr::before{content:'جديد 🔥';position:absolute;top:16px;left:16px;background:#38bdf8;color:#080808;padding:3px 11px;border-radius:15px;font-size:.7rem;font-weight:700;z-index:1}
+.nutr-btn{background:linear-gradient(135deg,#0ea5e9,#38bdf8)!important;color:#080808!important}
+.nutr-btn:hover{background:linear-gradient(135deg,#38bdf8,#7dd3fc)!important;transform:translateY(-3px)!important;box-shadow:0 12px 30px rgba(56,189,248,.35)!important}
+.pkg-top{padding:26px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,var(--bg2),var(--bg3))}
+.pkg-icon{font-size:2.2rem;margin-bottom:12px}
+.pkg-name{font-size:1.2rem;font-weight:700;margin-bottom:4px}
+.pkg-tagline{font-size:.8rem;color:var(--g2)}
+.pkg-body{padding:26px}
+.pkg-feats{list-style:none;margin-bottom:22px}
+.pkg-feats li{display:flex;align-items:flex-start;gap:10px;font-size:.83rem;color:var(--g1);margin-bottom:10px;line-height:1.5}
+.pkg-feats li i{color:var(--gold);margin-top:3px;font-size:.75rem;flex-shrink:0}
+.pkg-price-row{display:flex;align-items:baseline;gap:5px;margin-bottom:16px}
+.pkg-price{font-size:2.4rem;font-weight:900;color:var(--gold)}
+.pkg-cur{font-size:.9rem;color:var(--g2)}
+.pkg-per{font-size:.74rem;color:var(--g3);margin-right:4px}
+.pay-icons-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+.pay-ic{background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:5px;padding:2px 7px;font-size:.66rem;font-weight:700;color:var(--g1)}
+.pay-ic.mada{color:#00c3a5;border-color:rgba(0,195,165,.2)}
+.pay-ic.visa{background:#fff;color:#1a1f71}
+.btn-buy{width:100%;background:var(--gold);color:var(--bg0);padding:13px;border-radius:13px;border:none;font-size:.93rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;transition:.3s;cursor:pointer;font-family:var(--font)}
+.btn-buy:hover{background:var(--gold2);transform:translateY(-2px);box-shadow:0 10px 28px rgba(201,169,110,.4)}
+.btn-buy-wa{width:100%;background:var(--greenL);color:var(--green);padding:13px;border-radius:13px;border:1px solid var(--greenB);font-size:.93rem;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;transition:.3s;cursor:pointer;font-family:var(--font);margin-top:8px}
+.btn-buy-wa:hover{background:rgba(74,222,128,.14);transform:translateY(-2px)}
+
+/* ── WHAT'S IN IT ── */
+.what-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.wc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:24px;transition:.3s;position:relative;overflow:hidden}
+.wc::after{content:'';position:absolute;bottom:0;right:0;left:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:.3s}
+.wc:hover{border-color:var(--goldB);transform:translateY(-3px)}
+.wc:hover::after{opacity:1}
+.wc-icon{width:46px;height:46px;background:var(--goldL);border:1px solid var(--goldB);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:14px}
+.wc h3{font-size:.97rem;font-weight:700;margin-bottom:7px}
+.wc p{font-size:.8rem;color:var(--g2);line-height:1.7}
+
+/* ── SCHEDULE PREVIEW ── */
+.sched-sec{background:var(--bg1)}
+.sched-layout{display:grid;grid-template-columns:1fr 1.1fr;gap:70px;align-items:start}
+.sched-text .label{color:var(--gold);font-size:.8rem;font-weight:700;margin-bottom:11px;letter-spacing:.4px}
+.sched-text h2{font-size:2.1rem;font-weight:900;margin-bottom:14px;line-height:1.25}
+.sched-text h2 span{color:var(--gold)}
+.sched-text p{color:var(--g1);line-height:1.85;font-size:.9rem;margin-bottom:20px}
+.days-list{display:flex;flex-direction:column;gap:9px;margin-bottom:26px}
+.day-row{display:flex;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--border);border-radius:11px;padding:12px 15px;transition:.3s}
+.day-row:hover{border-color:var(--goldB)}
+.day-num{width:30px;height:30px;min-width:30px;background:var(--goldL);border:1px solid var(--goldB);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:900;color:var(--gold)}
+.day-info h4{font-size:.85rem;font-weight:700;margin-bottom:1px}
+.day-info p{font-size:.72rem;color:var(--g2)}
+.day-muscles{margin-right:auto;font-size:.7rem;color:var(--g2);background:var(--bg3);padding:3px 8px;border-radius:7px}
+.sched-card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;overflow:hidden}
+.sc-top{background:linear-gradient(135deg,var(--bg2),var(--bg3));padding:18px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.sc-top .st{font-size:.95rem;font-weight:700}
+.sc-top .stag{background:var(--gold);color:var(--bg0);padding:3px 9px;border-radius:12px;font-size:.7rem;font-weight:700}
+.ex-list .ex-item{display:flex;align-items:center;gap:11px;padding:12px 20px;border-bottom:1px solid rgba(255,255,255,.04)}
+.ex-list .ex-item:last-child{border-bottom:none}
+.ex-nb{width:26px;height:26px;min-width:26px;background:var(--goldL);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:900;color:var(--gold)}
+.ex-nm{font-size:.83rem;font-weight:600;flex:1}
+.ex-st{font-size:.72rem;color:var(--g2);background:var(--bg3);padding:3px 8px;border-radius:6px}
+
+/* ── TIKTOK SECTION ── */
+.tt-sec{background:var(--bg0)}
+.tt-layout{display:grid;grid-template-columns:1.1fr .9fr;gap:60px;align-items:center}
+.tt-text .label{color:var(--gold);font-size:.8rem;font-weight:700;margin-bottom:11px}
+.tt-text h2{font-size:2.1rem;font-weight:900;margin-bottom:14px;line-height:1.25}
+.tt-text h2 span{color:var(--gold)}
+.tt-text p{color:var(--g1);line-height:1.85;font-size:.9rem;margin-bottom:20px}
+.tt-steps{display:flex;flex-direction:column;gap:11px;margin-bottom:24px}
+.tt-step{display:flex;align-items:flex-start;gap:12px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:13px 16px;transition:.3s}
+.tt-step:hover{border-color:var(--goldB)}
+.tt-step .snum{width:28px;height:28px;min-width:28px;background:var(--gold);color:var(--bg0);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:900}
+.tt-step h4{font-size:.85rem;font-weight:700;margin-bottom:2px}
+.tt-step p{font-size:.76rem;color:var(--g2);line-height:1.5}
+.tt-card{background:var(--bg2);border:1px solid var(--goldB);border-radius:20px;padding:26px;text-align:center}
+.tt-card .ttlogo{font-size:3rem;margin-bottom:10px}
+.tt-card .ttname{font-size:1.5rem;font-weight:900;color:var(--gold);margin-bottom:3px}
+.tt-card .ttsub{font-size:.8rem;color:var(--g2);margin-bottom:18px}
+.tt-hashtag{background:var(--goldL);border:1px solid var(--goldB);border-radius:11px;padding:11px 15px;margin-bottom:10px;font-size:.8rem;color:var(--gold);font-weight:700}
+.tt-followbtn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--white);color:var(--bg0);padding:12px;border-radius:11px;font-size:.9rem;font-weight:700;transition:.3s}
+.tt-followbtn:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(255,255,255,.15)}
+
+/* ── BLOG ── */
+.blog-sec{background:var(--bg1)}
+.blog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px}
+.blog-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;cursor:pointer;transition:.3s}
+.blog-card:hover{border-color:var(--goldB);transform:translateY(-4px);box-shadow:0 16px 45px rgba(0,0,0,.4)}
+.blog-thumb{height:180px;background:linear-gradient(135deg,var(--bg2),var(--bg3));display:flex;align-items:center;justify-content:center;font-size:3rem;position:relative}
+.blog-cat-b{position:absolute;bottom:10px;right:10px;background:var(--gold);color:var(--bg0);padding:3px 10px;border-radius:13px;font-size:.69rem;font-weight:700}
+.blog-body{padding:18px}
+.blog-meta{display:flex;gap:12px;margin-bottom:8px;font-size:.72rem;color:var(--g2)}
+.blog-ttl{font-size:.95rem;font-weight:700;margin-bottom:7px;line-height:1.5}
+.blog-exc{font-size:.79rem;color:var(--g2);line-height:1.7;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.blog-more{margin-top:11px;color:var(--gold);font-size:.79rem;font-weight:600;display:flex;align-items:center;gap:5px}
+
+/* ── WHATSAPP FLOAT ── */
+.wa-float{position:fixed;bottom:28px;left:28px;z-index:800;display:flex;flex-direction:column;align-items:center;gap:8px}
+.wa-float-btn{width:56px;height:56px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:#fff;box-shadow:0 6px 22px rgba(37,211,102,.4);transition:.3s;border:none;cursor:pointer}
+.wa-float-btn:hover{transform:scale(1.1);box-shadow:0 10px 30px rgba(37,211,102,.5)}
+.wa-tooltip{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:7px 12px;font-size:.75rem;font-weight:600;white-space:nowrap;opacity:0;transform:translateY(5px);transition:.3s;pointer-events:none}
+.wa-float:hover .wa-tooltip{opacity:1;transform:translateY(0)}
+
+/* ── SOCIALS / FOOTER ── */
+.soc-strip{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:46px 48px;text-align:center}
+.soc-strip h3{font-size:1.4rem;font-weight:700;margin-bottom:5px}
+.soc-strip p{color:var(--g2);font-size:.83rem;margin-bottom:26px}
+.soc-btns{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.soc-btn{display:flex;align-items:center;gap:8px;background:var(--bg1);border:1px solid var(--border);border-radius:12px;padding:12px 20px;font-size:.86rem;font-weight:600;transition:.3s}
+.soc-btn:hover{border-color:var(--goldB);color:var(--gold);transform:translateY(-2px)}
+footer{background:#050505;border-top:1px solid var(--border);padding:42px 48px 24px}
+.footer-in{max-width:1200px;margin:0 auto}
+.footer-top{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:44px;margin-bottom:32px;padding-bottom:32px;border-bottom:1px solid var(--border)}
+.f-brand .logo{font-size:1.5rem;font-weight:900;color:var(--gold);margin-bottom:7px}
+.f-brand p{font-size:.78rem;color:var(--g2);line-height:1.7}
+.f-soc{display:flex;gap:8px;margin-top:13px}
+.fs{width:34px;height:34px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.83rem;color:var(--g1);transition:.3s}
+.fs:hover{border-color:var(--goldB);color:var(--gold)}
+.f-col h4{font-size:.85rem;font-weight:700;color:var(--gold);margin-bottom:13px}
+.f-col ul{list-style:none}
+.f-col li{margin-bottom:8px}
+.f-col a{font-size:.78rem;color:var(--g2);transition:.3s}
+.f-col a:hover{color:var(--gold)}
+.footer-bot{display:flex;justify-content:space-between;align-items:center;font-size:.73rem;color:var(--g3);flex-wrap:wrap;gap:8px}
+
+/* ── PAYMENT MODAL ── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:9000;display:flex;align-items:center;justify-content:center;padding:18px;opacity:0;visibility:hidden;transition:.3s}
+.overlay.open{opacity:1;visibility:visible}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:24px;padding:34px;max-width:500px;width:100%;position:relative;max-height:90vh;overflow-y:auto}
+.mx{position:absolute;top:13px;left:13px;background:rgba(255,255,255,.08);border:none;color:var(--white);width:32px;height:32px;border-radius:50%;font-size:.85rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.3s}
+.mx:hover{background:rgba(255,255,255,.15)}
+.modal h3{font-size:1.3rem;font-weight:700;margin-bottom:4px}
+.modal .msub{font-size:.82rem;color:var(--g2);margin-bottom:20px}
+.modal-pkg-preview{background:var(--goldL);border:1px solid var(--goldB);border-radius:13px;padding:14px 16px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center}
+.modal-pkg-preview .pn{font-size:.88rem;font-weight:700}
+.modal-pkg-preview .pp{font-size:1.5rem;font-weight:900;color:var(--gold)}
+.modal-pkg-preview .pc{font-size:.75rem;color:var(--g2)}
+.pay-methods{display:flex;gap:8px;margin-bottom:18px}
+.pm-tab{flex:1;background:var(--bg1);border:2px solid var(--border);border-radius:11px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;font-size:.72rem;color:var(--g2);font-family:var(--font);transition:.3s}
+.pm-tab i{font-size:1.3rem}
+.pm-tab.on{border-color:var(--gold);color:var(--gold);background:var(--goldL)}
+#moyasarMount{margin-top:4px}
+.pay-notice{background:var(--goldL);border:1px solid var(--goldB);border-radius:13px;padding:20px;text-align:center;margin-top:14px}
+.pay-notice i{font-size:1.6rem;color:var(--gold);margin-bottom:8px;display:block}
+.pay-notice p{font-size:.82rem;color:var(--g1);line-height:1.7;margin-bottom:4px}
+.pay-notice a{color:var(--gold);font-weight:700;font-size:.8rem}
+.pay-secure{text-align:center;font-size:.7rem;color:var(--g3);margin-top:12px}
+.pay-secure i{color:var(--gold);margin-left:4px}
+/* Success modal */
+.success-modal{text-align:center;padding:10px 0}
+
+/* ===== OTP / ORDERS SYSTEM ===== */
+/* Floating orders button */
+.orders-fab{position:fixed;bottom:24px;left:24px;z-index:900;background:linear-gradient(135deg,#1e3a5f,#1a5276);border:1px solid rgba(56,189,248,.35);color:#fff;padding:12px 18px;border-radius:50px;font-family:var(--font);font-size:.82rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.4);transition:.3s}
+.orders-fab:hover{background:linear-gradient(135deg,#2471a3,#1a5276);transform:translateY(-2px)}
+.orders-fab .fab-dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* Phone input */
+.ph-row{display:flex;align-items:center;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--bg3);margin-bottom:16px}
+.ph-prefix{padding:0 12px;font-size:.88rem;color:var(--gold);font-weight:700;border-left:1px solid var(--border);height:48px;display:flex;align-items:center;white-space:nowrap}
+.ph-row input{flex:1;background:transparent;border:none;outline:none;padding:0 14px;height:48px;font-size:1rem;font-family:var(--font);color:var(--white);direction:ltr;text-align:left}
+
+/* OTP boxes */
+.otp-boxes{display:flex;gap:10px;justify-content:center;margin:20px 0;direction:ltr}
+.otp-box{width:48px;height:56px;border-radius:12px;border:2px solid var(--border);background:var(--bg3);color:var(--white);font-size:1.4rem;font-weight:700;text-align:center;outline:none;font-family:var(--font);transition:.2s;caret-color:var(--gold)}
+.otp-box:focus{border-color:var(--gold);background:rgba(201,169,110,.07)}
+.otp-box.filled{border-color:rgba(74,222,128,.5);background:rgba(74,222,128,.05)}
+
+/* Step UI */
+.step-dots{display:flex;justify-content:center;gap:8px;margin-bottom:24px}
+.step-dot{width:8px;height:8px;border-radius:50%;background:var(--bg4);transition:.3s}
+.step-dot.on{background:var(--gold);width:24px;border-radius:4px}
+
+/* OTP resend */
+.resend-row{text-align:center;margin-top:8px}
+.resend-btn{background:none;border:none;color:var(--gold);font-size:.8rem;font-family:var(--font);cursor:pointer;text-decoration:underline}
+.resend-btn:disabled{color:var(--g3);cursor:default;text-decoration:none}
+
+/* Orders list */
+.order-card{background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:12px}
+.order-icon{font-size:2rem}
+.order-info{flex:1}
+.order-name{font-size:.92rem;font-weight:700;margin-bottom:3px}
+.order-date{font-size:.75rem;color:var(--g2)}
+.order-dl{display:flex;align-items:center;gap:6px;background:linear-gradient(135deg,var(--gold),#e8c07e);color:#080808;padding:8px 14px;border-radius:22px;font-size:.78rem;font-weight:700;text-decoration:none;white-space:nowrap;transition:.2s}
+.order-dl:hover{opacity:.85}
+
+/* Free schedule banner */
+.free-banner{background:linear-gradient(135deg,rgba(74,222,128,.08),rgba(74,222,128,.03));border:1px solid rgba(74,222,128,.2);border-radius:16px;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px;margin:0 0 28px;flex-wrap:wrap}
+.free-banner-txt h4{font-size:.95rem;font-weight:700;color:var(--green);margin-bottom:3px}
+.free-banner-txt p{font-size:.78rem;color:var(--g2)}
+.free-banner a{display:flex;align-items:center;gap:7px;background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.3);color:var(--green);padding:9px 18px;border-radius:22px;font-size:.82rem;font-weight:700;text-decoration:none;white-space:nowrap;transition:.2s}
+.free-banner a:hover{background:rgba(74,222,128,.2)}
+@media(max-width:600px){.orders-fab{bottom:16px;left:16px;padding:10px 14px;font-size:.78rem}}
+.success-modal .s-icon{font-size:4rem;margin-bottom:16px}
+.success-modal h3{font-size:1.4rem;font-weight:700;margin-bottom:8px;color:var(--green)}
+.success-modal p{font-size:.87rem;color:var(--g1);line-height:1.7;margin-bottom:20px}
+
+/* ── BLOG MODAL ── */
+.blog-ovl .modal{max-width:660px}
+.bm-ttl{font-size:1.4rem;font-weight:700;margin-bottom:10px;line-height:1.4}
+.bm-meta{display:flex;gap:12px;color:var(--g2);font-size:.75rem;margin-bottom:15px;padding-bottom:15px;border-bottom:1px solid var(--border)}
+.bm-body{color:var(--g1);line-height:1.9;font-size:.89rem}
+.bm-body p{margin-bottom:12px}
+.bm-body h3{color:var(--gold);font-size:.93rem;margin:17px 0 7px}
+
+/* ── ADMIN ── */
+#adm-root{display:none;min-height:100vh;background:var(--bg0);padding-top:72px}
+#adm-root.show{display:block}
+.adm-wrap{max-width:1100px;margin:0 auto;padding:36px 48px}
+.adm-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+.adm-top h1{font-size:1.55rem;font-weight:700}
+.adm-top h1 span{color:var(--gold)}
+.atabs{display:flex;gap:4px;background:var(--bg1);padding:4px;border-radius:12px;margin-bottom:24px}
+.atab{padding:9px 17px;border-radius:9px;border:none;font-family:var(--font);font-size:.83rem;font-weight:600;color:var(--g2);cursor:pointer;transition:.3s;background:transparent}
+.atab.on{background:var(--gold);color:var(--bg0)}
+.ac{display:none}.ac.show{display:block}
+.aform{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:24px;margin-bottom:20px}
+.aform h3{font-size:.96rem;font-weight:700;color:var(--gold);margin-bottom:16px}
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:.79rem;font-weight:600;color:var(--g1);margin-bottom:5px}
+.fg input,.fg textarea,.fg select{width:100%;background:var(--bg1);border:1px solid var(--border);border-radius:9px;padding:10px 13px;color:var(--white);font-size:.88rem;font-family:var(--font);transition:.3s;outline:none}
+.fg input:focus,.fg textarea:focus{border-color:var(--gold)}
+.fg textarea{min-height:100px;resize:vertical}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.alist{background:var(--bg2);border:1px solid var(--border);border-radius:18px;overflow:hidden}
+.ali{padding:15px 19px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.ali:last-child{border-bottom:none}
+.ali h4{font-size:.86rem;font-weight:600;margin-bottom:1px}
+.ali p{font-size:.72rem;color:var(--g2)}
+.aacts{display:flex;gap:6px}
+.aed,.adel{padding:5px 11px;border-radius:7px;border:none;font-size:.72rem;font-weight:700;font-family:var(--font);cursor:pointer;transition:.3s}
+.aed{background:var(--goldL);color:var(--gold);border:1px solid var(--goldB)}
+.adel{background:rgba(230,57,70,.08);color:#e63946;border:1px solid rgba(230,57,70,.18)}
+.arow{display:flex;gap:8px;margin-top:6px}
+#alog{display:none;min-height:100vh;background:var(--bg0);align-items:center;justify-content:center;padding:20px}
+#alog.show{display:flex}
+.alog-card{background:var(--bg2);border:1px solid var(--border);border-radius:22px;padding:36px;max-width:350px;width:100%;text-align:center}
+.alog-card h2{font-size:1.6rem;font-weight:700;margin-bottom:5px}
+.alog-card h2 span{color:var(--gold)}
+.alog-sub{font-size:.8rem;color:var(--g2);margin-bottom:24px}
+.aerr{background:rgba(230,57,70,.09);border:1px solid rgba(230,57,70,.22);color:#e63946;padding:8px 12px;border-radius:8px;font-size:.79rem;margin-bottom:12px;display:none}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(70px);background:#0c220c;border:1px solid #2a5f2a;color:var(--green);padding:11px 20px;border-radius:13px;font-size:.81rem;font-weight:600;z-index:99999;transition:.4s;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ── DISCOUNT CODES ── */
+.discounts-sec{background:var(--bg1)}
+.disc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px}
+.disc-card{background:var(--bg2);border:1px solid var(--border);border-radius:22px;overflow:hidden;transition:.3s}
+.disc-card:hover{border-color:var(--goldB);transform:translateY(-5px);box-shadow:0 22px 55px rgba(0,0,0,.45)}
+.disc-top{padding:20px 22px;background:linear-gradient(135deg,var(--bg2),var(--bg3));border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;position:relative}
+.disc-brand-logo{font-size:2.6rem;flex-shrink:0}
+.disc-brand{font-size:1.05rem;font-weight:700;margin-bottom:2px}
+.disc-tagline{font-size:.75rem;color:var(--g2);line-height:1.4}
+.disc-badge{background:var(--gold);color:var(--bg0);padding:5px 13px;border-radius:20px;font-size:.88rem;font-weight:900;margin-right:auto;flex-shrink:0}
+.disc-body{padding:20px 22px}
+.disc-desc{font-size:.82rem;color:var(--g1);line-height:1.75;margin-bottom:18px}
+.disc-code-wrap{background:var(--goldL);border:1px solid var(--goldB);border-radius:13px;padding:14px 16px}
+.disc-code-label{display:block;font-size:.71rem;color:var(--g2);margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.disc-code-row{display:flex;align-items:center;gap:10px}
+.disc-code{font-size:1.45rem;font-weight:900;color:var(--gold);letter-spacing:4px;flex:1;direction:ltr;text-align:center;font-family:monospace}
+.disc-copy-btn{background:var(--gold);color:var(--bg0);border:none;padding:9px 16px;border-radius:9px;font-size:.8rem;font-weight:700;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:5px;transition:.3s;white-space:nowrap;flex-shrink:0}
+.disc-copy-btn:hover{background:var(--gold2);transform:translateY(-1px);box-shadow:0 6px 18px rgba(201,169,110,.35)}
+.disc-copy-btn.copied{background:var(--green);color:var(--bg0)}
+
+/* ── FADE IN ── */
+.fi{opacity:0;transform:translateY(22px);transition:.55s ease}.fi.vis{opacity:1;transform:none}
+
+/* ── RESPONSIVE ── */
+@media(max-width:960px){
+  .hero-in,.sched-layout,.tt-layout{grid-template-columns:1fr}
+  .hero-card-wrap{display:none}
+  .what-grid{grid-template-columns:1fr 1fr}
+  .pkgs-grid{grid-template-columns:1fr}
+  .footer-top{grid-template-columns:1fr}
+}
+@media(max-width:660px){
+  .nav{padding:13px 16px}.nav.solid{padding:9px 16px}
+  .nav-links{display:none}.hbg{display:flex}
+  .hero{padding:95px 16px 60px}.h-h1{font-size:2.4rem}
+  .sec{padding:62px 16px}
+  .soc-strip,footer{padding-left:16px;padding-right:16px}
+  .what-grid{grid-template-columns:1fr}
+  .adm-wrap{padding:16px}
+  .fg2{grid-template-columns:1fr}
+  .modal{padding:22px 16px}
+  .wa-float{bottom:20px;left:16px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <a class="nav-brand" href="#" onclick="showMain()">vllogsraye</a>
+  <ul class="nav-links">
+    <li><a href="#packages">الباقات</a></li>
+    <li><a href="#what">وش في الجدول</a></li>
+    <li><a href="#discounts">أكواد الخصم</a></li>
+    <li><a href="#blog">البلوقز</a></li>
+    <li><a href="#tiktok">تيك توك</a></li>
+    <li><a href="https://wa.me/966502212387" target="_blank" class="nav-wa"><i class="fab fa-whatsapp"></i> واتساب</a></li>
+    <li><button class="nav-cta" onclick="openOrdersModal()" style="background:transparent;border:1px solid rgba(56,189,248,.4);color:#38bdf8;padding:7px 14px;border-radius:20px;cursor:pointer;font-family:var(--font);font-size:.82rem;font-weight:700">📦 طلباتي</button></li>
+    <li><a href="#packages" class="nav-cta">اشتري الآن</a></li>
+  </ul>
+  <button class="hbg" onclick="toggleNav()"><span></span><span></span><span></span></button>
+</nav>
+<div class="mob-menu" id="mobMenu">
+  <a href="#packages" onclick="toggleNav()">الباقات والأسعار</a>
+  <a href="#what" onclick="toggleNav()">وش في الجدول</a>
+  <a href="#discounts" onclick="toggleNav()">🎁 أكواد الخصم</a>
+  <a href="#blog" onclick="toggleNav()">البلوقز</a>
+  <a href="#tiktok" onclick="toggleNav()">تيك توك</a>
+  <a href="https://wa.me/966502212387" target="_blank" onclick="toggleNav()" style="color:#4ade80">واتساب للاستفسار</a>
+  <a href="#packages" onclick="toggleNav()" style="color:var(--gold);font-weight:700">اشتري الآن ←</a>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-in">
+    <div class="fi">
+      <div class="h-badge"><i class="fab fa-tiktok"></i> vllogsraye — مدربة شخصية</div>
+      <h1 class="h-h1">
+        تدخلين النادي
+        <span class="accent">وتعرفين وش تسوين</span>
+        من أول لحظة
+      </h1>
+      <p class="h-sub">جدول تدريب واضح — ما في تخمين ولا ضياع. كل يوم له هدف وكل تمرين بالتفصيل.</p>
+      <div class="h-btns">
+        <a href="#packages" class="btn-gold"><i class="fas fa-fire"></i> شوفي الباقات</a>
+        <a href="https://wa.me/966502212387" target="_blank" class="btn-wa"><i class="fab fa-whatsapp"></i> تواصلي معي</a>
+      </div>
+    </div>
+    <div class="hero-card-wrap fi">
+      <div class="float-p fp1"><i class="fas fa-bolt"></i> تحميل فوري بعد الدفع</div>
+      <div class="hero-card">
+        <div class="hc-logo">vllogsraye</div>
+        <div class="hc-ttl">اختاري باقتك</div>
+        <div class="hc-sub">باقتان بس — بسيطة وواضحة</div>
+        <div class="hc-pkg p1">
+          <div class="pkg-row"><span class="pkg-name">💪 جدول موحد</span><span class="pkg-price">50 ر</span></div>
+          <div class="pkg-desc">Body Recomposition — تحمّل فوري</div>
+        </div>
+        <div class="hc-pkg" style="background:rgba(56,189,248,.05);border-color:rgba(56,189,248,.2);margin-bottom:10px;border-radius:13px;padding:13px 16px">
+          <div class="pkg-row"><span class="pkg-name">🥗 اعرف وش تاكل</span><span class="pkg-price" style="color:#38bdf8">20 ر</span></div>
+          <div class="pkg-desc">دليل غذائي — سعرات + مؤشر غلايسيمي</div>
+        </div>
+        <div class="hc-pkg p2">
+          <div class="pkg-row"><span class="pkg-name">👑 متابعة شخصية</span><span class="pkg-price" style="color:var(--green)">299 ر</span></div>
+          <div class="pkg-desc">جدول خاص بك + واتساب أسبوعي</div>
+        </div>
+      </div>
+      <div class="float-p fp2"><i class="fab fa-whatsapp"></i> دعم واتساب مباشر</div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker"><div class="ticker-track" id="tktrack"></div></div>
+
+<!-- PACKAGES -->
+<section class="sec pkgs-sec" id="packages">
+  <div class="sec-in">
+    <!-- Free Schedule Banner -->
+    <div class="free-banner fi">
+      <div class="free-banner-txt">
+        <h4>🗓 جدول تدريب مجاني — بدون دفع</h4>
+        <p>جدول أسبوعي كامل — عرضه، حمّله PDF، ابدأ اليوم</p>
+      </div>
+      <a href="schedule.html" target="_blank"><i class="fas fa-download"></i> حمّل مجاناً</a>
+    </div>
+    <div class="sec-hd fi">
+      <div class="sec-tag">💎 الباقات</div>
+      <h2 class="sec-h2">وش <span>تبينه؟</span></h2>
+      <p class="sec-p">ثلاث باقات — اختار اللي يناسبك</p>
+    </div>
+    <div class="pkgs-grid">
+
+      <!-- PACKAGE 1 -->
+      <div class="pkg-card fi">
+        <div class="pkg-top">
+          <div class="pkg-icon">📄</div>
+          <div class="pkg-name">جدول موحد — Body Recomposition</div>
+          <div class="pkg-tagline">للي يبون يخسرون دهون ويبنون عضلات بنفس الوقت</div>
+        </div>
+        <div class="pkg-body">
+          <ul class="pkg-feats">
+            <li><i class="fas fa-check"></i>مصمم خصيصاً لهدف الـ Body Recomposition</li>
+            <li><i class="fas fa-check"></i>5 أيام تدريب كاملة ومرتبة</li>
+            <li><i class="fas fa-check"></i>كل تمرين بالاسم والسيتات والرابات</li>
+            <li><i class="fas fa-check"></i>مرتّب من أول ما تدخلين لحد ما تطلعين</li>
+            <li><i class="fas fa-check"></i>إحماء قبل وإطالة بعد</li>
+            <li><i class="fas fa-check"></i>يتحمّل فور ما تكملين الدفع</li>
+          </ul>
+          <div class="pkg-price-row">
+            <span class="pkg-price">50</span>
+            <span class="pkg-cur">ريال</span>
+            <span class="pkg-per">/ مرة واحدة</span>
+          </div>
+          <div class="pay-icons-row">
+            <span class="pay-ic mada">mada</span>
+            <span class="pay-ic visa">VISA</span>
+            <span class="pay-ic">🍎 Pay</span>
+          </div>
+          <button class="btn-buy" onclick="openPay(1)">
+            <i class="fas fa-download"></i> حمّلي جدول الـ Body Recomposition — 50 ريال
+          </button>
+        </div>
+      </div>
+
+      <!-- PACKAGE 3 — NUTRITION -->
+      <div class="pkg-card nutr fi">
+        <div class="pkg-top">
+          <div class="pkg-icon">🥗</div>
+          <div class="pkg-name">اعرف وش تاكل</div>
+          <div class="pkg-tagline">دليل غذائي ذكي — سعرات + مؤشر غلايسيمي لكل أكلة</div>
+        </div>
+        <div class="pkg-body">
+          <ul class="pkg-feats">
+            <li><i class="fas fa-check"></i>قائمة بأفضل الأكلات للمتدرب</li>
+            <li><i class="fas fa-check"></i>السعرات الحرارية لكل حصة</li>
+            <li><i class="fas fa-check"></i>المؤشر الغلايسيمي لكل أكلة — تعرف وش يرفع السكر</li>
+            <li><i class="fas fa-check"></i>تختار أكلتك بناءً على هدفك تنزل وزن</li>
+            <li><i class="fas fa-check"></i>مناسب لعلاج مقاومة الأنسولين — كل الأكل مرتب من الأقل تأثيراً على السكر</li>
+            <li><i class="fas fa-check"></i>مصادر البروتين والكارب والدهون الصحية</li>
+            <li><i class="fas fa-check"></i>يتحمّل فور ما تكمل الدفع</li>
+          </ul>
+          <div class="pkg-price-row">
+            <span class="pkg-price" style="color:#38bdf8">20</span>
+            <span class="pkg-cur">ريال</span>
+            <span class="pkg-per">/ مرة واحدة</span>
+          </div>
+          <div class="pay-icons-row">
+            <span class="pay-ic mada">mada</span>
+            <span class="pay-ic visa">VISA</span>
+            <span class="pay-ic">🍎 Pay</span>
+          </div>
+          <button class="btn-buy nutr-btn" onclick="openPay(3)" style="width:100%;justify-content:center">
+            <i class="fas fa-shopping-cart"></i> احصل على الدليل — 20 ريال
+          </button>
+        </div>
+      </div>
+
+      <!-- PACKAGE 2 -->
+      <div class="pkg-card premium fi">
+        <div class="pkg-top">
+          <div class="pkg-icon">👑</div>
+          <div class="pkg-name">متابعة شخصية أسبوعية</div>
+          <div class="pkg-tagline">جدول خاص بك + أنا معك كل أسبوع</div>
+        </div>
+        <div class="pkg-body">
+          <ul class="pkg-feats">
+            <li><i class="fas fa-check"></i>جدول مصمم لجسمك وهدفك أنتِ</li>
+            <li><i class="fas fa-check"></i>متابعة أسبوعية على واتساب</li>
+            <li><i class="fas fa-check"></i>نعدّل الجدول حسب تقدمك</li>
+            <li><i class="fas fa-check"></i>تسألين وأرد — ما تمشين لحالك</li>
+            <li><i class="fas fa-check"></i>نصايح تغذية تناسب هدفك</li>
+            <li><i class="fas fa-check"></i>تواصل مباشر مع vllogsraye</li>
+          </ul>
+          <div class="pkg-price-row">
+            <span class="pkg-price">299</span>
+            <span class="pkg-cur">ريال</span>
+            <span class="pkg-per">/ الأسبوع</span>
+          </div>
+          <div class="pay-icons-row">
+            <span class="pay-ic mada">mada</span>
+            <span class="pay-ic visa">VISA</span>
+            <span class="pay-ic">🍎 Pay</span>
+          </div>
+          <button class="btn-buy" onclick="openPay(2)">
+            <i class="fas fa-crown"></i> ابدأي المتابعة — 299 ريال
+          </button>
+          <a href="https://wa.me/966502212387?text=مرحبا vllogsraye، أبي أعرف أكثر عن باقة المتابعة الشخصية" target="_blank" class="btn-buy-wa">
+            <i class="fab fa-whatsapp"></i> استفسري قبل الشراء
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- WHAT'S IN IT -->
+<section class="sec" id="what">
+  <div class="sec-in">
+    <div class="sec-hd fi">
+      <div class="sec-tag">📋 وش في الجدول؟</div>
+      <h2 class="sec-h2">ما في <span>تخمين</span></h2>
+      <p class="sec-p">كل شيء مكتوب — تدخلين وتشغّلين</p>
+    </div>
+    <div class="what-grid" id="whatGrid"></div>
+  </div>
+</section>
+
+<!-- SCHEDULE PREVIEW -->
+<section class="sec sched-sec" id="schedule">
+  <div class="sec-in">
+    <div class="sched-layout">
+      <div class="sched-text fi">
+        <div class="label">📅 توزيع الأسبوع</div>
+        <h2>5 أيام<br><span>كل يوم بهدفه</span></h2>
+        <p>ما في يوم تدخلين مو عارفة وش تسوين. كل يوم واضح من البداية للنهاية.</p>
+        <div class="days-list" id="daysList"></div>
+        <a href="#packages" class="btn-gold"><i class="fas fa-shopping-cart"></i> حمّلي الجدول</a>
+      </div>
+      <div class="sched-card fi" id="schedCard"></div>
+    </div>
+  </div>
+</section>
+
+<!-- TIKTOK -->
+<section class="sec tt-sec" id="tiktok">
+  <div class="sec-in">
+    <div class="tt-layout">
+      <div class="tt-text fi">
+        <div class="label">🎬 تيك توك</div>
+        <h2>شارك رحلتك<br><span>على تيك توك</span></h2>
+        <p>ابدأ الجدول، صوّر، ومنشني — ممكن أعيد نشر قصتك!</p>
+        <div class="tt-steps">
+          <div class="tt-step"><div class="snum">١</div><div><h4>ابدأ الجدول</h4><p>طبّقه أسبوع كامل وشوف الفرق</p></div></div>
+          <div class="tt-step"><div class="snum">٢</div><div><h4>صوّر تقدمك</h4><p>لحظاتك في النادي والنتايج الأولى</p></div></div>
+          <div class="tt-step"><div class="snum">٣</div><div><h4>منشني @vllogsraye</h4><p>أشوفك وأتفاعل معك!</p></div></div>
+        </div>
+      </div>
+      <div class="tt-card fi">
+        <div class="ttlogo">🎵</div>
+        <div class="ttname">@vllogsraye</div>
+        <div class="ttsub">محتوى رياضي يومي</div>
+        <div class="tt-hashtag">#vllogsraye_challenge</div>
+        <a href="https://www.tiktok.com/@vllogsraye" target="_blank" class="tt-followbtn">
+          <i class="fab fa-tiktok"></i> تابعيني على تيك توك
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BLOG -->
+<section class="sec blog-sec" id="blog">
+  <div class="sec-in">
+    <div class="sec-hd fi">
+      <div class="sec-tag">📝 البلوق</div>
+      <h2 class="sec-h2">نصايح <span>من تجربتي</span></h2>
+      <p class="sec-p">كلام عملي بدون تنظير</p>
+    </div>
+    <div class="blog-grid" id="blogGrid"></div>
+  </div>
+</section>
+
+<!-- DISCOUNT CODES -->
+<section class="sec discounts-sec" id="discounts">
+  <div class="sec-in">
+    <div class="sec-hd fi">
+      <div class="sec-tag">🎁 أكواد الخصم</div>
+      <h2 class="sec-h2">اشتري <span>بأقل</span></h2>
+      <p class="sec-p">أكواد خصم حصرية لمتابعاتي — استخدميها ووفّري فلوس</p>
+    </div>
+    <div class="disc-grid">
+
+      <!-- CALO -->
+      <div class="disc-card fi">
+        <div class="disc-top">
+          <div class="disc-brand-logo">🥗</div>
+          <div>
+            <div class="disc-brand">كالو</div>
+            <div class="disc-tagline">وجبات صحية جاهزة مخصصة<br>حسب هدفك الغذائي يومياً</div>
+          </div>
+          <div class="disc-badge">-١٠٪</div>
+        </div>
+        <div class="disc-body">
+          <p class="disc-desc">اطلبي وجباتك الصحية من كالو بخصم ١٠٪ باستخدام كودي — أكل صحي ومرتّب يوصل لباب البيت.</p>
+          <div class="disc-code-wrap">
+            <span class="disc-code-label">كود الخصم</span>
+            <div class="disc-code-row">
+              <span class="disc-code" id="code-calo">R10AGD</span>
+              <button class="disc-copy-btn" onclick="copyDiscCode('code-calo', this)">
+                <i class="fas fa-copy"></i> نسخ
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SOCIALS -->
+<div class="soc-strip">
+  <h3>تواصلي معي</h3>
+  <p>عندك سؤال؟ واتساب أسرع طريقة</p>
+  <div class="soc-btns">
+    <a href="https://wa.me/966502212387" target="_blank" class="soc-btn" style="color:#4ade80;border-color:rgba(74,222,128,.2)"><i class="fab fa-whatsapp" style="color:#25d366"></i> واتساب</a>
+    <a href="https://www.tiktok.com/@vllogsraye" target="_blank" class="soc-btn"><i class="fab fa-tiktok"></i> TikTok</a>
+    <a href="https://www.instagram.com/vllogsraye" target="_blank" class="soc-btn"><i class="fab fa-instagram" style="color:#e1306c"></i> Instagram</a>
+    <a href="https://snapchat.com/add/vllogsraye" target="_blank" class="soc-btn"><i class="fab fa-snapchat" style="color:#fffc00"></i> Snapchat</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-in">
+    <div class="footer-top">
+      <div class="f-brand">
+        <div class="logo">vllogsraye</div>
+        <p>جدولك الرياضي جاهز. تدخلين وتعرفين وش تسوين.</p>
+        <div class="f-soc">
+          <a href="https://wa.me/966502212387" target="_blank" class="fs" style="color:#4ade80;border-color:rgba(74,222,128,.2)"><i class="fab fa-whatsapp"></i></a>
+          <a href="https://www.tiktok.com/@vllogsraye" target="_blank" class="fs"><i class="fab fa-tiktok"></i></a>
+          <a href="https://www.instagram.com/vllogsraye" target="_blank" class="fs"><i class="fab fa-instagram"></i></a>
+
+        </div>
+      </div>
+      <div class="f-col">
+        <h4>الموقع</h4>
+        <ul>
+          <li><a href="#packages">الباقات والأسعار</a></li>
+          <li><a href="#what">وش في الجدول</a></li>
+          <li><a href="#discounts">أكواد الخصم</a></li>
+          <li><a href="#blog">البلوقز</a></li>
+          <li><a href="#tiktok">تيك توك</a></li>
+        </ul>
+      </div>
+      <div class="f-col">
+        <h4>تواصلي</h4>
+        <ul>
+          <li><a href="https://wa.me/966502212387" target="_blank">واتساب</a></li>
+          <li><a href="https://www.tiktok.com/@vllogsraye" target="_blank">تيك توك</a></li>
+          <li><a href="https://www.instagram.com/vllogsraye" target="_blank">انستقرام</a></li>
+          <li><a href="#" onclick="showAdmin()">لوحة الإدارة</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bot">
+      <span>© 2025 vllogsraye.com — جميع الحقوق محفوظة</span>
+      <span>دفع آمن: mada · VISA · Apple Pay · مويسر</span>
+    </div>
+  </div>
+</footer>
+
+</div><!-- /main -->
+
+<!-- WHATSAPP FLOAT -->
+<div class="wa-float">
+  <div class="wa-tooltip">تواصلي معي مباشرة</div>
+  <a href="https://wa.me/966502212387?text=مرحبا vllogsraye 👋" target="_blank">
+    <button class="wa-float-btn"><i class="fab fa-whatsapp"></i></button>
+  </a>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div class="overlay" id="payOvl">
+  <div class="modal">
+    <button class="mx" onclick="closePay()"><i class="fas fa-times"></i></button>
+    <h3 id="payTitle">شراء الباقة</h3>
+    <p class="msub" id="paySub">ادفعي بأمان</p>
+    <div class="modal-pkg-preview" id="pkgPreview">
+      <div><div class="pn" id="pkgName">—</div><div class="pc" id="pkgDesc">—</div></div>
+      <div class="pp" id="pkgPriceShow">—</div>
+    </div>
+    <div class="pay-methods">
+      <button class="pm-tab on" onclick="selTab(this)"><i class="fas fa-credit-card"></i>بطاقة</button>
+      <button class="pm-tab" onclick="selTab(this)"><i class="fas fa-wallet"></i>مدى</button>
+      <button class="pm-tab" onclick="selTab(this)"><i class="fab fa-apple"></i>Apple Pay</button>
+    </div>
+    <div id="moyasarMount"></div>
+    <div class="pay-secure"><i class="fas fa-lock"></i>دفع آمن عبر مويسر</div>
+  </div>
+</div>
+
+<!-- FLOATING ORDERS BUTTON -->
+<button class="orders-fab" onclick="openOrdersModal()">
+  <div class="fab-dot"></div>
+  📦 طلباتي
+</button>
+
+<!-- ORDERS / LOGIN MODAL -->
+<div class="overlay" id="ordersOvl">
+  <div class="modal" style="max-width:420px">
+    <button class="mx" onclick="closeOrdersModal()"><i class="fas fa-times"></i></button>
+    <div id="ordersBody"></div>
+  </div>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="overlay" id="successOvl">
+  <div class="modal" style="max-width:460px">
+    <div id="successBody"></div>
+  </div>
+</div>
+
+<!-- BLOG MODAL -->
+<div class="overlay blog-ovl" id="blogOvl">
+  <div class="modal" style="max-width:650px">
+    <button class="mx" onclick="closeBlog()"><i class="fas fa-times"></i></button>
+    <div id="blogMBody"></div>
+  </div>
+</div>
+
+<!-- ADMIN LOGIN -->
+<div id="alog">
+  <div class="alog-card">
+    <h2>لوحة <span>الإدارة</span></h2>
+    <p class="alog-sub">أدخلي كلمة المرور</p>
+    <div class="aerr" id="aerr">كلمة المرور غير صحيحة</div>
+    <div class="fg"><label>كلمة المرور</label><input type="password" id="apw" placeholder="••••••••" onkeypress="if(event.key==='Enter')doLogin()"></div>
+    <button class="btn-gold" style="width:100%;justify-content:center" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i> دخول</button>
+    <br><br>
+    <a href="#" onclick="showMain()" style="font-size:.79rem;color:var(--gold)">← رجوع</a>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="adm-root">
+  <div class="adm-wrap">
+    <div class="adm-top">
+      <h1>إدارة <span>vllogsraye</span></h1>
+      <button class="btn-ghost" onclick="showMain()"><i class="fas fa-arrow-right"></i> الموقع</button>
+    </div>
+    <div class="atabs">
+      <button class="atab on" onclick="aTab(this,'ac-blog')">📝 البلوقز</button>
+      <button class="atab" onclick="aTab(this,'ac-sched')">🏋️ الجدول</button>
+      <button class="atab" onclick="aTab(this,'ac-set')">⚙️ الإعدادات</button>
+    </div>
+    <!-- BLOG -->
+    <div class="ac show" id="ac-blog">
+      <div class="aform">
+        <h3 id="bft">➕ مقالة جديدة</h3>
+        <input type="hidden" id="bid">
+        <div class="fg"><label>العنوان</label><input id="bttl" placeholder="عنوان المقالة"></div>
+        <div class="fg2">
+          <div class="fg"><label>الفئة</label><input id="bcat" placeholder="تغذية / تمارين"></div>
+          <div class="fg"><label>الإيموجي</label><input id="bemj" placeholder="🍎"></div>
+        </div>
+        <div class="fg"><label>ملخص</label><input id="bexc" placeholder="جملة ملخص قصيرة"></div>
+        <div class="fg"><label>المحتوى (استخدمي ### للعناوين)</label><textarea id="bbdy" style="min-height:150px"></textarea></div>
+        <div class="arow">
+          <button class="btn-gold" onclick="saveBlog()"><i class="fas fa-save"></i> نشر</button>
+          <button class="btn-ghost" id="bcnl" style="display:none" onclick="resetBF()">إلغاء</button>
+        </div>
+      </div>
+      <div class="alist" id="aBL"></div>
+    </div>
+    <!-- SCHEDULE -->
+    <div class="ac" id="ac-sched">
+      <div class="aform">
+        <h3>🏋️ تعديل أيام الجدول</h3>
+        <p style="font-size:.8rem;color:var(--g2);margin-bottom:16px">صيغة التمارين: اسم التمرين | سيتات × رابات (كل سطر = تمرين)</p>
+        <div id="dayForms"></div>
+        <button class="btn-gold" onclick="saveDays()"><i class="fas fa-save"></i> حفظ الجدول</button>
+      </div>
+    </div>
+    <!-- SETTINGS -->
+    <div class="ac" id="ac-set">
+      <div class="aform">
+        <h3>⚙️ الإعدادات</h3>
+        <div class="fg"><label>مفتاح Moyasar (Publishable Key)</label><input id="smoy" placeholder="pk_live_xxxxxxxxxx"></div>
+        <div class="fg"><label>سعر باقة PDF (ريال)</label><input type="number" id="sp1" placeholder="50"></div>
+        <div class="fg"><label>سعر باقة المتابعة (ريال)</label><input type="number" id="sp2" placeholder="299"></div>
+        <div class="fg"><label>رقم الواتساب</label><input id="swa" placeholder="966502212387"></div>
+        <div class="fg"><label>كلمة مرور الإدارة الجديدة</label><input id="spw2" type="password" placeholder="اتركي فارغة إذا لا تريدين التغيير"></div>
+        <button class="btn-gold" onclick="saveSett()"><i class="fas fa-save"></i> حفظ</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="tmsg"></span></div>
+
+<script src="https://cdn.moyasar.com/mpf/1.14.0/moyasar.js"></script>
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const KEY='vl_v3';
+let S=JSON.parse(localStorage.getItem(KEY)||'null')||{
+  posts:[
+    {id:1,ttl:'كيف تبدأين من الصفر؟',exc:'ما تحتاجين تكوني محترفة. تحتاجين تبدأين بس.',bdy:'أصعب خطوة هي الأولى — وبعدها كل شيء يصير أسهل.\n\n### حددي وش تبين\nخسارة وزن؟ بناء عضلات؟ تحسين صحتك؟ حددي هدف واحد بس وركّزي عليه.\n\n### ابدأي بـ 3 أيام\nما لازم كل يوم من البداية. 3 أيام أسبوعياً كافية وتقدرين تزيدين لاحقاً.\n\n### الأكل أهم من التمرين\n٧٠٪ من النتيجة من المطبخ. بروتين + خضار + ماء كافي — وخلاص.\n\n### ما تقارنين نفسك\nرحلتك مختلفة عن غيرك. كل أسبوع تحسّنت فيه هو انجاز.',cat:'مبتدئات',emj:'🌟',date:'15 يناير 2026'},
+    {id:2,ttl:'٥ تمارين بطن تقدرين تسوينها الحين',exc:'بدون معدات وبدون جيم — شغّاله فعلاً.',bdy:'ما تحتاجين تروحين النادي عشان تشتغلون على البطن.\n\n### ١. البلانك\n٣٠ – ٦٠ ثانية × ٣ — أقوى تمرين للعضلة الأساسية\n\n### ٢. Bicycle Crunch\n٢٠ تكرار × ٣ — يشتغل على كل البطن\n\n### ٣. رفع الأرجل\n١٥ × ٣ — للجزء السفلي\n\n### ٤. الكرنش العكسي\n١٥ × ٣ — للعضلات الجانبية\n\n### ٥. Mountain Climbers\n٣٠ ثانية × ٣ — كارديو وبطن بنفس الوقت\n\n### لكن تذكّري\nالبطن يُصنع في المطبخ أكثر من الجيم.',cat:'تمارين',emj:'💪',date:'10 فبراير 2026'},
+    {id:3,ttl:'وش آكل يومياً؟',exc:'روتيني الغذائي كامل — بدون حسابات معقدة.',bdy:'أكثر سؤال يوصلني: وش تاكلين؟ — هذا روتيني الحالي.\n\n### الإفطار\nشوفان + حليب لوز + فواكه، بيضتين، قهوة سوداء\n\n### وجبة منتصف الضحى\nتفاحة + ملعقتين زبدة لوز\n\n### الغداء\nصدر دجاج مشوي + أرز بني + خضار + سلطة\n\n### وجبة خفيفة\nيوغرت يوناني + مكسرات\n\n### العشاء\nسمك أو تونة + خضار + خبز أسمر\n\n### الشيء الوحيد اللي ما تتنازلين عنه\n٢.٥ لتر ماء كل يوم — ما فيه بديل.',cat:'تغذية',emj:'🥗',date:'5 مارس 2026'}
+  ],
+  days:[
+    {name:'اليوم الأول',goal:'الصدر والترايسبس',muscles:'صدر | ذراع خلفي',exs:[{n:'بنش برس بالبار',s:'4×10'},{n:'بنش مائل بالدمبل',s:'3×12'},{n:'كروس أوفر كابل',s:'3×15'},{n:'ضغط دمبل على البنشة',s:'3×12'},{n:'تمديد ترايسبس كابل',s:'4×12'},{n:'Tricep Dips',s:'3×فشل'}]},
+    {name:'اليوم الثاني',goal:'الظهر والبايسبس',muscles:'ظهر | ذراع أمامي',exs:[{n:'ديدليفت',s:'4×8'},{n:'سحب بار عريض',s:'4×10'},{n:'صف دمبل أحادي',s:'3×12'},{n:'سحب كابل للبطن',s:'3×15'},{n:'كيرل بار',s:'4×12'},{n:'مطرقة دمبل',s:'3×12'}]},
+    {name:'اليوم الثالث',goal:'كارديو وراحة نشطة',muscles:'كارديو كامل',exs:[{n:'دراجة ثابتة',s:'10 دقائق'},{n:'تريدميل متقطع HIIT',s:'20 دقيقة'},{n:'روينج ماشين',s:'10 دقائق'},{n:'إطالة كاملة',s:'10 دقائق'}]},
+    {name:'اليوم الرابع',goal:'الكتفين',muscles:'كتف أمامي | جانبي | خلفي',exs:[{n:'كتف أمامي بالبار',s:'4×10'},{n:'رفع جانبي دمبل',s:'4×15'},{n:'رفع أمامي دمبل',s:'3×12'},{n:'كتف خلفي بيس ديك',s:'3×15'},{n:'شراجيم بار',s:'4×12'}]},
+    {name:'اليوم الخامس',goal:'الأرجل الكاملة',muscles:'فخذ | مؤخرة | ساق',exs:[{n:'سكوات بالبار',s:'4×10'},{n:'ليج برس',s:'4×12'},{n:'لنجز بالدمبل',s:'3×12 لكل رجل'},{n:'كيرل أرجل',s:'4×15'},{n:'رومانية Deadlift',s:'4×12'},{n:'رفع كعب واقف',s:'5×20'}]}
+  ],
+  settings:{moyasar:'',p1:50,p2:299,p3:20,wa:'966502212387',pw:'vllogs2025'}
+};
+function save(){localStorage.setItem(KEY,JSON.stringify(S))}
+
+// ============================================================
+// NAV / ROUTING
+// ============================================================
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('solid',scrollY>40));
+function toggleNav(){document.getElementById('mobMenu').classList.toggle('open')}
+function showMain(){
+  document.getElementById('main').style.display='block';
+  document.getElementById('alog').classList.remove('show');
+  document.getElementById('adm-root').classList.remove('show');
+  window.scrollTo(0,0);
+}
+function showAdmin(){
+  document.getElementById('main').style.display='none';
+  document.getElementById('alog').classList.add('show');
+}
+function doLogin(){
+  const v=document.getElementById('apw').value,e=document.getElementById('aerr');
+  if(v===S.settings.pw){
+    document.getElementById('alog').classList.remove('show');
+    document.getElementById('adm-root').classList.add('show');
+    loadAdmin();e.style.display='none';
+    document.getElementById('apw').value='';
+  }else e.style.display='block';
+}
+
+// ============================================================
+// TICKER
+// ============================================================
+function buildTicker(){
+  const items=['💪 جدول موحد Body Recomposition — 50 ريال','🥗 اعرف وش تاكل — 20 ريال','👑 متابعة أسبوعية — 299 ريال','💳 مدى | فيزا | آبل باي','📥 تحمّل فور الدفع','🏋️ من أول النادي لآخره','🎬 @vllogsraye تيك توك'];
+  const t=document.getElementById('tktrack');
+  t.innerHTML=[...items,...items].map(i=>`<span>${i}</span>`).join('');
+}
+
+// ============================================================
+// WHAT GRID
+// ============================================================
+function buildWhat(){
+  const c=[
+    {i:'📅',t:'5 أيام واضحة',p:'كل يوم بعضلاته وهدفه — ما في تكرار ولا تداخل.'},
+    {i:'🏋️',t:'كل تمرين بالتفصيل',p:'الاسم، السيتات، الرابات — ما تحتاجين تسأل.'},
+    {i:'⏱️',t:'أوقات الراحة',p:'كم ثانية ترتاحين بين كل سيت — مكتوب.'},
+    {i:'🔥',t:'إحماء وإطالة',p:'قبل وبعد — عشان جسمك ما يتعب زيادة.'},
+    {i:'📍',t:'الترتيب صح',p:'من أول ما تدخلين النادي لحد ما تطلعين.'},
+    {i:'📊',t:'كيف تتقدمين',p:'نظام زيادة الأوزان عشان ما يتوقف تطورك.'}
+  ];
+  document.getElementById('whatGrid').innerHTML=c.map(x=>`
+    <div class="wc fi">
+      <div class="wc-icon">${x.i}</div>
+      <h3>${x.t}</h3><p>${x.p}</p>
+    </div>`).join('');
+}
+
+// ============================================================
+// SCHEDULE
+// ============================================================
+function renderDays(){
+  const ar=['١','٢','٣','٤','٥'];
+  document.getElementById('daysList').innerHTML=S.days.map((d,i)=>`
+    <div class="day-row">
+      <div class="day-num">${ar[i]||i+1}</div>
+      <div class="day-info"><h4>${d.name}</h4><p>${d.goal}</p></div>
+      <span class="day-muscles">${d.muscles}</span>
+    </div>`).join('');
+  const d=S.days[0];
+  document.getElementById('schedCard').innerHTML=`
+    <div class="sc-top"><span class="st">${d.name} — ${d.goal}</span><span class="stag">مثال</span></div>
+    <div class="ex-list">${d.exs.map((e,i)=>`
+      <div class="ex-item">
+        <div class="ex-nb">${i+1}</div>
+        <div class="ex-nm">${e.n}</div>
+        <div class="ex-st">${e.s}</div>
+      </div>`).join('')}</div>`;
+}
+
+// ============================================================
+// BLOG
+// ============================================================
+function renderBlog(){
+  document.getElementById('blogGrid').innerHTML=S.posts.map(p=>`
+    <div class="blog-card fi" onclick="openBlog(${p.id})">
+      <div class="blog-thumb">${p.emj}<span class="blog-cat-b">${p.cat}</span></div>
+      <div class="blog-body">
+        <div class="blog-meta"><span><i class="fas fa-calendar"></i>${p.date}</span><span><i class="fas fa-tag"></i>${p.cat}</span></div>
+        <div class="blog-ttl">${p.ttl}</div>
+        <div class="blog-exc">${p.exc}</div>
+        <div class="blog-more">اقرأي المقالة <i class="fas fa-arrow-left"></i></div>
+      </div>
+    </div>`).join('');
+  observe();
+}
+function openBlog(id){
+  const p=S.posts.find(x=>x.id===id);if(!p)return;
+  const html=p.bdy.split('\n').map(l=>l.startsWith('###')?`<h3>${l.replace('### ','')}</h3>`:l.trim()?`<p>${l}</p>`:'').join('');
+  document.getElementById('blogMBody').innerHTML=`<div class="bm-ttl">${p.ttl}</div><div class="bm-meta"><span><i class="fas fa-calendar"></i>${p.date}</span><span><i class="fas fa-tag"></i>${p.cat}</span></div><div class="bm-body">${html}</div>`;
+  document.getElementById('blogOvl').classList.add('open');
+}
+function closeBlog(){document.getElementById('blogOvl').classList.remove('open')}
+document.getElementById('blogOvl').addEventListener('click',function(e){if(e.target===this)closeBlog()});
+
+// ============================================================
+// PAYMENT
+// ============================================================
+let curPkg=null;
+const pkgs={
+  1:{name:'جدول موحد — Body Recomposition',desc:'خسارة دهون + بناء عضلات بنفس الوقت',icon:'💪',action:'pdf',file:'/workout-guide.pdf'},
+  2:{name:'متابعة شخصية أسبوعية',desc:'جدول مخصص + واتساب',icon:'👑',action:'wa'},
+  3:{name:'اعرف وش تاكل',desc:'دليل غذائي — سعرات + مؤشر غلايسيمي',icon:'🥗',action:'nutr',file:'/nutrition.html'}
+};
+function openPay(id){
+  curPkg=id;
+  const pkg=pkgs[id];
+  const price=id===1?S.settings.p1:id===2?S.settings.p2:S.settings.p3;
+  document.getElementById('payTitle').textContent=`شراء: ${pkg.name}`;
+  document.getElementById('paySub').textContent='أكملي الدفع بأمان عبر مويسر';
+  document.getElementById('pkgName').textContent=`${pkg.icon} ${pkg.name}`;
+  document.getElementById('pkgDesc').textContent=pkg.desc;
+  document.getElementById('pkgPriceShow').textContent=`${price} ريال`;
+  document.getElementById('payOvl').classList.add('open');
+  mountMoyasar(id,price,pkg.name);
+}
+function closePay(){
+  document.getElementById('payOvl').classList.remove('open');
+  document.getElementById('moyasarMount').innerHTML='';
+}
+function selTab(btn){document.querySelectorAll('.pm-tab').forEach(b=>b.classList.remove('on'));btn.classList.add('on')}
+function mountMoyasar(pkgId,price,name){
+  const key=S.settings.moyasar;
+  const el=document.getElementById('moyasarMount');
+  if(!key){
+    el.innerHTML=`<div class="pay-notice">
+      <i class="fas fa-info-circle"></i>
+      <p>لتفعيل الدفع الحقيقي (مدى / فيزا / آبل باي)،<br>أضيفي مفتاح Moyasar من لوحة الإدارة ← الإعدادات.</p>
+      <p style="margin-top:8px;color:var(--gold);font-size:.88rem;font-weight:700">${price} ريال سعودي</p>
+      <br>
+      <a href="https://dashboard.moyasar.com" target="_blank">إنشاء حساب Moyasar مجاناً ←</a>
+    </div>`;
+    return;
+  }
+  if(typeof Moyasar==='undefined'){el.innerHTML='<p style="color:var(--g2);text-align:center;font-size:.85rem;padding:20px">جاري التحميل...</p>';return;}
+  el.innerHTML='<div class="mysr-form"></div>';
+  try{
+    const cbUrl=pkgId===2
+      ? `https://wa.me/${S.settings.wa}?text=مرحبا، دفعت للباقة الشخصية`
+      : window.location.href+'?paid='+pkgId;
+    Moyasar.init({
+      element:'.mysr-form',amount:price*100,currency:'SAR',
+      description:`شراء ${name} - vllogsraye`,
+      publishable_api_key:key,
+      callback_url:window.location.href+'?paid='+pkgId,
+      methods:['creditcard','applepay'],
+      on_completed:()=>{ closePay(); showSuccess(pkgId); }
+    });
+  }catch(e){el.innerHTML='<p style="color:var(--g2);text-align:center;padding:16px">حدث خطأ في بوابة الدفع</p>';}
+}
+// ============================================================
+// OTP / ORDERS SYSTEM
+// ============================================================
+
+// حالة OTP الحالية
+let otpState = { phone:'', token:'', ts:'', resendTimer:null };
+
+// ---- فتح/إغلاق مودال الطلبات ----
+function closeOrdersModal(){
+  document.getElementById('ordersOvl').classList.remove('open');
+  clearInterval(otpState.resendTimer);
+}
+
+// ---- رندر خطوة إدخال الجوال ----
+function renderPhoneStep(container, forPkg, afterVerifyCb){
+  container.innerHTML = `
+    <div class="step-dots"><div class="step-dot on"></div><div class="step-dot"></div></div>
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:2.5rem;margin-bottom:10px">📱</div>
+      <h3 style="font-size:1.15rem;font-weight:700;margin-bottom:4px">${forPkg ? 'سجّل رقمك لحفظ طلبك' : 'سجّل الدخول'}</h3>
+      <p style="font-size:.82rem;color:var(--g2)">يصل كود التحقق على واتساب — مدى الحياة</p>
+    </div>
+    <div class="ph-row">
+      <span class="ph-prefix">🇸🇦 +966</span>
+      <input type="tel" id="phoneInp" placeholder="5XXXXXXXX" maxlength="9" inputmode="numeric"
+        onkeypress="if(event.key==='Enter')doSendOTP('${forPkg||''}',${afterVerifyCb?'afterVerifyCb':null})">
+    </div>
+    <div id="otpErr" style="color:var(--red);font-size:.8rem;min-height:18px;margin-bottom:8px;text-align:center"></div>
+    <button class="btn-gold" style="width:100%;justify-content:center" onclick="doSendOTP('${forPkg||''}')">
+      <i class="fab fa-whatsapp"></i> أرسل كود التحقق
+    </button>
+    ${forPkg?`<button onclick="skipRegister(${forPkg})" style="width:100%;margin-top:10px;background:none;border:none;color:var(--g2);font-family:var(--font);font-size:.8rem;cursor:pointer;padding:8px">تخطَّ — تحميل مباشر بدون حفظ</button>`:''}
+  `;
+  setTimeout(()=>document.getElementById('phoneInp')?.focus(),100);
+}
+
+// ---- رندر خطوة OTP ----
+function renderOTPStep(container, phone, forPkg){
+  container.innerHTML = `
+    <div class="step-dots"><div class="step-dot"></div><div class="step-dot on"></div></div>
+    <button onclick="renderPhoneStep(document.getElementById('${forPkg?'successBody':'ordersBody'}'),${forPkg?`'${forPkg}'`:'false'},null)"
+      style="background:none;border:none;color:var(--g2);cursor:pointer;font-family:var(--font);font-size:.8rem;display:flex;align-items:center;gap:4px;margin-bottom:16px">
+      <i class="fas fa-arrow-right"></i> تغيير الرقم
+    </button>
+    <div style="text-align:center;margin-bottom:4px">
+      <div style="font-size:2.5rem;margin-bottom:10px">🔑</div>
+      <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:4px">أدخل كود التحقق</h3>
+      <p style="font-size:.82rem;color:var(--g2)">راح يوصلك على واتساب +966${phone}</p>
+    </div>
+    <div class="otp-boxes" id="otpBoxes">
+      <input class="otp-box" maxlength="1" inputmode="numeric" type="tel">
+      <input class="otp-box" maxlength="1" inputmode="numeric" type="tel">
+      <input class="otp-box" maxlength="1" inputmode="numeric" type="tel">
+      <input class="otp-box" maxlength="1" inputmode="numeric" type="tel">
+      <input class="otp-box" maxlength="1" inputmode="numeric" type="tel">
+      <input class="otp-box" maxlength="1" inputmode="numeric" type="tel">
+    </div>
+    <div id="otpErr2" style="color:var(--red);font-size:.8rem;min-height:18px;margin-bottom:8px;text-align:center"></div>
+    <button class="btn-gold" id="verifyBtn" style="width:100%;justify-content:center" onclick="doVerifyOTP('${forPkg||''}')">
+      <i class="fas fa-check"></i> تحقق
+    </button>
+    <div class="resend-row">
+      <button class="resend-btn" id="resendBtn" disabled onclick="doResendOTP('${forPkg||''}')">
+        إعادة الإرسال (<span id="resendCount">60</span>)
+      </button>
+    </div>
+  `;
+  initOTPBoxes();
+  startResendTimer();
+  setTimeout(()=>document.querySelector('.otp-box')?.focus(),100);
+}
+
+// ---- خطوة تحميل الملف بعد التحقق ----
+function renderSuccessStep(container, pkgId){
+  const pkg = pkgs[pkgId];
+  container.innerHTML = `
+    <div class="success-modal">
+      <div class="s-icon">${pkg.icon}</div>
+      <h3 style="color:var(--green)">✅ تم التحقق — طلبك محفوظ!</h3>
+      <p style="font-size:.85rem;color:var(--g1);line-height:1.7;margin-bottom:20px">
+        ملفك متوفر مدى الحياة في قسم <strong>طلباتي</strong> — تقدر ترجع له من أي جهاز بنفس رقم جوالك.
+      </p>
+      ${pkgId===2 ? `
+        <a href="https://wa.me/${S.settings.wa}?text=مرحبا vllogsraye، دفعت لباقة المتابعة الشخصية 👑" target="_blank" class="btn-wa" style="display:inline-flex;justify-content:center">
+          <i class="fab fa-whatsapp"></i> راسليني الآن
+        </a>` : `
+        <a href="${pkg.file}" target="_blank" class="btn-gold" style="display:inline-flex;justify-content:center">
+          <i class="fas fa-download"></i> افتح ${pkg.name}
+        </a>`}
+    </div>
+  `;
+}
+
+// ---- تحميل مباشر بدون تسجيل ----
+function skipRegister(pkgId){
+  const pkg = pkgs[pkgId];
+  document.getElementById('successBody').innerHTML = `
+    <div class="success-modal">
+      <div class="s-icon">${pkg.icon}</div>
+      <h3 style="color:var(--green)">✅ تم الدفع — ${pkg.name} جاهز!</h3>
+      <p style="font-size:.82rem;color:var(--g2);margin-bottom:20px">سجّل رقمك لاحقاً من زر "طلباتي" لحفظ ملفك مدى الحياة.</p>
+      ${pkgId===2 ? `
+        <a href="https://wa.me/${S.settings.wa}?text=مرحبا، دفعت للمتابعة الشخصية 👑" target="_blank" class="btn-wa" style="display:inline-flex;justify-content:center">
+          <i class="fab fa-whatsapp"></i> راسليني الآن
+        </a>` : `
+        <a href="${pkg.file}" target="_blank" class="btn-gold" style="display:inline-flex;justify-content:center">
+          <i class="fas fa-download"></i> افتح الملف
+        </a>`}
+    </div>
+  `;
+}
+
+// ---- إرسال OTP ----
+// كشف وضع التطوير (فتح الملف مباشرة بدون سيرفر)
+const IS_LOCAL = location.protocol === 'file:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+let devOTP = '';
+
+async function doSendOTP(forPkg){
+  const inp = document.getElementById('phoneInp');
+  const errEl = document.getElementById('otpErr');
+  const phone = (inp?.value||'').replace(/\D/g,'');
+  if(phone.length!==9){errEl.textContent='أدخل رقم صحيح (9 أرقام بدون الصفر)';return;}
+  const fullPhone = '966'+phone;
+  const btn = document.querySelector('#' + (forPkg ? 'successBody' : 'ordersBody') + ' .btn-gold');
+  if(btn){btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';btn.disabled=true;}
+
+  // وضع تجريبي محلي — بدون سيرفر
+  if(IS_LOCAL){
+    devOTP = String(Math.floor(100000 + Math.random()*900000));
+    otpState = {...otpState, phone:fullPhone, token:'dev', ts:Date.now().toString()};
+    const container = document.getElementById(forPkg ? 'successBody' : 'ordersBody');
+    renderOTPStep(container, phone, forPkg);
+    // اعرض الكود مباشرة للتجربة
+    setTimeout(()=>{
+      const hint = document.createElement('div');
+      hint.style.cssText='background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);border-radius:10px;padding:10px 14px;text-align:center;margin:10px 0;font-size:.82rem;color:var(--yellow)';
+      hint.innerHTML=`🧪 وضع تجريبي — كودك: <strong style="font-size:1.1rem;letter-spacing:3px">${devOTP}</strong>`;
+      document.getElementById('otpBoxes')?.before(hint);
+    },100);
+    return;
+  }
+
+  try{
+    const res = await fetch('/api/send-otp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone:fullPhone})});
+    const data = await res.json();
+    if(!data.success) throw new Error(data.error||'خطأ');
+    otpState = {...otpState, phone:fullPhone, token:data.token, ts:data.ts};
+    const container = document.getElementById(forPkg ? 'successBody' : 'ordersBody');
+    renderOTPStep(container, phone, forPkg);
+  }catch(e){
+    if(errEl)errEl.textContent = e.message||'تعذّر الإرسال، حاول مرة ثانية';
+    if(btn){btn.innerHTML='<i class="fab fa-whatsapp"></i> أرسل كود التحقق';btn.disabled=false;}
+  }
+}
+
+// ---- التحقق من OTP ----
+async function doVerifyOTP(forPkg){
+  const boxes = document.querySelectorAll('.otp-box');
+  const otp = Array.from(boxes).map(b=>b.value).join('');
+  const errEl = document.getElementById('otpErr2');
+  if(otp.length!==6){errEl.textContent='أدخل الكود كاملاً (6 أرقام)';return;}
+  const btn = document.getElementById('verifyBtn');
+  btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> جاري التحقق...';btn.disabled=true;
+
+  // وضع تجريبي
+  if(IS_LOCAL){
+    if(otp !== devOTP){
+      errEl.textContent='الكود غلط، حاول مرة ثانية';
+      btn.innerHTML='<i class="fas fa-check"></i> تحقق';btn.disabled=false;
+      return;
+    }
+    const fakeSession = btoa(otpState.phone+':dev:'+Date.now());
+    saveSession(otpState.phone, fakeSession);
+    clearInterval(otpState.resendTimer);
+    if(forPkg){
+      // حفظ الطلب محلياً في localStorage
+      const key='vl_orders';
+      const orders=JSON.parse(localStorage.getItem(key)||'[]');
+      if(!orders.find(o=>o.pkg===parseInt(forPkg))){
+        const p=pkgs[parseInt(forPkg)];
+        orders.push({pkg:parseInt(forPkg),name:p.name,icon:p.icon,url:p.file,date:new Date().toISOString(),dateFormatted:new Date().toLocaleDateString('ar-SA',{year:'numeric',month:'long',day:'numeric'})});
+        localStorage.setItem(key,JSON.stringify(orders));
+      }
+      renderSuccessStep(document.getElementById('successBody'), parseInt(forPkg));
+    } else {
+      renderOrdersLocal(document.getElementById('ordersBody'));
+    }
+    return;
+  }
+
+  try{
+    const res = await fetch('/api/verify-otp',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({phone:otpState.phone, otp, token:otpState.token, ts:otpState.ts})});
+    const data = await res.json();
+    if(!data.success) throw new Error(data.error||'خطأ');
+    saveSession(otpState.phone, data.session);
+    clearInterval(otpState.resendTimer);
+    if(forPkg){
+      await fetch('/api/save-purchase',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({phone:otpState.phone, pkg:parseInt(forPkg), session:data.session})});
+      renderSuccessStep(document.getElementById('successBody'), parseInt(forPkg));
+    } else {
+      renderOrders(document.getElementById('ordersBody'), {phone:otpState.phone, session:data.session});
+    }
+  }catch(e){
+    errEl.textContent = e.message||'خطأ في التحقق';
+    btn.innerHTML='<i class="fas fa-check"></i> تحقق';btn.disabled=false;
+  }
+}
+
+// ---- إعادة إرسال ----
+async function doResendOTP(forPkg){
+  clearInterval(otpState.resendTimer);
+  const container = document.getElementById(forPkg ? 'successBody' : 'ordersBody');
+  // ارجع لخطوة الجوال مع نفس الرقم
+  renderPhoneStep(container, forPkg, null);
+  const inp = document.getElementById('phoneInp');
+  if(inp) inp.value = otpState.phone.replace(/^966/,'');
+  await doSendOTP(forPkg);
+}
+
+// ---- تهيئة خانات OTP ----
+function initOTPBoxes(){
+  const boxes = document.querySelectorAll('.otp-box');
+  boxes.forEach((box,i)=>{
+    box.addEventListener('input',()=>{
+      box.value = box.value.replace(/\D/g,'');
+      if(box.value && i<5) boxes[i+1].focus();
+      box.classList.toggle('filled', !!box.value);
+      if(Array.from(boxes).every(b=>b.value)) document.getElementById('verifyBtn')?.click();
+    });
+    box.addEventListener('keydown',e=>{
+      if(e.key==='Backspace'&&!box.value&&i>0){boxes[i-1].focus();boxes[i-1].value='';}
+    });
+    box.addEventListener('paste',e=>{
+      const txt=(e.clipboardData||window.clipboardData).getData('text').replace(/\D/g,'').slice(0,6);
+      if(txt.length===6){boxes.forEach((b,j)=>{b.value=txt[j]||'';b.classList.toggle('filled',!!b.value);});boxes[5].focus();e.preventDefault();}
+    });
+  });
+}
+
+// ---- تايمر إعادة الإرسال ----
+function startResendTimer(){
+  let sec = 60;
+  const countEl = document.getElementById('resendCount');
+  const btn = document.getElementById('resendBtn');
+  otpState.resendTimer = setInterval(()=>{
+    sec--;
+    if(countEl) countEl.textContent = sec;
+    if(sec<=0){
+      clearInterval(otpState.resendTimer);
+      if(btn){btn.disabled=false;btn.textContent='إعادة الإرسال';}
+    }
+  },1000);
+}
+
+// ---- عرض الطلبات ----
+// عرض الطلبات في الوضع المحلي (localStorage)
+function renderOrdersLocal(container){
+  const sess = getSession();
+  const phone = sess?.phone || '---';
+  const orders = JSON.parse(localStorage.getItem('vl_orders')||'[]');
+  container.innerHTML = `
+    <div style="text-align:center;padding:20px 0">
+      <div style="font-size:2rem;margin-bottom:8px">📦</div>
+      <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:4px">طلباتي</h3>
+      <p style="font-size:.78rem;color:var(--g2);margin-bottom:20px">+${phone}</p>
+      <div>
+        ${orders.length ? orders.map(o=>`
+          <div class="order-card">
+            <div class="order-icon">${o.icon||'📄'}</div>
+            <div class="order-info">
+              <div class="order-name">${o.name}</div>
+              <div class="order-date">${o.dateFormatted}</div>
+            </div>
+            <a href="${o.url}" target="_blank" class="order-dl"><i class="fas fa-download"></i> فتح</a>
+          </div>`).join('') : '<p style="color:var(--g2);font-size:.85rem">لا توجد مشتريات بعد</p>'}
+      </div>
+      <button onclick="clearSession();localStorage.removeItem(\'vl_orders\');openOrdersModal()" style="margin-top:16px;background:none;border:none;color:var(--g3);font-family:var(--font);font-size:.78rem;cursor:pointer">تسجيل خروج</button>
+    </div>
+  `;
+}
+
+// فحص الجلسة عند فتح مودال الطلبات في الوضع المحلي
+function openOrdersModal(){
+  const body = document.getElementById('ordersBody');
+  const sess = getSession();
+  if(sess && IS_LOCAL){
+    renderOrdersLocal(body);
+  } else if(sess && !IS_LOCAL){
+    renderOrders(body, sess);
+  } else {
+    renderPhoneStep(body, false, null);
+  }
+  document.getElementById('ordersOvl').classList.add('open');
+}
+
+async function renderOrders(container, sess){
+  container.innerHTML = `
+    <div style="text-align:center;padding:20px 0">
+      <div style="font-size:2rem;margin-bottom:8px">📦</div>
+      <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:4px">طلباتي</h3>
+      <p style="font-size:.78rem;color:var(--g2);margin-bottom:20px">+${sess.phone}</p>
+      <div id="ordersList"><i class="fas fa-spinner fa-spin" style="color:var(--gold)"></i></div>
+      <button onclick="clearSession();openOrdersModal()" style="margin-top:16px;background:none;border:none;color:var(--g3);font-family:var(--font);font-size:.78rem;cursor:pointer">تسجيل خروج</button>
+    </div>
+  `;
+  try{
+    const res = await fetch('/api/get-orders',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({phone:sess.phone, session:sess.session})});
+    const data = await res.json();
+    const list = document.getElementById('ordersList');
+    if(!data.orders?.length){
+      list.innerHTML = '<p style="color:var(--g2);font-size:.85rem">لا توجد مشتريات بعد</p>';
+    } else {
+      list.innerHTML = data.orders.map(o=>`
+        <div class="order-card">
+          <div class="order-icon">${o.icon||'📄'}</div>
+          <div class="order-info">
+            <div class="order-name">${o.name||'طلب'}</div>
+            <div class="order-date">${o.dateFormatted||''}</div>
+          </div>
+          <a href="${o.url}" target="_blank" class="order-dl"><i class="fas fa-download"></i> فتح</a>
+        </div>
+      `).join('');
+    }
+  }catch(e){
+    document.getElementById('ordersList').innerHTML='<p style="color:var(--red);font-size:.83rem">خطأ في التحميل</p>';
+  }
+}
+
+// ---- حفظ/جلب الجلسة ----
+function saveSession(phone, session){ localStorage.setItem('vl_sess', JSON.stringify({phone, session})); }
+function getSession(){ try{return JSON.parse(localStorage.getItem('vl_sess'));}catch{return null;} }
+function clearSession(){ localStorage.removeItem('vl_sess'); }
+
+// ---- showSuccess الجديدة ----
+function showSuccess(pkgId){
+  const ovl = document.getElementById('successOvl');
+  const body = document.getElementById('successBody');
+  if(pkgId===2){
+    body.innerHTML=`
+      <div class="success-modal">
+        <div class="s-icon">👑</div>
+        <h3 style="color:var(--green)">تم الدفع — يلا نبدأ!</h3>
+        <p style="font-size:.87rem;color:var(--g1);line-height:1.7;margin-bottom:20px">راسليني على واتساب وأبدأ أجهّز جدولك الخاص.</p>
+        <a href="https://wa.me/${S.settings.wa}?text=مرحبا vllogsraye، دفعت لباقة المتابعة الشخصية 👑" target="_blank" class="btn-wa" style="display:inline-flex;justify-content:center">
+          <i class="fab fa-whatsapp"></i> راسليني الآن
+        </a>
+      </div>`;
+  } else {
+    renderPhoneStep(body, pkgId, null);
+  }
+  ovl.classList.add('open');
+  ovl.addEventListener('click',function(e){if(e.target===this){this.classList.remove('open');clearInterval(otpState.resendTimer);}},{once:true});
+}
+
+// Check URL for post-payment redirect
+window.addEventListener('load',()=>{
+  const urlParams=new URLSearchParams(location.search);
+  const paid=urlParams.get('paid');
+  if(paid)showSuccess(parseInt(paid));
+});
+
+// ============================================================
+// ADMIN
+// ============================================================
+function aTab(btn,id){
+  document.querySelectorAll('.atab').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.ac').forEach(c=>c.classList.remove('show'));
+  btn.classList.add('on');document.getElementById(id).classList.add('show');
+}
+function loadAdmin(){
+  renderABlog();buildDayForms();
+  document.getElementById('smoy').value=S.settings.moyasar||'';
+  document.getElementById('sp1').value=S.settings.p1||50;
+  document.getElementById('sp2').value=S.settings.p2||299;
+  document.getElementById('swa').value=S.settings.wa||'966502212387';
+}
+function renderABlog(){
+  document.getElementById('aBL').innerHTML=S.posts.map(p=>`
+    <div class="ali"><div><h4>${p.emj} ${p.ttl}</h4><p>${p.date} | ${p.cat}</p></div>
+    <div class="aacts"><button class="aed" onclick="editBlog(${p.id})">تعديل</button><button class="adel" onclick="delBlog(${p.id})">حذف</button></div></div>`).join('')||'<div style="padding:16px;text-align:center;color:var(--g2)">لا توجد مقالات</div>';
+}
+function saveBlog(){
+  const id=document.getElementById('bid').value;
+  const months=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+  const now=new Date();
+  const p={id:id?parseInt(id):Date.now(),ttl:document.getElementById('bttl').value,exc:document.getElementById('bexc').value,bdy:document.getElementById('bbdy').value,cat:document.getElementById('bcat').value,emj:document.getElementById('bemj').value||'📝',date:`${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`};
+  if(!p.ttl){toast('❌ أدخلي العنوان');return;}
+  if(id){const i=S.posts.findIndex(x=>x.id===parseInt(id));S.posts[i]=p;}else S.posts.unshift(p);
+  save();renderBlog();renderABlog();resetBF();toast('✅ تم نشر المقالة');
+}
+function editBlog(id){
+  const p=S.posts.find(x=>x.id===id);
+  document.getElementById('bid').value=p.id;document.getElementById('bttl').value=p.ttl;
+  document.getElementById('bexc').value=p.exc;document.getElementById('bbdy').value=p.bdy;
+  document.getElementById('bcat').value=p.cat;document.getElementById('bemj').value=p.emj;
+  document.getElementById('bft').textContent='✏️ تعديل المقالة';
+  document.getElementById('bcnl').style.display='inline-flex';window.scrollTo(0,0);
+}
+function resetBF(){
+  ['bid','bttl','bexc','bbdy','bcat','bemj'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('bft').textContent='➕ مقالة جديدة';
+  document.getElementById('bcnl').style.display='none';
+}
+function delBlog(id){if(confirm('حذف؟')){S.posts=S.posts.filter(p=>p.id!==id);save();renderBlog();renderABlog();toast('🗑️ تم');}}
+function buildDayForms(){
+  document.getElementById('dayForms').innerHTML=S.days.map((d,i)=>`
+    <div style="background:var(--bg1);border:1px solid var(--border);border-radius:11px;padding:16px;margin-bottom:12px">
+      <div class="fg2" style="margin-bottom:10px">
+        <div class="fg"><label>اسم اليوم</label><input id="dn${i}" value="${d.name}"></div>
+        <div class="fg"><label>الهدف</label><input id="dg${i}" value="${d.goal}"></div>
+      </div>
+      <div class="fg"><label>العضلات</label><input id="dm${i}" value="${d.muscles}"></div>
+      <div class="fg"><label>التمارين (كل سطر: اسم التمرين | سيتات × رابات)</label>
+        <textarea id="de${i}">${d.exs.map(e=>`${e.n} | ${e.s}`).join('\n')}</textarea></div>
+    </div>`).join('');
+}
+function saveDays(){
+  S.days=S.days.map((d,i)=>({
+    ...d,
+    name:document.getElementById(`dn${i}`).value,
+    goal:document.getElementById(`dg${i}`).value,
+    muscles:document.getElementById(`dm${i}`).value,
+    exs:document.getElementById(`de${i}`).value.split('\n').filter(l=>l.trim()).map(l=>{const[n,...r]=l.split('|');return{n:n.trim(),s:r.join('|').trim()};})
+  }));
+  save();renderDays();localStorage.setItem('vl_schedule',JSON.stringify(S.days));toast('✅ تم حفظ الجدول');
+}
+function saveSett(){
+  S.settings.moyasar=document.getElementById('smoy').value;
+  S.settings.p1=parseInt(document.getElementById('sp1').value)||50;
+  S.settings.p2=parseInt(document.getElementById('sp2').value)||299;
+  S.settings.wa=document.getElementById('swa').value||'966502212387';
+  const np=document.getElementById('spw2').value;
+  if(np)S.settings.pw=np;
+  save();toast('✅ تم حفظ الإعدادات');
+}
+
+// ============================================================
+// UTILS
+// ============================================================
+function toast(msg){
+  const t=document.getElementById('toast');document.getElementById('tmsg').textContent=msg;
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);
+}
+function observe(){
+  const ob=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');ob.unobserve(e.target);}});},{threshold:.08});
+  document.querySelectorAll('.fi:not(.vis)').forEach(el=>ob.observe(el));
+}
+
+// ============================================================
+// DISCOUNT CODE COPY
+// ============================================================
+function copyDiscCode(codeId, btn){
+  const code = document.getElementById(codeId).textContent.trim();
+  const orig = btn.innerHTML;
+  const done = () => {
+    btn.innerHTML = '<i class="fas fa-check"></i> تم النسخ';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2200);
+  };
+  if(navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(code).then(done).catch(()=>{fallbackCopy(code);done();});
+  } else {
+    fallbackCopy(code); done();
+  }
+}
+function fallbackCopy(text){
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  document.execCommand('copy'); document.body.removeChild(ta);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded',()=>{
+  buildTicker();buildWhat();renderDays();renderBlog();observe();
+  if(location.hash==='#admin')showAdmin();
+  localStorage.setItem('vl_schedule',JSON.stringify(S.days));
+});
+</script>
+</body>
+</html>

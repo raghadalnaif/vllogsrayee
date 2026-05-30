@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>اعرف وش تاكل — vllogsraye</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0d0d0d;--bg2:#181818;--bg3:#222;--bg4:#2a2a2a;
+  --gold:#c9a96e;--goldL:rgba(201,169,110,.1);--goldB:rgba(201,169,110,.22);
+  --blue:#38bdf8;--blueL:rgba(56,189,248,.07);--blueB:rgba(56,189,248,.2);
+  --green:#4ade80;--greenL:rgba(74,222,128,.08);--greenB:rgba(74,222,128,.2);
+  --red:#f87171;--redL:rgba(248,113,113,.08);
+  --yellow:#fbbf24;--yellowL:rgba(251,191,36,.08);
+  --orange:#fb923c;
+  --white:#fff;--g1:#ccc;--g2:#888;--g3:#555;--border:rgba(255,255,255,.07);
+  --font:'Cairo',sans-serif
+}
+body{font-family:var(--font);background:var(--bg);color:var(--white);direction:rtl;min-height:100vh}
+.page{max-width:1040px;margin:0 auto;padding:28px 18px 70px}
+
+/* TOP BAR */
+.topbar{background:var(--blueL);border:1px solid var(--blueB);border-radius:14px;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px}
+.topbar p{font-size:.82rem;color:var(--g1);line-height:1.6}
+.topbar p strong{color:var(--blue)}
+.print-btn{display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,#0ea5e9,#38bdf8);color:#080808;padding:10px 20px;border-radius:22px;font-size:.88rem;font-weight:700;border:none;cursor:pointer;font-family:var(--font);transition:.3s;white-space:nowrap}
+.print-btn:hover{background:linear-gradient(135deg,#38bdf8,#7dd3fc);transform:translateY(-2px)}
+
+/* HEADER */
+.doc-header{text-align:center;margin-bottom:26px;padding:30px 20px 24px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;position:relative;overflow:hidden}
+.doc-header::before{content:'';position:absolute;top:0;right:0;left:0;height:3px;background:linear-gradient(90deg,transparent,var(--blue),transparent)}
+.doc-brand{font-size:2.2rem;font-weight:900;color:var(--blue);margin-bottom:4px}
+.doc-title{font-size:1.3rem;font-weight:700;margin-bottom:6px}
+.doc-sub{font-size:.85rem;color:var(--g2);margin-bottom:16px}
+.doc-tags{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+.doc-tag{background:var(--blueL);border:1px solid var(--blueB);color:var(--blue);padding:4px 13px;border-radius:15px;font-size:.75rem;font-weight:700}
+
+/* STATS ROW */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:26px}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center}
+.stat-num{font-size:1.8rem;font-weight:900;color:var(--blue);line-height:1}
+.stat-lbl{font-size:.75rem;color:var(--g2);margin-top:4px}
+
+/* GI LEGEND */
+.legend{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:26px}
+.leg-item{display:flex;align-items:center;gap:6px;background:var(--bg2);border:1px solid var(--border);padding:7px 14px;border-radius:22px;font-size:.78rem;font-weight:600}
+.dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.dot.low{background:#4ade80}.dot.med{background:#fbbf24}.dot.high{background:#f87171}
+
+/* SECTION TITLE */
+.sec-title{font-size:1rem;font-weight:700;color:var(--blue);margin:30px 0 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);padding-bottom:9px}
+.sec-title .badge{background:var(--blueL);border:1px solid var(--blueB);color:var(--blue);padding:2px 9px;border-radius:10px;font-size:.72rem;margin-right:4px}
+
+/* TABLE */
+.food-table{width:100%;border-collapse:collapse;background:var(--bg2);border-radius:16px;overflow:hidden;margin-bottom:6px}
+.food-table th{background:var(--bg3);padding:10px 13px;font-size:.74rem;font-weight:700;color:var(--g2);text-align:right;border-bottom:1px solid var(--border)}
+.food-table td{padding:11px 13px;font-size:.82rem;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
+.food-table tr:last-child td{border-bottom:none}
+.food-table tr:hover td{background:rgba(255,255,255,.02)}
+.food-name{font-weight:600;color:var(--white)}
+.rating{color:var(--yellow);font-size:.68rem;font-weight:700;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.25);padding:1px 7px;border-radius:8px;margin-right:5px;white-space:nowrap}
+.food-en{font-size:.7rem;color:var(--g2);margin-top:1px}
+.food-note{font-size:.71rem;color:var(--g3);margin-top:1px}
+.rank-badge{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:900;margin:auto}
+.rank-1{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#080808}
+.rank-n{background:var(--bg3);color:var(--g2);border:1px solid var(--border)}
+.cal-badge{background:var(--goldL);border:1px solid var(--goldB);color:var(--gold);padding:3px 8px;border-radius:7px;font-size:.74rem;font-weight:700;white-space:nowrap}
+.gi-badge{padding:3px 8px;border-radius:7px;font-size:.74rem;font-weight:700;white-space:nowrap;display:inline-block}
+.gi-low{background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);color:#4ade80}
+.gi-med{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.25);color:#fbbf24}
+.gi-high{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);color:#f87171}
+.why-cell{font-size:.76rem;color:var(--g1);line-height:1.5;max-width:220px}
+.rec{font-size:.74rem;padding:3px 8px;border-radius:7px;font-weight:600;white-space:nowrap}
+.rec.yes{background:rgba(74,222,128,.08);color:#4ade80;border:1px solid rgba(74,222,128,.2)}
+.rec.limit{background:rgba(251,191,36,.08);color:#fbbf24;border:1px solid rgba(251,191,36,.2)}
+.rec.avoid{background:rgba(248,113,113,.08);color:#f87171;border:1px solid rgba(248,113,113,.2)}
+
+/* AVOID SECTION */
+.avoid-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:6px}
+.avoid-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px 18px}
+.avoid-card h4{font-size:.85rem;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.avoid-card h4.red{color:var(--red)}
+.avoid-card h4.yellow{color:var(--yellow)}
+.avoid-card h4.orange{color:var(--orange)}
+.avoid-list{list-style:none}
+.avoid-list li{font-size:.78rem;color:var(--g1);padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:flex-start;gap:6px;line-height:1.5}
+.avoid-list li::before{content:'✗';color:var(--red);font-weight:700;flex-shrink:0;font-size:.8rem}
+.avoid-list li:last-child{border-bottom:none}
+
+/* HIGH GI BOX */
+.high-gi-box{background:var(--redL);border:1px solid rgba(248,113,113,.2);border-radius:12px;padding:14px 18px;margin-top:14px}
+.high-gi-box h4{font-size:.83rem;font-weight:700;color:var(--red);margin-bottom:10px}
+.high-gi-list{display:flex;flex-wrap:wrap;gap:8px}
+.hgi-item{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);border-radius:8px;padding:5px 12px;font-size:.76rem;color:var(--red);display:flex;align-items:center;gap:5px}
+
+/* MACRO SECTION */
+.macro-split{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.macro-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center;position:relative;overflow:hidden}
+.macro-card::before{content:'';position:absolute;top:0;right:0;left:0;height:3px}
+.mc-protein::before{background:linear-gradient(90deg,var(--blue),#60a5fa)}
+.mc-carbs::before{background:linear-gradient(90deg,var(--green),#86efac)}
+.mc-fats::before{background:linear-gradient(90deg,var(--yellow),#fde68a)}
+.macro-pct{font-size:1.9rem;font-weight:900;margin-bottom:2px}
+.mc-protein .macro-pct{color:var(--blue)}
+.mc-carbs .macro-pct{color:var(--green)}
+.mc-fats .macro-pct{color:var(--yellow)}
+.macro-name{font-size:.88rem;font-weight:700;margin-bottom:4px}
+.macro-note{font-size:.73rem;color:var(--g2)}
+
+/* MEAL TIMING */
+.timing-list{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.timing-item{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 18px;display:grid;grid-template-columns:100px 1fr;gap:14px;align-items:flex-start}
+.timing-label{background:var(--bg3);border-radius:8px;padding:8px 10px;text-align:center}
+.timing-label .tl-name{font-size:.83rem;font-weight:700;color:var(--gold)}
+.timing-label .tl-time{font-size:.72rem;color:var(--g2);margin-top:2px}
+.timing-content h4{font-size:.85rem;font-weight:700;margin-bottom:3px;color:var(--white)}
+.timing-content p{font-size:.78rem;color:var(--g2);line-height:1.6}
+
+/* SAMPLE DAY */
+.sample-list{display:flex;flex-direction:column;gap:8px;margin-bottom:6px}
+.sample-item{background:var(--bg2);border:1px solid var(--border);border-radius:11px;padding:13px 16px;display:flex;align-items:flex-start;gap:12px}
+.sample-icon{font-size:1.2rem;flex-shrink:0;margin-top:1px}
+.sample-meal{font-size:.8rem;font-weight:700;color:var(--gold);margin-bottom:2px}
+.sample-desc{font-size:.8rem;color:var(--g1);line-height:1.5}
+
+/* SUPPLEMENTS */
+.supps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:6px}
+.supp-card{background:var(--bg2);border:1px solid var(--border);border-radius:13px;padding:15px}
+.supp-icon{font-size:1.5rem;margin-bottom:6px}
+.supp-name{font-size:.85rem;font-weight:700;margin-bottom:3px}
+.supp-dose{background:var(--goldL);border:1px solid var(--goldB);color:var(--gold);padding:3px 9px;border-radius:8px;font-size:.72rem;font-weight:700;display:inline-block;margin-bottom:6px}
+.supp-why{font-size:.76rem;color:var(--g2);line-height:1.5}
+
+/* GOLDEN RULES */
+.rules-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:6px}
+.rule-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px}
+.rule-icon{font-size:1.4rem;margin-bottom:6px}
+.rule-title{font-size:.82rem;font-weight:700;margin-bottom:4px;color:var(--gold)}
+.rule-text{font-size:.75rem;color:var(--g2);line-height:1.5}
+
+/* NOTE BOX */
+.note-box{background:var(--goldL);border:1px solid var(--goldB);border-radius:12px;padding:14px 18px;margin-bottom:20px}
+.note-box p{font-size:.8rem;color:var(--g1);line-height:1.7}
+.note-box p strong{color:var(--gold)}
+
+/* SHARE */
+.share-box{background:var(--blueL);border:1px solid var(--blueB);border-radius:14px;padding:20px;margin-top:26px;text-align:center}
+.share-box h3{font-size:1rem;font-weight:700;margin-bottom:6px}
+.share-box p{font-size:.83rem;color:var(--g1)}
+.share-box strong{color:var(--blue)}
+
+/* FOOTER */
+.doc-footer{text-align:center;margin-top:26px;padding-top:16px;border-top:1px solid var(--border);font-size:.74rem;color:var(--g3)}
+.doc-footer strong{color:var(--gold)}
+.copyright{font-size:.7rem;color:var(--g3);margin-top:6px}
+
+/* PRINT */
+@media print{
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  body{background:#0d0d0d!important;color:#fff!important}
+  .topbar,.print-btn{display:none!important}
+  .page{max-width:100%;padding:12px}
+  .food-table,.avoid-card,.macro-card,.timing-item,.supp-card,.rule-card{page-break-inside:avoid}
+}
+@media(max-width:680px){
+  .stats-row{grid-template-columns:1fr 1fr}
+  .avoid-grid{grid-template-columns:1fr}
+  .macro-split{grid-template-columns:1fr}
+  .supps-grid{grid-template-columns:1fr 1fr}
+  .rules-grid{grid-template-columns:1fr 1fr}
+  .timing-item{grid-template-columns:1fr}
+  .food-table th:nth-child(5),.food-table td:nth-child(5){display:none}
+  .why-cell{display:none}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <p>الدليل الغذائي من <strong>vllogsraye</strong> — احفظه PDF واستخدمه كل يوم 🥗</p>
+  <button class="print-btn" onclick="window.print()"><i class="fas fa-download"></i> احفظ كـ PDF</button>
+</div>
+
+<!-- HEADER -->
+<div class="doc-header">
+  <div class="doc-brand">اعرف وش تاكل</div>
+  <div class="doc-title">Smart Nutrition Guide · vllogsraye · 2026</div>
+  <div class="doc-sub">أكل حقيقي — نتائج حقيقية · Whole Food Guide · GI Index · Fat Loss · Muscle Gain</div>
+  <div class="doc-tags">
+    <span class="doc-tag">🔥 Fat Loss</span>
+    <span class="doc-tag">💪 Muscle Gain</span>
+    <span class="doc-tag">📊 GI Index</span>
+    <span class="doc-tag">⚡ Insulin Resistance</span>
+    <span class="doc-tag">+55 نوع غذاء</span>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-row">
+  <div class="stat-card"><div class="stat-num">+55</div><div class="stat-lbl">نوع غذاء</div></div>
+  <div class="stat-card"><div class="stat-num">6</div><div class="stat-lbl">أقسام شاملة</div></div>
+  <div class="stat-card"><div class="stat-num">3</div><div class="stat-lbl">فئات غذائية</div></div>
+  <div class="stat-card"><div class="stat-num">GI</div><div class="stat-lbl">مؤشر لكل وجبة</div></div>
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+  <div class="leg-item"><div class="dot low"></div>منخفض GI (0–55) — الأفضل لنزول الوزن</div>
+  <div class="leg-item"><div class="dot med"></div>متوسط GI (56–69) — باعتدال</div>
+  <div class="leg-item"><div class="dot high"></div>مرتفع GI (70+) — قلل منه</div>
+</div>
+
+<!-- ===== PROTEINS ===== -->
+<div class="sec-title"><i class="fas fa-drumstick-bite"></i> البروتين · Protein <span class="badge">12 مصدر</span></div>
+<div class="note-box"><p>معظم مصادر البروتين الحيوانية النقية لا تحتوي كربوهيدرات — مؤشرها الغلايسيمي = 0 أو شبه معدوم</p></div>
+<table class="food-table">
+  <thead><tr><th>#</th><th>الطعام</th><th>GI</th><th>سعرات/100g</th><th>بروتين/100g</th><th>تقييم</th><th>لماذا هو الأفضل؟</th></tr></thead>
+  <tbody>
+    <tr><td><div class="rank-badge rank-1">1</div></td><td><div class="food-name">صدر دجاج</div><div class="food-en">Chicken Breast</div><div class="food-note">مطبوخ</div></td><td><span class="gi-badge gi-low">0</span></td><td><span class="cal-badge">165</span></td><td>31g</td><td style="white-space:nowrap"><span style="color:#fbbf24;font-size:.7rem;font-weight:700;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);padding:2px 8px;border-radius:8px">ممتاز</span></td><td class="why-cell">بروتين كامل، دهون منخفضة جداً</td></tr>
+    <tr><td><div class="rank-badge rank-n">2</div></td><td><div class="food-name">بيض كامل</div><div class="food-en">Whole Eggs</div><div class="food-note">نيء</div></td><td><span class="gi-badge gi-low">0</span></td><td><span class="cal-badge">155</span></td><td>13g</td><td style="white-space:nowrap"><span style="color:#fbbf24;font-size:.7rem;font-weight:700;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);padding:2px 8px;border-radius:8px">ممتاز</span></td><td class="why-cell">أمينو أسيد مثالي + فيتامينات + أوميغا</td></tr>
+    <tr><td><div class="rank-badge rank-n">3</div></td><td><div class="food-name">بياض البيض</div><div class="food-en">Egg Whites</div><div class="food-note">نيء</div></td><td><span class="gi-badge gi-low">0</span></td><td><span class="cal-badge">52</span></td><td>11g</td><td style="white-space:nowrap"><span style="color:#fbbf24;font-size:.7rem;font-weight:700;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);padding:2px 8px;border-radius:8px">ممتاز</span></td><td class="why-cell">بروتين نقي — صفر دهون صفر كارب</td></tr>
+    <tr><td><div class="rank-badge rank-n">4</div></td><td><div class="food-name">سمك السلمون</div><div class="food-en">Salmon</div><div class="food-note">نيء</div></td><td><span class="gi-badge gi-low">0</span></td><td><span class="cal-badge">208</span></td><td>20g</td><td style="white-space:nowrap"><span style="color:#fbbf24;font-size:.7rem;font-weight:700;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);padding:2px 8px;border-radius:8px">ممتاز</span></td><td class="why-cell">أوميغا3 عالي، يقاوم الالتهاب ويحرق الدهون</td></tr>
+    <tr><td><div class="rank-badge rank-n">5</div></td><td><div class="food-name">التونة</div><div class="food-en">Tuna</div><div class="food-note">نيء</div></td><td><span class="gi-badge gi-low">0</span></td><td><span class="cal-badge">116</span></td><td>25g</td><td style="white-space:nowrap"><span style="color:#4ade80;font-size:.7rem;font-weight:700;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);padding:2px 8px;border-radius:8px">جيد</span></td><td class="why-cell">بروتين عالي جداً، سعرات منخفضة</td></tr>
+    <tr><td><div class="rank-badge rank-n">6</div></td><td><div class="food-name">لحم بقر خالي</div><div class="food-en">Lean Beef</div><div class="food-note">نيء</div></td><td><span class="gi-badge gi-low">0</span></td><td><span class="cal-badge">217</span></td><td>26g</td><td style="white-space:nowrap"><span style="color:#4ade80;font-size:.7rem;font-weight:700;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);padding:2px 8px;border-radius:8px">جيد</span></td><td class="why-cell">حديد + زنك + كرياتين طبيعي</td></tr>
+    <tr><td><div class="rank-badge rank-n">7</div></td><td><div class="food-name">الروبيان</div><div class="food-en">Shrimp</div><div class="food-note">نيء</div></td><td><span class="gi-badge gi-low">0</span></td><td><span class="cal-badge">99</span></td><td>20g</td><td style="white-space:nowrap"><span style="color:#fbbf24;font-size:.7rem;font-weight:700;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);padding:2px 8px;border-radius:8px">ممتاز</span></td><td class="why-cell">بروتين عالي جداً، سعرات منخفضة جداً</td></tr>
+    <tr><td><div class="rank-badge rank-n">8</div></td><td><div class="food-name">صدر ديك رومي</div><div class="food-en">Turkey Breast</div><div class="food-note">مطبوخ</div></td><td><span class="gi-badge gi-low">0</span></td><td><span class="cal-badge">157</span></td><td>29g</td><td style="white-space:nowrap"><span style="color:#fbbf24;font-size:.7rem;font-weight:700;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);padding:2px 8px;border-radius:8px">ممتاز</span></td><td class="why-cell">بديل ممتاز للدجاج، تريبتوفان للنوم</td></tr>
+    <tr><td><div class="rank-badge rank-n">9</div></td><td><div class="food-name">جبنة قريش</div><div class="food-en">Cottage Cheese</div><div class="food-note">جاهز</div></td><td><span class="gi-badge gi-low">10</span></td><td><span class="cal-badge">98</span></td><td>11g</td><td style="white-space:nowrap"><span style="color:#4ade80;font-size:.7rem;font-weight:700;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);padding:2px 8px;border-radius:8px">جيد</span></td><td class="why-cell">كازين طبيعي — مثالي قبل النوم</td></tr>
+    <tr><td><div class="rank-badge rank-n">10</div></td><td><div class="food-name">زبادي يوناني</div><div class="food-en">Greek Yogurt</div><div class="food-note">جاهز</div></td><td><span class="gi-badge gi-low">11</span></td><td><span class="cal-badge">59</span></td><td>10g</td><td style="white-space:nowrap"><span style="color:#4ade80;font-size:.7rem;font-weight:700;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);padding:2px 8px;border-radius:8px">جيد</span></td><td class="why-cell">بروبيوتيك + بروتين عالي</td></tr>
+    <tr><td><div class="rank-badge rank-n">11</div></td><td><div class="food-name">العدس</div><div class="food-en">Lentils</div><div class="food-note">مطبوخ</div></td><td><span class="gi-badge gi-low">32</span></td><td><span class="cal-badge">116</span></td><td>9g</td><td style="white-space:nowrap"><span style="color:#4ade80;font-size:.7rem;font-weight:700;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);padding:2px 8px;border-radius:8px">جيد</span></td><td class="why-cell">بروتين نباتي + ألياف تحسن الأنسولين</td></tr>
+    <tr><td><div class="rank-badge rank-n">12</div></td><td><div class="food-name">الحمص</div><div class="food-en">Chickpeas</div><div class="food-note">مطبوخ</div></td><td><span class="gi-badge gi-low">28</span></td><td><span class="cal-badge">164</span></td><td>9g</td><td style="white-space:nowrap"><span style="color:#4ade80;font-size:.7rem;font-weight:700;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);padding:2px 8px;border-radius:8px">جيد</span></td><td class="why-cell">بروتين + كارب بطيء + ألياف</td></tr>
+  </tbody>
+</table>
+
+<!-- ===== CARBS ===== -->
+<div class="sec-title"><i class="fas fa-wheat-awn" style="font-size:.9rem"></i> الكربوهيدرات الذكية · Smart Carbs <span class="badge">14 مصدر</span></div>
+<table class="food-table">
+  <thead><tr><th>#</th><th>الطعام</th><th>GI</th><th>سعرات/100g</th><th>كارب/100g</th><th>تقييم</th><th>لماذا هو الأفضل؟</th></tr></thead>
+  <tbody>
+    <tr><td><div class="rank-badge rank-1">1</div></td><td><div class="food-name">الشوفان الكامل</div><div class="food-en">Rolled Oats</div><div class="food-note">نيء / جاف</div></td><td><span class="gi-badge gi-low">55</span></td><td><span class="cal-badge">389</span></td><td>66g</td><td style="white-space:nowrap"><span style="color:#fbbf24;font-size:.7rem;font-weight:700;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);padding:2px 8px;border-radius:8px">ممتاز</span></td><td class="why-cell">بيتا-غلوكان يخفض الأنسولين، طاقة طويلة</td></tr>
+    <tr><td><div class="rank-badge rank-n">2</div></td><td><div class="food-name">البطاطا الحلوة</div><div class="food-en">Sweet Potato</div><div class="food-note">مطبوخ</div></td><td><span class="gi-badge gi-low">44</span></td><td><span class="cal-badge">86</span></td><td>20g</td><td style="white-space:nowrap"><span style="color:#fbbf24;font-size:.7rem;font-weight:700;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);padding:2px 8px;border-radius:8px">ممتاز</span></td><td class="why-cell">فيتامين A + ألياف + ينظم السكر</td></tr>
+    <tr><td><div class="rank-badge rank-n">3</div></td><td><div class="food-name">الأرز البني</div><div class="food-en">Brown Rice</div><div class="food-note">مطبوخ</div></td><td><span class="gi-badge gi-low">50</span></td><td><span class="cal-badge">111</span></td><td>23g</td><td style="white-space:nowrap"><span style="color:#4ade80;font-size:.7rem;font-weight:700;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);padding:2px 8px;border-radius:8px">جيد</span></td><td class="why-cell">ألياف عالية، أبطأ هضماً من الأبيض</td></tr>
+    <tr><td><div class="rank-badge rank-n">4</div></td><td><div class="food-name">الكينوا</div><div class="food-en">Quinoa</div><div class="food-note">مطبوخ</div></td><td><span class="gi-badge gi-low">53</span></td><td><span class="cal-badge">120</span></td><td>21g</td><td style="white-space:nowrap"><span style="color:#fbbf24;font-size:.7rem;font-weight:700;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);padding:2px 8px;border-radius:8px">ممتاز</span></td><td class="why-cell">بروتين كامل + كارب معاً، 9 أمينو أسيد</td></tr>
+    <tr><td><div class="rank-badge rank-n">5</div></td><td><div class="food-name">الفاصولياء السوداء</div><div class="food-en">Black Beans</div><div class="food-note">مطبوخ</div></td><td><span class="gi-badge gi-low">30</span></td><td><span class="cal-badge">132</span></td><td>23g</td><td style="white-space:nowrap"><span style="color:#4ade80;font-size:.7rem;font-weight:700;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);padding:2px 8px;border-radius:8px">جيد</span></td><td class="why-cell">ألياف عالية جداً، يخفض الكوليسترول</td></tr>
+    <tr><td><div class="rank-badge rank-n">6</div></td><td><div class="food-name">الشعير</div><div class="food-en">Barley</div><div class="food-note">نيء / جاف</div></td><td><span class="gi-badge gi-low">28</span></td><td><span class="cal-badge">354</span></td><td>73g</td><td style="white-space:nowrap"><span style="color:#4ade80;font-size:.7rem;font-weight:700;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);padding:2px 8px;border-radius:8px">جيد</span></td><td class="why-cell">أدنى GI بين الحبوب، بيتا-غلوكان عالي</td></tr>
+    <tr><td><div class="rank-badge rank-n">7</div></td><td><div class="food-name">معكرونة القمح الكامل</div><div class="food-en">Whole Wheat Pasta</div><div class="food-note">مطبوخ</div></td><td><span class="gi-badge gi-low">48</span></td><td><span class="cal-badge">124</span></td><td>25g</td><td style="white-space:nowrap"><span style="color:#4ade80;font-size:.7rem;font-weight:700;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);padding:2px 8px;border-radius:8px">جيد</span></td><td class="why-cell">أبطأ هضماً من الأبيض بكثير</td></tr>
+    <tr><td><div class="rank-badge rank-n">8</div></td><td><div class="food-name">التفاح</div><div class="food-en">Apple</div><div class="food-note">طازج / نيء</div></td><td><span class="gi-badge gi-low">36</span></td><td><span class="cal-badge">52</span></td><td>14g</td><td style="white-space:nowrap"><span style="color:#4ade80;font-size:.7rem;font-weight:700;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);padding:2px 8px;border-radius:8px">جيد</span></td><td class="why-cell">فركتوز طبيعي + ألياف + مضادات أكسدة</td></tr>
+    <tr><td><div class="rank-badge rank-n">9</div></td><td><div class="food-name">التوت الأزرق</div><div class="food-en">Blueberries</div><div class="food-note">طازج / نيء</div></td><td><span class="gi-badge gi-low">53</span></td><td><span class="cal-badge">57</span></td><td>14g</td><td style="white-space:nowrap"><span style="color:#fbbf24;font-size:.7rem;font-weight:700;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);padding:2px 8px;border-radius:8px">ممتاز</span></td><td class="why-cell">أنثوسيانين يحسن حساسية الأنسولين</td></tr>
+    <tr><td><div class="rank-badge rank-n">10</div></td><td><div class="food-name">الكرز</div><div class="food-en">Cherries</div><div class="food-note">طازج / نيء</div></td><td><span class="gi-badge gi-low">22</span></td><td><span class="cal-badge">50</span></td><td>12g</td><td style="white-space:nowrap"><span style="color:#4ade80;font-size:.7rem;font-weight:700;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);padding:2px 8px;border-radius:8px">جيد</span></td><td class="why-cell">أدنى GI بين الفواكه، مضاد التهاب</td></tr>
+    <tr><td><div class="rank-badge rank-n">11</div></td><td><div class="food-name">البازلاء الخضراء</div><div class="food-en">Green Peas</div><div class="food-note">مطبوخ</div></td><td><span class="gi-badge gi-low">51</span></td><td><span class="cal-badge">81</span></td><td>14g</td><td style="white-space:nowrap"><span style="color:#4ade80;font-size:.7rem;font-weight:700;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);padding:2px 8px;border-radius:8px">جيد</span></td><td class="why-cell">بروتين نباتي + كارب + ألياف</td></tr>
+    <tr><td><div class="rank-badge rank-n">12</div></td><td><div class="food-name">الأرز الأبيض (مبرد)</div><div class="food-en">Cooled White Rice</div><div class="food-note">مطبوخ + مبرد</div></td><td><span class="gi-badge gi-med">64</span></td><td><span class="cal-badge">130</span></td><td>28g</td><td style="white-space:nowrap"><span style="color:#fb923c;font-size:.7rem;font-weight:700;background:rgba(251,146,60,.1);border:1px solid rgba(251,146,60,.25);padding:2px 8px;border-radius:8px">بكميات محدودة</span></td><td class="why-cell">التبريد يحوله لنشا مقاوم يخفض الـ GI</td></tr>
+    <tr><td><div class="rank-badge rank-n">13</div></td><td><div class="food-name">الأرز الأبيض (ساخن)</div><div class="food-en">White Rice</div><div class="food-note">مطبوخ / ساخن</div></td><td><span class="gi-badge gi-high">72</span></td><td><span class="cal-badge">130</span></td><td>28g</td><td style="white-space:nowrap"><span style="color:#fb923c;font-size:.7rem;font-weight:700;background:rgba(251,146,60,.1);border:1px solid rgba(251,146,60,.25);padding:2px 8px;border-radius:8px">بكميات محدودة</span></td><td class="why-cell">سريع الهضم — اجمعه دائماً مع بروتين أو دهن لخفض GI الوجبة</td></tr>
+    <tr><td><div class="rank-badge rank-n">14</div></td><td><div class="food-name">البطاطس العادية</div><div class="food-en">White Potato</div><div class="food-note">مطبوخ / مسلوق</div></td><td><span class="gi-badge gi-high">78</span></td><td><span class="cal-badge">77</span></td><td>17g</td><td style="white-space:nowrap"><span style="color:#fb923c;font-size:.7rem;font-weight:700;background:rgba(251,146,60,.1);border:1px solid rgba(251,146,60,.25);padding:2px 8px;border-radius:8px">بكميات محدودة</span></td><td class="why-cell">مسلوق أفضل من مهروس أو مقلي — بوتاسيوم عالي، تجنب الساخن</td></tr>
+  </tbody>
+</table>
+
+<!-- ===== VEGETABLES ===== -->
+<div class="sec-title"><i class="fas fa-leaf"></i> الخضروات · Vegetables <span class="badge">أكل بلا حساب تقريباً</span></div>
+<table class="food-table">
+  <thead><tr><th>#</th><th>الطعام</th><th>GI</th><th>سعرات/100g</th><th>تقييم</th><th colspan="2">الفائدة الرئيسية</th></tr></thead>
+  <tbody>
+    <tr><td><div class="rank-badge rank-1">1</div></td><td><div class="food-name">السبانخ</div><div class="food-en">Spinach</div><div class="food-note">طازج / نيء</div></td><td style="white-space:nowrap"><span style="color:#fbbf24;font-size:.7rem;font-weight:700;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);padding:2px 8px;border-radius:8px">ممتاز</span></td><td><span class="gi-badge gi-low">15</span></td><td><span class="cal-badge">23</span></td><td colspan="2" class="why-cell">حديد + ماغنيسيوم + أوميغا3 نباتي</td></tr>
+    <tr><td><div class="rank-badge rank-n">2</div></td><td><div class="food-name">بروكلي</div><div class="food-en">Broccoli</div><div class="food-note">مطبوخ خفيف</div></td><td style="white-space:nowrap"><span style="color:#fbbf24;font-size:.7rem;font-weight:700;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);padding:2px 8px;border-radius:8px">ممتاز</span></td><td><span class="gi-badge gi-low">10</span></td><td><span class="cal-badge">34</span></td><td colspan="2" class="why-cell">مضادات سرطان + فيتامين C + ألياف</td></tr>
+    <tr><td><div class="rank-badge rank-n">3</div></td><td><div class="food-name">خيار</div><div class="food-en">Cucumber</div></td><td style="white-space:nowrap"><span style="color:#4ade80;font-size:.7rem;font-weight:700;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);padding:2px 8px;border-radius:8px">جيد</span></td><td><span class="gi-badge gi-low">15</span></td><td><span class="cal-badge">16</span></td><td colspan="2" class="why-cell">95% ماء — يساعد على الترطيب والشبع</td></tr>
+    <tr><td><div class="rank-badge rank-n">4</div></td><td><div class="food-name">فلفل رومي</div><div class="food-en">Bell Pepper</div></td><td style="white-space:nowrap"><span style="color:#4ade80;font-size:.7rem;font-weight:700;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);padding:2px 8px;border-radius:8px">جيد</span></td><td><span class="gi-badge gi-low">10</span></td><td><span class="cal-badge">31</span></td><td colspan="2" class="why-cell">أعلى فيتامين C من البرتقال</td></tr>
+    <tr><td><div class="rank-badge rank-n">5</div></td><td><div class="food-name">طماطم</div><div class="food-en">Tomatoes</div></td><td style="white-space:nowrap"><span style="color:#4ade80;font-size:.7rem;font-weight:700;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);padding:2px 8px;border-radius:8px">جيد</span></td><td><span class="gi-badge gi-low">15</span></td><td><span class="cal-badge">22</span></td><td colspan="2" class="why-cell">ليكوبين قوي لصحة القلب</td></tr>
+    <tr><td><div class="rank-badge rank-n">6</div></td><td><div class="food-name">كوسة / زوكيني</div><div class="food-en">Zucchini</div></td><td style="white-space:nowrap"><span style="color:#4ade80;font-size:.7rem;font-weight:700;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);padding:2px 8px;border-radius:8px">جيد</span></td><td><span class="gi-badge gi-low">15</span></td><td><span class="cal-badge">17</span></td><td colspan="2" class="why-cell">خفيف جداً، غني بالبوتاسيوم</td></tr>
+    <tr><td><div class="rank-badge rank-n">7</div></td><td><div class="food-name">خس / رومين</div><div class="food-en">Lettuce / Romaine</div></td><td style="white-space:nowrap"><span style="color:#4ade80;font-size:.7rem;font-weight:700;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);padding:2px 8px;border-radius:8px">جيد</span></td><td><span class="gi-badge gi-low">10</span></td><td><span class="cal-badge">17</span></td><td colspan="2" class="why-cell">ألياف + ماء + فيتامين K</td></tr>
+    <tr><td><div class="rank-badge rank-n">8</div></td><td><div class="food-name">قرنبيط</div><div class="food-en">Cauliflower</div></td><td style="white-space:nowrap"><span style="color:#4ade80;font-size:.7rem;font-weight:700;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);padding:2px 8px;border-radius:8px">جيد</span></td><td><span class="gi-badge gi-low">15</span></td><td><span class="cal-badge">25</span></td><td colspan="2" class="why-cell">بديل الكارب — يُصنع منه "أرز" منخفض السعرات</td></tr>
+  </tbody>
+</table>
+
+<!-- ===== HEALTHY FATS ===== -->
+<div class="sec-title"><i class="fas fa-fire-flame-curved" style="color:var(--orange)"></i> الدهون الصحية · Healthy Fats <span class="badge">10 مصادر</span></div>
+<div class="note-box"><p>الدهون النقية لا تحتوي كربوهيدرات لذا GI = 0. لكن إضافتها للوجبة <strong>يبطئ الهضم ويخفض GI الإجمالي للوجبة</strong></p></div>
+<table class="food-table">
+  <thead><tr><th>#</th><th>الطعام</th><th>GI</th><th>سعرات/100g</th><th>نوع الدهن</th><th>تقييم</th><th>الفائدة الرئيسية</th></tr></thead>
+  <tbody>
+    <tr><td><div class="rank-badge rank-1">1</div></td><td><div class="food-name">زيت زيتون بكر</div><div class="food-en">Extra Virgin Olive Oil</div><div class="food-note">نيء / خام</div></td><td><span class="gi-badge gi-low">0</span></td><td><span class="cal-badge">884</span></td><td>Omega-9 (MUFA)</td><td style="white-space:nowrap"><span style="color:#fbbf24;font-size:.7rem;font-weight:700;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);padding:2px 8px;border-radius:8px">ممتاز</span></td><td class="why-cell">الأوليوكانثال يقاوم الالتهاب كالإيبوبروفين</td></tr>
+    <tr><td><div class="rank-badge rank-n">2</div></td><td><div class="food-name">الأفوكادو</div><div class="food-en">Avocado</div><div class="food-note">طازج / نيء</div></td><td><span class="gi-badge gi-low">10</span></td><td><span class="cal-badge">160</span></td><td>MUFA + Fiber</td><td style="white-space:nowrap"><span style="color:#fbbf24;font-size:.7rem;font-weight:700;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);padding:2px 8px;border-radius:8px">ممتاز</span></td><td class="why-cell">يرفع HDL ويحسن امتصاص الفيتامينات</td></tr>
+    <tr><td><div class="rank-badge rank-n">3</div></td><td><div class="food-name">اللوز</div><div class="food-en">Almonds</div><div class="food-note">نيء / خام</div></td><td><span class="gi-badge gi-low">0</span></td><td><span class="cal-badge">579</span></td><td>MUFA + Vit E</td><td style="white-space:nowrap"><span style="color:#fbbf24;font-size:.7rem;font-weight:700;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);padding:2px 8px;border-radius:8px">ممتاز</span></td><td class="why-cell">يحسن حساسية الأنسولين، ماغنيسيوم عالي</td></tr>
+    <tr><td><div class="rank-badge rank-n">4</div></td><td><div class="food-name">بذور الشيا</div><div class="food-en">Chia Seeds</div><div class="food-note">نيء / جاف</div></td><td><span class="gi-badge gi-low">1</span></td><td><span class="cal-badge">486</span></td><td>Omega-3 (ALA)</td><td style="white-space:nowrap"><span style="color:#4ade80;font-size:.7rem;font-weight:700;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);padding:2px 8px;border-radius:8px">جيد</span></td><td class="why-cell">أعلى مصدر نباتي للأوميغا3، ألياف ذائبة</td></tr>
+    <tr><td><div class="rank-badge rank-n">5</div></td><td><div class="food-name">بذور الكتان</div><div class="food-en">Flaxseeds</div><div class="food-note">نيء / جاف</div></td><td><span class="gi-badge gi-low">35</span></td><td><span class="cal-badge">534</span></td><td>Omega-3 + Lignans</td><td style="white-space:nowrap"><span style="color:#4ade80;font-size:.7rem;font-weight:700;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);padding:2px 8px;border-radius:8px">جيد</span></td><td class="why-cell">يوازن الهرمونات، يقلل الالتهاب</td></tr>
+    <tr><td><div class="rank-badge rank-n">6</div></td><td><div class="food-name">الجوز</div><div class="food-en">Walnuts</div><div class="food-note">نيء / خام</div></td><td><span class="gi-badge gi-low">0</span></td><td><span class="cal-badge">654</span></td><td>Omega-3 + PUFA</td><td style="white-space:nowrap"><span style="color:#fbbf24;font-size:.7rem;font-weight:700;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);padding:2px 8px;border-radius:8px">ممتاز</span></td><td class="why-cell">أفضل مكسرة للدماغ والقلب</td></tr>
+    <tr><td><div class="rank-badge rank-n">7</div></td><td><div class="food-name">بذور اليقطين</div><div class="food-en">Pumpkin Seeds</div><div class="food-note">نيء / جاف</div></td><td><span class="gi-badge gi-low">0</span></td><td><span class="cal-badge">559</span></td><td>PUFA + Zinc</td><td style="white-space:nowrap"><span style="color:#4ade80;font-size:.7rem;font-weight:700;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);padding:2px 8px;border-radius:8px">جيد</span></td><td class="why-cell">زنك للتستوستيرون والمناعة</td></tr>
+    <tr><td><div class="rank-badge rank-n">8</div></td><td><div class="food-name">سمك السلمون</div><div class="food-en">Salmon</div><div class="food-note">نيء</div></td><td><span class="gi-badge gi-low">0</span></td><td><span class="cal-badge">208</span></td><td>Omega-3 (EPA+DHA)</td><td style="white-space:nowrap"><span style="color:#fbbf24;font-size:.7rem;font-weight:700;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);padding:2px 8px;border-radius:8px">ممتاز</span></td><td class="why-cell">DHA+EPA الجاهز للخلايا — أفضل من النباتي</td></tr>
+    <tr><td><div class="rank-badge rank-n">9</div></td><td><div class="food-name">زيت جوز الهند</div><div class="food-en">Coconut Oil</div><div class="food-note">نيء / خام</div></td><td><span class="gi-badge gi-low">0</span></td><td><span class="cal-badge">862</span></td><td>MCT (Saturated)</td><td style="white-space:nowrap"><span style="color:#fb923c;font-size:.7rem;font-weight:700;background:rgba(251,146,60,.1);border:1px solid rgba(251,146,60,.25);padding:2px 8px;border-radius:8px">بكميات محدودة</span></td><td class="why-cell">MCT سريع الاحتراق، طاقة فورية للدماغ</td></tr>
+    <tr><td><div class="rank-badge rank-n">10</div></td><td><div class="food-name">الكاجو</div><div class="food-en">Cashews</div><div class="food-note">نيء / خام</div></td><td><span class="gi-badge gi-med">25</span></td><td><span class="cal-badge">553</span></td><td>MUFA + Zinc</td><td style="white-space:nowrap"><span style="color:#fb923c;font-size:.7rem;font-weight:700;background:rgba(251,146,60,.1);border:1px solid rgba(251,146,60,.25);padding:2px 8px;border-radius:8px">بكميات محدودة</span></td><td class="why-cell">زنك + ماغنيسيوم + حديد</td></tr>
+  </tbody>
+</table>
+
+<!-- ===== WHAT TO AVOID ===== -->
+<div class="sec-title"><i class="fas fa-ban" style="color:var(--red)"></i> ماذا تتجنب؟ · What to Avoid <span class="badge" style="background:var(--redL);border-color:rgba(248,113,113,.2);color:var(--red)">أعداء الأنسولين وحرق الدهون</span></div>
+<div class="avoid-grid">
+  <div class="avoid-card">
+    <h4 class="red"><i class="fas fa-cube"></i> السكريات المضافة · Added Sugars</h4>
+    <ul class="avoid-list">
+      <li>المشروبات الغازية ومشروبات الطاقة</li>
+      <li>عصير الفاكهة المعالج</li>
+      <li>الحلوى والكعك والمعجنات</li>
+      <li>الكاتشب والصوصات الحلوة</li>
+      <li>الشوكولاتة بالحليب</li>
+      <li>المربيات التجارية</li>
+    </ul>
+  </div>
+  <div class="avoid-card">
+    <h4 class="yellow"><i class="fas fa-bread-slice"></i> الكارب المكرر · Refined Carbs</h4>
+    <ul class="avoid-list">
+      <li>الخبز الأبيض</li>
+      <li>الأرز الأبيض الزائد</li>
+      <li>المعجنات البيضاء</li>
+      <li>البسكويت والكراكرز</li>
+      <li>الحبوب المحلاة للفطور</li>
+      <li>الفطائر والدونات والكرواسان</li>
+    </ul>
+  </div>
+  <div class="avoid-card">
+    <h4 class="orange"><i class="fas fa-fire"></i> الدهون الضارة · Bad Fats</h4>
+    <ul class="avoid-list">
+      <li>الزيوت المهدرجة (Trans Fats)</li>
+      <li>زيت الذرة والصويا</li>
+      <li>المقليات التجارية</li>
+      <li>المارغرين</li>
+      <li>الوجبات السريعة</li>
+      <li>رقائق البطاطا (Chips)</li>
+    </ul>
+  </div>
+  <div class="avoid-card">
+    <h4 class="red"><i class="fas fa-glass-water-droplet"></i> المشروبات الضارة · Bad Drinks</h4>
+    <ul class="avoid-list">
+      <li>مشروبات الطاقة</li>
+      <li>القهوة بالسكر والكريمة</li>
+      <li>الحليب المحلى بالنكهات</li>
+      <li>مشروبات الرياضة المحلاة</li>
+      <li>عصير الفاكهة المعبأ</li>
+    </ul>
+  </div>
+  <div class="avoid-card">
+    <h4 class="yellow"><i class="fas fa-industry"></i> فوق المصنّع · Ultra-Processed</h4>
+    <ul class="avoid-list">
+      <li>اللحوم المصنعة (نقانق، مرتديلا)</li>
+      <li>الجبن المصنع</li>
+      <li>الوجبات الجاهزة المجمدة</li>
+      <li>الصلصات المعلبة</li>
+      <li>الأطعمة العالية الصوديوم</li>
+    </ul>
+  </div>
+  <div class="avoid-card">
+    <h4 class="red"><i class="fas fa-arrow-up"></i> أعلى GI — يرفع الأنسولين فوراً</h4>
+    <ul class="avoid-list">
+      <li>البطاطا المقلية <span style="color:var(--red);font-size:.7rem">GI 95</span></li>
+      <li>الأرز الأبيض الساخن <span style="color:var(--red);font-size:.7rem">GI 89</span></li>
+      <li>الخبز الأبيض <span style="color:var(--red);font-size:.7rem">GI 87</span></li>
+      <li>الكورن فليكس <span style="color:var(--red);font-size:.7rem">GI 84</span></li>
+      <li>البطاطا المهروسة <span style="color:var(--red);font-size:.7rem">GI 83</span></li>
+      <li>الدبس الصناعي / Corn Syrup <span style="color:var(--red);font-size:.7rem">GI 90+</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ===== MACRO RATIOS ===== -->
+<div class="sec-title"><i class="fas fa-chart-pie"></i> النسب الموصى بها · Macro Ratios <span class="badge">لهدف حرق الدهون + بناء العضل</span></div>
+<div class="macro-split">
+  <div class="macro-card mc-protein">
+    <div class="macro-pct">35–40%</div>
+    <div class="macro-name">💪 بروتين · Protein</div>
+    <div class="macro-note">2–2.5g لكل كيلو وزن</div>
+  </div>
+  <div class="macro-card mc-carbs">
+    <div class="macro-pct">30–35%</div>
+    <div class="macro-name">⚡ كارب · Carbs</div>
+    <div class="macro-note">منخفض الـ GI فقط</div>
+  </div>
+  <div class="macro-card mc-fats">
+    <div class="macro-pct">25–30%</div>
+    <div class="macro-name">🔥 دهون · Fats</div>
+    <div class="macro-note">دهون صحية فقط</div>
+  </div>
+</div>
+
+<!-- ===== MEAL TIMING ===== -->
+<div class="sec-title"><i class="fas fa-clock"></i> توقيت الوجبات · Meal Timing <span class="badge">متى تاكل بقدر أهمية ماذا تاكل</span></div>
+<div class="timing-list">
+  <div class="timing-item">
+    <div class="timing-label"><div class="tl-name">🌅 فطور</div><div class="tl-time">6–8 صباح</div></div>
+    <div class="timing-content"><h4>بروتين + دهون — تجنب الكارب البسيط</h4><p>الكورتيزول مرتفع والجسم يحرق دهوناً بشكل طبيعي. ابدأ بالبروتين لحماية العضل.</p></div>
+  </div>
+  <div class="timing-item">
+    <div class="timing-label"><div class="tl-name">☀️ غداء</div><div class="tl-time">11–13</div></div>
+    <div class="timing-content"><h4>أكبر وجبة — بروتين + كارب + خضار</h4><p>حساسية الأنسولين في أفضل حالاتها. أفضل وقت للكارب المعقد.</p></div>
+  </div>
+  <div class="timing-item">
+    <div class="timing-label"><div class="tl-name">⚡ قبل تمرين</div><div class="tl-time">45–60 دقيقة</div></div>
+    <div class="timing-content"><h4>كارب منخفض GI + بروتين خفيف</h4><p>طاقة مستمرة بدون ارتفاع حاد في السكر. يحمي العضل أثناء التمرين.</p></div>
+  </div>
+  <div class="timing-item">
+    <div class="timing-label"><div class="tl-name">🏆 بعد تمرين</div><div class="tl-time">30 دقيقة</div></div>
+    <div class="timing-content"><h4>بروتين سريع + كارب متوسط GI</h4><p>النافذة الذهبية لبناء العضل. الأنسولين يعمل لصالحك هنا.</p></div>
+  </div>
+  <div class="timing-item">
+    <div class="timing-label"><div class="tl-name">🌙 عشاء</div><div class="tl-time">قبل 8:30م</div></div>
+    <div class="timing-content"><h4>بروتين + خضار + دهون — قلل الكارب</h4><p>الأيض يبطأ بعد الغروب. الدجاج والخضار مثاليان هنا.</p></div>
+  </div>
+  <div class="timing-item">
+    <div class="timing-label"><div class="tl-name">😴 قبل نوم</div><div class="tl-time">اختياري</div></div>
+    <div class="timing-content"><h4>جبنة قريش أو بياض بيض</h4><p>الكازين البطيء يغذي العضل أثناء النوم. اختياري لمن يبني عضلاً.</p></div>
+  </div>
+</div>
+
+<!-- ===== SAMPLE DAY ===== -->
+<div class="sec-title"><i class="fas fa-calendar-day"></i> نموذج يوم غذائي · Sample Day</div>
+<div class="sample-list">
+  <div class="sample-item"><div class="sample-icon">🌅</div><div><div class="sample-meal">إفطار</div><div class="sample-desc">3 بيضات + ½ أفوكادو + قهوة سوداء</div></div></div>
+  <div class="sample-item"><div class="sample-icon">☀️</div><div><div class="sample-meal">غداء</div><div class="sample-desc">150g دجاج مشوي + ¾ كوب أرز بني + كوب بروكلي + ملعقة زيت زيتون</div></div></div>
+  <div class="sample-item"><div class="sample-icon">⚡</div><div><div class="sample-meal">قبل تمرين</div><div class="sample-desc">½ كوب شوفان + ملعقة عسل طبيعي</div></div></div>
+  <div class="sample-item"><div class="sample-icon">🏆</div><div><div class="sample-meal">بعد تمرين</div><div class="sample-desc">واي بروتين + بطاطا حلوة صغيرة أو موزة 🍌</div></div></div>
+  <div class="sample-item"><div class="sample-icon">🌙</div><div><div class="sample-meal">عشاء</div><div class="sample-desc">150g سمك مشوي + سلطة خضراء كبيرة + ملعقتين زيت زيتون + ليمون</div></div></div>
+  <div class="sample-item"><div class="sample-icon">😴</div><div><div class="sample-meal">قبل نوم (اختياري)</div><div class="sample-desc">½ كوب جبنة قريش + حبات جوز</div></div></div>
+</div>
+
+<!-- ===== SUPPLEMENTS ===== -->
+<div class="sec-title"><i class="fas fa-capsules"></i> المكملات الغذائية · Supplements <span class="badge">Evidence-Based</span></div>
+<div class="supps-grid">
+  <div class="supp-card"><div class="supp-icon">🥛</div><div class="supp-name">واي بروتين · Whey</div><div class="supp-dose">25–30g بعد التمرين</div><div class="supp-why">لبناء العضل وتعزيز الشبع. يمتص بسرعة بعد التمرين.</div></div>
+  <div class="supp-card"><div class="supp-icon">🐟</div><div class="supp-name">أوميغا3 · Fish Oil</div><div class="supp-dose">2–3g EPA+DHA يومياً</div><div class="supp-why">يقلل الالتهاب، يحسن حساسية الأنسولين، يدعم القلب والدماغ.</div></div>
+  <div class="supp-card"><div class="supp-icon">⚡</div><div class="supp-name">كرياتين · Creatine</div><div class="supp-dose">5g يومياً (أي وقت)</div><div class="supp-why">الأكثر فاعلية علمياً لبناء العضل والقوة. آمن تماماً.</div></div>
+  <div class="supp-card"><div class="supp-icon">☀️</div><div class="supp-name">فيتامين D3</div><div class="supp-dose">2000–5000 IU مع الأكل</div><div class="supp-why">أساسي للهرمونات والمناعة. معظم العرب يعانون نقصاً!</div></div>
+  <div class="supp-card"><div class="supp-icon">🧠</div><div class="supp-name">ماغنيسيوم · Magnesium</div><div class="supp-dose">300–400mg قبل النوم</div><div class="supp-why">يحسن النوم، يقلل الكورتيزول، ضروري لـ +300 عملية في الجسم.</div></div>
+  <div class="supp-card"><div class="supp-icon">💪</div><div class="supp-name">الزنك · Zinc</div><div class="supp-dose">25–40mg مع الأكل</div><div class="supp-why">لإنتاج التستوستيرون والمناعة وصحة الجلد. مهم للرياضيين.</div></div>
+</div>
+
+<!-- ===== GOLDEN RULES ===== -->
+<div class="sec-title"><i class="fas fa-trophy" style="color:var(--gold)"></i> القواعد الذهبية · Golden Rules</div>
+<div class="rules-grid">
+  <div class="rule-card"><div class="rule-icon">💧</div><div class="rule-title">الماء أولاً</div><div class="rule-text">35–40ml لكل كيلو يومياً. الجفاف الخفيف يرفع الكورتيزول ويخزن الدهون.</div></div>
+  <div class="rule-card"><div class="rule-icon">🥩</div><div class="rule-title">بروتين في كل وجبة</div><div class="rule-text">لا وجبة بدون بروتين. يشبع ويبني العضل ويحتاج طاقة أكثر لهضمه.</div></div>
+  <div class="rule-card"><div class="rule-icon">🌿</div><div class="rule-title">الألياف صديقك</div><div class="rule-text">25–35g ألياف يومياً تخفض GI أي وجبة وتشبعك وتغذي البكتيريا النافعة.</div></div>
+  <div class="rule-card"><div class="rule-icon">🍳</div><div class="rule-title">طريقة الطبخ مهمة</div><div class="rule-text">المسلوق والمشوي والمطبوخ بالبخار أفضل من المقلي دائماً.</div></div>
+  <div class="rule-card"><div class="rule-icon">😴</div><div class="rule-title">النوم = هرمونات</div><div class="rule-text">7–9 ساعات تنظم الغريلين واللبتين. قلة النوم تدمر أي نظام غذائي.</div></div>
+  <div class="rule-card"><div class="rule-icon">🎯</div><div class="rule-title">الاتساق لا الكمال</div><div class="rule-text">أكل جيد 80–90% من الوقت أفضل من الكمال أسبوعاً ثم الانهيار.</div></div>
+  <div class="rule-card"><div class="rule-icon">💪</div><div class="rule-title">عضلات = حرق دائم</div><div class="rule-text">كل كيلو عضلة يحرق 50–80 سعرة إضافية يومياً في الراحة.</div></div>
+  <div class="rule-card"><div class="rule-icon">🧘</div><div class="rule-title">إدارة التوتر</div><div class="rule-text">الكورتيزول المزمن يخزن الدهون في البطن. تمرين + تنفس + نوم.</div></div>
+</div>
+
+<!-- SHARE -->
+<div class="share-box">
+  <h3>شارك تقدمك مع <strong>@vllogsraye</strong> على تيك توك 🎬</h3>
+  <p>غيّرت نظامك الغذائي؟ صوّر وشارك — منشني وممكن أعيد نشر قصتك!</p>
+</div>
+
+<!-- FOOTER -->
+<div class="doc-footer">
+  <p>الدليل الغذائي من <strong>vllogsraye</strong> — Smart Nutrition Guide · 2026</p>
+  <p style="margin-top:4px">تيك توك: <strong>@vllogsraye</strong> | انستقرام: <strong>@vllogsraye</strong></p>
+  <p class="copyright" style="margin-top:8px">هذا الدليل للأغراض التثقيفية ولا يُغني عن استشارة الطبيب في الحالات المرضية · © جميع الحقوق محفوظة · vllogsraye</p>
+</div>
+
+</div>
+</body>
+</html>

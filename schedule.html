@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>جدول التدريب الرياضي — vllogsraye</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0d0d0d;--bg2:#181818;--bg3:#222;
+  --gold:#c9a96e;--gold2:#e8c98e;--goldL:rgba(201,169,110,.12);--goldB:rgba(201,169,110,.25);
+  --white:#fff;--g1:#ccc;--g2:#888;--g3:#555;--border:rgba(255,255,255,.08);
+  --font:'Cairo',sans-serif
+}
+body{font-family:var(--font);background:var(--bg);color:var(--white);direction:rtl;min-height:100vh}
+
+/* SCREEN STYLES */
+.page-wrap{max-width:900px;margin:0 auto;padding:30px 20px 60px}
+
+/* TOP BAR */
+.topbar{background:rgba(201,169,110,.07);border:1px solid var(--goldB);border-radius:14px;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:30px;flex-wrap:wrap;gap:12px}
+.topbar p{font-size:.82rem;color:var(--g1);line-height:1.5}
+.topbar p strong{color:var(--gold)}
+.print-btn{display:flex;align-items:center;gap:8px;background:var(--gold);color:#0d0d0d;padding:10px 20px;border-radius:22px;font-size:.88rem;font-weight:700;border:none;cursor:pointer;font-family:var(--font);transition:.3s}
+.print-btn:hover{background:var(--gold2);transform:translateY(-2px)}
+
+/* HEADER */
+.doc-header{text-align:center;margin-bottom:36px;padding:32px 20px 28px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;position:relative;overflow:hidden}
+.doc-header::before{content:'';position:absolute;top:0;right:0;left:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.doc-brand{font-size:2.8rem;font-weight:900;color:var(--gold);line-height:1;margin-bottom:6px}
+.doc-title{font-size:1.4rem;font-weight:700;margin-bottom:6px}
+.doc-sub{font-size:.85rem;color:var(--g2);margin-bottom:18px}
+.doc-tags{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+.doc-tag{background:var(--goldL);border:1px solid var(--goldB);color:var(--gold);padding:4px 13px;border-radius:15px;font-size:.75rem;font-weight:700}
+
+/* INTRO BOX */
+.intro-box{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:22px 26px;margin-bottom:28px;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px}
+.intro-item{text-align:center}
+.intro-item .ii{font-size:1.6rem;margin-bottom:4px}
+.intro-item h4{font-size:.88rem;font-weight:700;margin-bottom:2px}
+.intro-item p{font-size:.76rem;color:var(--g2)}
+
+/* RULES */
+.rules-box{background:var(--goldL);border:1px solid var(--goldB);border-radius:14px;padding:18px 22px;margin-bottom:28px}
+.rules-box h3{font-size:.92rem;font-weight:700;color:var(--gold);margin-bottom:12px}
+.rules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
+.rule{display:flex;align-items:flex-start;gap:8px;font-size:.8rem;color:var(--g1);line-height:1.5}
+.rule i{color:var(--gold);margin-top:2px;font-size:.75rem;flex-shrink:0}
+
+/* WARM UP */
+.warmup-box{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:20px 24px;margin-bottom:28px}
+.warmup-box h3{font-size:.95rem;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.warmup-box h3 i{color:var(--gold)}
+.wu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
+.wu-item{background:var(--bg3);border-radius:9px;padding:10px 13px;display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--g1)}
+.wu-item .wnum{width:24px;height:24px;min-width:24px;background:var(--goldL);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:900;color:var(--gold)}
+
+/* DAY CARDS */
+.days-container{display:flex;flex-direction:column;gap:22px}
+.day-card{background:var(--bg2);border:1px solid var(--border);border-radius:18px;overflow:hidden;page-break-inside:avoid}
+.day-card.rest{background:rgba(255,255,255,.02);border-color:rgba(255,255,255,.04)}
+.day-header{background:linear-gradient(135deg,var(--bg2),var(--bg3));padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.day-header-left{display:flex;align-items:center;gap:12px}
+.day-circle{width:42px;height:42px;background:var(--goldL);border:1.5px solid var(--goldB);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:900;color:var(--gold)}
+.day-info h3{font-size:1rem;font-weight:700;margin-bottom:1px}
+.day-info p{font-size:.76rem;color:var(--g2)}
+.day-muscles-tags{display:flex;gap:6px;flex-wrap:wrap}
+.muscle-tag{background:var(--goldL);border:1px solid var(--goldB);color:var(--gold);padding:3px 9px;border-radius:10px;font-size:.7rem;font-weight:700}
+.ex-table{width:100%;border-collapse:collapse}
+.ex-table th{background:rgba(255,255,255,.03);padding:9px 16px;font-size:.75rem;font-weight:700;color:var(--g2);text-align:right;border-bottom:1px solid var(--border)}
+.ex-table td{padding:11px 16px;font-size:.83rem;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
+.ex-table tr:last-child td{border-bottom:none}
+.ex-table tr:hover td{background:rgba(255,255,255,.02)}
+.ex-num-cell{width:36px;text-align:center}
+.ex-num-b{width:26px;height:26px;background:var(--goldL);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:900;color:var(--gold);margin:auto}
+.ex-name-cell{font-weight:600;color:var(--white)}
+.ex-tip{font-size:.72rem;color:var(--g2);margin-top:2px}
+.ex-sets-cell{text-align:center;white-space:nowrap}
+.sets-badge{background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:3px 9px;font-size:.74rem;font-weight:700;color:var(--gold);white-space:nowrap}
+.ex-rest-cell{text-align:center}
+.rest-badge{background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.15);border-radius:7px;padding:3px 8px;font-size:.71rem;color:#4ade80;white-space:nowrap}
+.day-footer{padding:12px 22px;background:rgba(201,169,110,.04);border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:.76rem;color:var(--g2)}
+.day-footer strong{color:var(--gold)}
+.rest-day-body{padding:24px 22px;display:flex;align-items:center;gap:14px}
+.rest-icon{font-size:2.5rem}
+.rest-text h4{font-size:.95rem;font-weight:700;margin-bottom:4px}
+.rest-text p{font-size:.8rem;color:var(--g2);line-height:1.5}
+
+/* COOLDOWN */
+.cooldown-box{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:20px 24px;margin-top:22px}
+.cooldown-box h3{font-size:.95rem;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.cooldown-box h3 i{color:var(--gold)}
+.cd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
+.cd-item{background:var(--bg3);border-radius:9px;padding:10px 13px;display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--g1)}
+.cd-item i{color:var(--gold);font-size:.8rem}
+
+/* TIKTOK SHARE */
+.share-box{background:linear-gradient(135deg,rgba(201,169,110,.08),rgba(201,169,110,.04));border:1px solid var(--goldB);border-radius:16px;padding:24px;margin-top:22px;text-align:center}
+.share-box h3{font-size:1.1rem;font-weight:700;margin-bottom:8px}
+.share-box h3 span{color:var(--gold)}
+.share-box p{font-size:.85rem;color:var(--g1);line-height:1.7;margin-bottom:16px}
+.share-handle{font-size:1.6rem;font-weight:900;color:var(--gold);display:block;margin-bottom:10px}
+.share-tags{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+.share-tag{background:var(--goldL);border:1px solid var(--goldB);color:var(--gold);padding:5px 14px;border-radius:18px;font-size:.78rem;font-weight:700}
+
+/* FOOTER */
+.doc-footer{text-align:center;margin-top:30px;padding-top:20px;border-top:1px solid var(--border);font-size:.75rem;color:var(--g3)}
+.doc-footer strong{color:var(--gold)}
+
+/* PRINT STYLES */
+@media print{
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  body{background:#0d0d0d!important;color:#fff!important}
+  .topbar,.print-btn{display:none!important}
+  .page-wrap{max-width:100%;padding:15px}
+  .day-card{page-break-inside:avoid;break-inside:avoid}
+  .doc-header{page-break-after:avoid}
+}
+
+@media(max-width:600px){
+  .intro-box{grid-template-columns:1fr 1fr}
+  .ex-table{font-size:.78rem}
+  .ex-table td,.ex-table th{padding:8px 10px}
+  .ex-rest-cell,.ex-tip{display:none}
+}
+
+@keyframes fade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.day-card{animation:fade .4s ease both}
+.day-card:nth-child(2){animation-delay:.05s}
+.day-card:nth-child(3){animation-delay:.1s}
+.day-card:nth-child(4){animation-delay:.15s}
+.day-card:nth-child(5){animation-delay:.2s}
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <p>حمّليه كـ PDF وابدأي اليوم 💪<br>
+    بعد ما تبدأين، منشني على تيك توك <strong>@vllogsraye</strong></p>
+    <button class="print-btn" onclick="window.print()"><i class="fas fa-download"></i> احفظي كـ PDF</button>
+  </div>
+
+  <!-- DOC HEADER -->
+  <div class="doc-header">
+    <div class="doc-brand">vllogsraye</div>
+    <div class="doc-title">جدولك الرياضي</div>
+    <div class="doc-sub">من أول ما تدخلين لحد ما تطلعين — كل شيء مكتوب</div>
+    <div class="doc-tags">
+      <span class="doc-tag">📅 5 أيام أسبوعياً</span>
+      <span class="doc-tag">💪 كل العضلات</span>
+      <span class="doc-tag">⏱️ 60-75 دقيقة يومياً</span>
+      <span class="doc-tag">🎯 للمستوى المتوسط</span>
+      <span class="doc-tag">🆓 مجاني</span>
+    </div>
+  </div>
+
+  <!-- INTRO -->
+  <div class="intro-box">
+    <div class="intro-item"><div class="ii">📅</div><h4>5 أيام تدريب</h4><p>+ يومان راحة</p></div>
+    <div class="intro-item"><div class="ii">⏱️</div><h4>60-75 دقيقة</h4><p>لكل جلسة</p></div>
+    <div class="intro-item"><div class="ii">💪</div><h4>5-6 تمارين</h4><p>لكل يوم</p></div>
+    <div class="intro-item"><div class="ii">🔄</div><h4>4 مجموعات</h4><p>لكل تمرين</p></div>
+    <div class="intro-item"><div class="ii">😴</div><h4>60-90 ثانية</h4><p>راحة بين المجموعات</p></div>
+  </div>
+
+  <!-- RULES -->
+  <div class="rules-box">
+    <h3><i class="fas fa-star" style="margin-left:6px"></i> اقريها قبل ما تبدأين</h3>
+    <div class="rules-grid">
+      <div class="rule"><i class="fas fa-check"></i><span>إحماء 10 دقائق قبل كل جلسة — إلزامي</span></div>
+      <div class="rule"><i class="fas fa-check"></i><span>الماء معك طول التمرين</span></div>
+      <div class="rule"><i class="fas fa-check"></i><span>الشكل الصح أهم من الوزن الثقيل</span></div>
+      <div class="rule"><i class="fas fa-check"></i><span>زيدي الأوزان شوي شوي كل أسبوعين</span></div>
+      <div class="rule"><i class="fas fa-check"></i><span>راحة 60-90 ثانية بين كل سيت</span></div>
+      <div class="rule"><i class="fas fa-check"></i><span>يوم الراحة مو اختياري — جسمك يحتاجه</span></div>
+      <div class="rule"><i class="fas fa-check"></i><span>سجّلي الأوزان كل جلسة</span></div>
+      <div class="rule"><i class="fas fa-check"></i><span>الأكل يكمل التمرين — ما تتساهلين فيه</span></div>
+    </div>
+  </div>
+
+  <!-- WARMUP -->
+  <div class="warmup-box">
+    <h3><i class="fas fa-fire"></i> الإحماء — 10 دقائق قبل كل جلسة</h3>
+    <div class="wu-grid">
+      <div class="wu-item"><div class="wnum">1</div>مشي سريع أو دراجة خفيفة — 3 دقائق</div>
+      <div class="wu-item"><div class="wnum">2</div>دوران الكتفين أمام وخلف — 30 ثانية</div>
+      <div class="wu-item"><div class="wnum">3</div>دوران الورك — 30 ثانية لكل جهة</div>
+      <div class="wu-item"><div class="wnum">4</div>لنجز أمامي بدون وزن — 10 لكل رجل</div>
+      <div class="wu-item"><div class="wnum">5</div>سكوات خفيف بدون وزن — 15 مرة</div>
+      <div class="wu-item"><div class="wnum">6</div>تمديد الصدر والذراعين — دقيقة</div>
+      <div class="wu-item"><div class="wnum">7</div>دوران الرقبة ببطء — 30 ثانية</div>
+      <div class="wu-item"><div class="wnum">8</div>قفز خفيف في مكانك — دقيقة</div>
+    </div>
+  </div>
+
+  <!-- DAYS -->
+  <div class="days-container" id="daysContainer">
+    <!-- Rendered by JS -->
+  </div>
+
+  <!-- COOLDOWN -->
+  <div class="cooldown-box">
+    <h3><i class="fas fa-snowflake"></i> إطالة وتبريد — 10 دقائق بعد كل جلسة</h3>
+    <div class="cd-grid">
+      <div class="cd-item"><i class="fas fa-check"></i>مشي هادئ — 3 دقائق</div>
+      <div class="cd-item"><i class="fas fa-check"></i>تمديد الصدر على الحائط — دقيقة</div>
+      <div class="cd-item"><i class="fas fa-check"></i>تمديد الظهر والقطني — دقيقة</div>
+      <div class="cd-item"><i class="fas fa-check"></i>تمديد الفخذ الأمامي — 30ث لكل رجل</div>
+      <div class="cd-item"><i class="fas fa-check"></i>تمديد الكتف العلوي — 30ث لكل جانب</div>
+      <div class="cd-item"><i class="fas fa-check"></i>فراشة لتمديد الفخذ الداخلي — دقيقة</div>
+      <div class="cd-item"><i class="fas fa-check"></i>تنفس عميق — دقيقتان</div>
+      <div class="cd-item"><i class="fas fa-check"></i>اشربي الماء وتناولي وجبة بروتين</div>
+    </div>
+  </div>
+
+  <!-- TIKTOK SHARE -->
+  <div class="share-box">
+    <h3>شاري رحلتك على <span>تيك توك</span> 🎬</h3>
+    <p>بدأتِ؟ صوّري وشاري — منشني <strong>@vllogsraye</strong> وممكن أعيد نشر قصتك!</p>
+    <span class="share-handle">@vllogsraye</span>
+    <div class="share-tags">
+      <span class="share-tag">#vllogsraye_challenge</span>
+      <span class="share-tag">#لياقة_بدنية</span>
+      <span class="share-tag">#جدول_تدريب</span>
+      <span class="share-tag">#نادي_رياضي</span>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="doc-footer">
+    <p>جدولك من <strong>vllogsraye</strong> — شاريه مع اللي تبين تساعدينها 💪</p>
+    <p style="margin-top:4px">تيك توك: <strong>@vllogsraye</strong> | انستقرام: <strong>@vllogsraye</strong></p>
+  </div>
+
+</div><!-- /page-wrap -->
+
+<script>
+// Load schedule data from main site or use defaults
+const defaultDays=[
+  {name:'اليوم الأول',goal:'الصدر والترايسبس',muscles:'صدر | ذراع خلفي',
+   exs:[
+     {n:'بنش برس بالبار',s:'4 × 10',tip:'ركزي على إنزال البار لمستوى الصدر',rest:'90ث'},
+     {n:'بنش مائل بالدمبل',s:'3 × 12',tip:'الميل 30-45 درجة',rest:'75ث'},
+     {n:'كروس أوفر كابل',s:'3 × 15',tip:'حركة قوسية تحس فيها الصدر',rest:'60ث'},
+     {n:'ضغط على البنشة (Dumbbell Fly)',s:'3 × 12',tip:'حركة بطيئة مع التمديد',rest:'75ث'},
+     {n:'تمديد ترايسبس بالكابل',s:'4 × 12',tip:'الكوع ثابت ما يتحرك',rest:'60ث'},
+     {n:'Tricep Dips',s:'3 × فشل',tip:'وزن جسمك كافٍ',rest:'90ث'}
+   ]},
+  {name:'اليوم الثاني',goal:'الظهر والبايسبس',muscles:'ظهر | ذراع أمامي',
+   exs:[
+     {n:'ديدليفت (Deadlift)',s:'4 × 8',tip:'الظهر مستقيم دائماً — الأهم',rest:'120ث'},
+     {n:'سحب بار عريض (Lat Pulldown)',s:'4 × 10',tip:'اسحبي للصدر مو للوجه',rest:'90ث'},
+     {n:'صف دمبل أحادي',s:'3 × 12',tip:'الظهر موازي للأرض',rest:'75ث'},
+     {n:'سحب كابل للبطن',s:'3 × 15',tip:'اضغطي الكتفين في النهاية',rest:'60ث'},
+     {n:'كيرل بار',s:'4 × 12',tip:'الكوع ثابت جنب جسمك',rest:'75ث'},
+     {n:'مطرقة دمبل (Hammer Curl)',s:'3 × 12',tip:'حركة بطيئة للنزول',rest:'60ث'}
+   ]},
+  {name:'اليوم الثالث',goal:'كارديو وراحة نشطة',muscles:'كارديو كامل',
+   rest:true,
+   exs:[
+     {n:'دراجة ثابتة إحماء',s:'10 دقائق',tip:'سرعة متوسطة',rest:'—'},
+     {n:'تريدميل متقطع (HIIT)',s:'20 دقيقة',tip:'30ث سريع / 60ث هادئ',rest:'—'},
+     {n:'روينج ماشين',s:'10 دقائق',tip:'ظهر مستقيم مع السحب',rest:'—'},
+     {n:'تمارين إطالة كاملة',s:'10 دقائق',tip:'ركزي على عضلات أمس',rest:'—'}
+   ]},
+  {name:'اليوم الرابع',goal:'الكتفين',muscles:'كتف أمامي | جانبي | خلفي',
+   exs:[
+     {n:'كتف أمامي بالبار (Shoulder Press)',s:'4 × 10',tip:'الظهر مستقيم ما تقوسين',rest:'90ث'},
+     {n:'رفع جانبي دمبل (Lateral Raise)',s:'4 × 15',tip:'الكوع خفيف الانحناء',rest:'60ث'},
+     {n:'رفع أمامي دمبل (Front Raise)',s:'3 × 12',tip:'ما ترفعين فوق مستوى الكتف',rest:'60ث'},
+     {n:'كتف خلفي على البيس ديك (Rear Delt)',s:'3 × 15',tip:'أجهزة البيس ديك أو الكابل',rest:'60ث'},
+     {n:'شراجيم بالبار (Upright Row)',s:'4 × 12',tip:'ارفعي البار لمستوى الذقن',rest:'75ث'},
+     {n:'دوران دمبل للكتف',s:'3 × 15',tip:'تمرين تثبيت وإحماء',rest:'45ث'}
+   ]},
+  {name:'اليوم الخامس',goal:'الأرجل الكاملة',muscles:'فخذ أمامي | خلفي | مؤخرة | ساق',
+   exs:[
+     {n:'سكوات بالبار (Back Squat)',s:'4 × 10',tip:'النزول حتى الفخذ موازي للأرض',rest:'120ث'},
+     {n:'ليج برس (Leg Press)',s:'4 × 12',tip:'الظهر ملاصق للمقعد',rest:'90ث'},
+     {n:'لنجز بالدمبل (Walking Lunges)',s:'3 × 12 لكل رجل',tip:'الركبة ما تتخطى أصابع القدم',rest:'75ث'},
+     {n:'كيرل أرجل (Leg Curl)',s:'4 × 15',tip:'حركة بطيئة للنزول',rest:'60ث'},
+     {n:'رومانية (Romanian Deadlift)',s:'4 × 12',tip:'أفضل تمرين للمؤخرة والفخذ الخلفي',rest:'90ث'},
+     {n:'رفع كعب واقف (Calf Raises)',s:'5 × 20',tip:'وقفة في أعلى نقطة ثانية',rest:'45ث'}
+   ]}
+];
+
+// Try to load from main site's localStorage
+function loadDays(){
+  try{
+    const stored=localStorage.getItem('vl_schedule');
+    if(stored){
+      const parsed=JSON.parse(stored);
+      if(parsed&&parsed.length>0)return parsed;
+    }
+  }catch(e){}
+  return defaultDays;
+}
+
+const arabicNums=['١','٢','٣','٤','٥','٦','٧'];
+
+function renderDays(){
+  const days=loadDays();
+  const container=document.getElementById('daysContainer');
+  container.innerHTML=days.map((d,i)=>{
+    if(d.rest||d.goal.includes('كارديو')){
+      return`<div class="day-card rest">
+        <div class="day-header">
+          <div class="day-header-left">
+            <div class="day-circle">${arabicNums[i]}</div>
+            <div class="day-info"><h3>${d.name}</h3><p>${d.goal}</p></div>
+          </div>
+          <div class="day-muscles-tags"><span class="muscle-tag">🏃 كارديو</span></div>
+        </div>
+        <table class="ex-table">
+          <thead><tr><th class="ex-num-cell">#</th><th>التمرين</th><th>المدة / الكمية</th><th>ملاحظة</th></tr></thead>
+          <tbody>${d.exs.map((e,j)=>`
+            <tr>
+              <td class="ex-num-cell"><div class="ex-num-b">${j+1}</div></td>
+              <td class="ex-name-cell"><div>${e.n}</div>${e.tip?`<div class="ex-tip">💡 ${e.tip}</div>`:''}</td>
+              <td class="ex-sets-cell"><span class="sets-badge">${e.s}</span></td>
+              <td class="ex-rest-cell"><span class="rest-badge">${e.rest||'—'}</span></td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+        <div class="day-footer"><span>⏱️ المدة الإجمالية: ~45 دقيقة</span><span>💧 <strong>اشربي الماء باستمرار</strong></span></div>
+      </div>`;
+    }
+
+    const muscleTags=(d.muscles||d.goal).split('|').map(m=>`<span class="muscle-tag">${m.trim()}</span>`).join('');
+    const totalTime=`${50+d.exs.length*5} دقيقة تقريباً`;
+
+    return`<div class="day-card">
+      <div class="day-header">
+        <div class="day-header-left">
+          <div class="day-circle">${arabicNums[i]}</div>
+          <div class="day-info"><h3>${d.name}</h3><p>${d.goal}</p></div>
+        </div>
+        <div class="day-muscles-tags">${muscleTags}</div>
+      </div>
+      <table class="ex-table">
+        <thead>
+          <tr>
+            <th class="ex-num-cell">#</th>
+            <th>التمرين</th>
+            <th style="text-align:center">السيتات × الرابات</th>
+            <th style="text-align:center">الراحة</th>
+          </tr>
+        </thead>
+        <tbody>${d.exs.map((e,j)=>{
+          const tip=e.tip||'';
+          const sets=e.s||'—';
+          const rest=e.rest||'75ث';
+          return`<tr>
+            <td class="ex-num-cell"><div class="ex-num-b">${j+1}</div></td>
+            <td class="ex-name-cell">
+              <div>${e.n}</div>
+              ${tip?`<div class="ex-tip">💡 ${tip}</div>`:''}
+            </td>
+            <td class="ex-sets-cell"><span class="sets-badge">${sets}</span></td>
+            <td class="ex-rest-cell"><span class="rest-badge">⏱️ ${rest}</span></td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table>
+      <div class="day-footer">
+        <span>⏱️ المدة المتوقعة: <strong>${totalTime}</strong></span>
+        <span>💧 لا تنسي الماء بين كل سيت</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Add rest days
+  const restDays=['اليوم السادس والسابع — راحة تامة'];
+  container.innerHTML+=`<div class="day-card rest">
+    <div class="day-header">
+      <div class="day-header-left">
+        <div class="day-circle" style="background:rgba(74,222,128,.08);border-color:rgba(74,222,128,.2);color:#4ade80">٦-٧</div>
+        <div class="day-info"><h3>اليوم السادس والسابع</h3><p>راحة تامة — جسمك يبني العضلات في وقت الراحة</p></div>
+      </div>
+      <div class="day-muscles-tags"><span class="muscle-tag" style="color:#4ade80;border-color:rgba(74,222,128,.2);background:rgba(74,222,128,.06)">😴 راحة</span></div>
+    </div>
+    <div class="rest-day-body">
+      <div class="rest-icon">😴</div>
+      <div class="rest-text">
+        <h4>الراحة جزء من التدريب</h4>
+        <p>العضلات تنمو في وقت الراحة مو في وقت التمرين. نامي 7-8 ساعات واتركي جسمك يتعافى.<br>
+        تقدرين تمشين خفيف أو تسوين يوغا — بس ما في إلزام.</p>
+      </div>
+    </div>
+  </div>`;
+}
+
+document.addEventListener('DOMContentLoaded',renderDays);
+</script>
+</body>
+</html>
