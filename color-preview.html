@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>مقترحات الألوان — vllogsraye</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Cairo',sans-serif;background:#f0f0f0;padding:32px 16px}
+h1{text-align:center;font-size:1.5rem;font-weight:900;margin-bottom:8px;color:#222}
+.sub{text-align:center;color:#666;font-size:.88rem;margin-bottom:40px}
+.palettes{display:flex;flex-direction:column;gap:48px;max-width:1100px;margin:0 auto}
+.palette{border-radius:20px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.13)}
+.pal-label{text-align:center;padding:10px;font-size:.8rem;font-weight:700;color:#555;letter-spacing:.5px;text-transform:uppercase;background:#e8e8e8}
+
+/* ════ PALETTE 1: Off-White Classic ════ */
+.p1-nav{background:#FFFDF9;border-bottom:1px solid #EDE8DF;padding:14px 28px;display:flex;justify-content:space-between;align-items:center}
+.p1-nav .brand{font-size:1.3rem;font-weight:900;color:#B8860B}
+.p1-nav .links{display:flex;gap:20px;list-style:none}
+.p1-nav .links a{font-size:.82rem;font-weight:600;color:#555;text-decoration:none}
+.p1-nav .cta{background:#C9A96E;color:#fff;padding:7px 18px;border-radius:20px;font-size:.8rem;font-weight:700;text-decoration:none}
+.p1-hero{background:#FFFDF9;padding:52px 28px;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.p1-badge{display:inline-flex;align-items:center;gap:6px;background:#FDF3E3;border:1px solid #E8C98E;color:#B8860B;padding:4px 12px;border-radius:16px;font-size:.73rem;font-weight:700;margin-bottom:14px}
+.p1-h1{font-size:2.3rem;font-weight:900;color:#1A1209;line-height:1.2;margin-bottom:12px}
+.p1-h1 span{color:#B8860B}
+.p1-sub{font-size:.87rem;color:#6B5E4E;line-height:1.8;margin-bottom:20px}
+.p1-btns{display:flex;gap:10px}
+.p1-btn1{background:#C9A96E;color:#fff;padding:11px 22px;border-radius:24px;font-size:.85rem;font-weight:700;border:none;font-family:'Cairo',sans-serif;cursor:pointer}
+.p1-btn2{background:transparent;color:#1A1209;padding:11px 22px;border-radius:24px;font-size:.85rem;font-weight:700;border:1.5px solid #D9CFC4;cursor:pointer;font-family:'Cairo',sans-serif}
+.p1-card{background:#FFFFFF;border:1px solid #EDE8DF;border-radius:18px;padding:22px;position:relative;overflow:hidden}
+.p1-card::before{content:'';position:absolute;top:0;right:0;left:0;height:3px;background:linear-gradient(90deg,transparent,#C9A96E,transparent)}
+.p1-card .cl{font-size:1.4rem;font-weight:900;color:#B8860B;margin-bottom:4px}
+.p1-card .ct{font-size:.88rem;font-weight:700;color:#2D2011;margin-bottom:12px}
+.p1-pkg{border-radius:11px;padding:11px 14px;margin-bottom:8px;border:1px solid #EDE8DF}
+.p1-pkg.g{background:#FDF8F0;border-color:#E8C98E}
+.p1-pkg.gr{background:#F0FDF4;border-color:#BBF7D0}
+.p1-pkg .pr{display:flex;justify-content:space-between;align-items:center}
+.p1-pkg .pn{font-size:.8rem;font-weight:700;color:#2D2011}
+.p1-pkg.g .pp{font-size:1rem;font-weight:900;color:#B8860B}
+.p1-pkg.gr .pp{font-size:1rem;font-weight:900;color:#16A34A}
+.p1-pkg .pd{font-size:.69rem;color:#8B7355;margin-top:2px}
+.p1-packages{background:#F7F3EC;padding:40px 28px}
+.p1-sec-tag{display:inline-block;background:#FDF3E3;border:1px solid #E8C98E;color:#B8860B;padding:3px 12px;border-radius:14px;font-size:.72rem;font-weight:700;margin-bottom:8px}
+.p1-sec-h2{font-size:1.8rem;font-weight:900;color:#1A1209;margin-bottom:6px}
+.p1-sec-h2 span{color:#B8860B}
+.p1-sec-p{color:#6B5E4E;font-size:.85rem;margin-bottom:24px}
+.p1-cards-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.p1-pcard{background:#FFFFFF;border:1px solid #EDE8DF;border-radius:18px;padding:20px}
+.p1-pcard h4{font-size:.9rem;font-weight:700;color:#2D2011;margin:10px 0 6px}
+.p1-pcard p{font-size:.75rem;color:#8B7355;line-height:1.5}
+.p1-pcard .price{font-size:1.8rem;font-weight:900;color:#B8860B;margin:12px 0 10px}
+.p1-pcard .price span{font-size:.8rem;color:#8B7355}
+.p1-pbtn{width:100%;background:#C9A96E;color:#fff;padding:11px;border-radius:11px;border:none;font-size:.85rem;font-weight:700;font-family:'Cairo',sans-serif;cursor:pointer}
+.swatches{display:flex;gap:8px;padding:14px 28px;background:#FAF6F0;flex-wrap:wrap;align-items:center}
+.swatch{width:36px;height:36px;border-radius:8px;border:2px solid rgba(0,0,0,.08)}
+.swatch-lbl{font-size:.7rem;color:#666;font-weight:600;margin-left:4px;font-family:'Cairo',sans-serif}
+.sw-group{display:flex;align-items:center;gap:6px;margin-left:16px}
+
+/* ════ PALETTE 2: Warm Beige ════ */
+.p2-nav{background:#FFF8F0;border-bottom:1px solid #EDD9C5;padding:14px 28px;display:flex;justify-content:space-between;align-items:center}
+.p2-nav .brand{font-size:1.3rem;font-weight:900;color:#9A5B0A}
+.p2-nav .links{display:flex;gap:20px;list-style:none}
+.p2-nav .links a{font-size:.82rem;font-weight:600;color:#6B4226;text-decoration:none}
+.p2-nav .cta{background:#D97706;color:#fff;padding:7px 18px;border-radius:20px;font-size:.8rem;font-weight:700;text-decoration:none}
+.p2-hero{background:linear-gradient(135deg,#FFF8F0,#FFF0E0);padding:52px 28px;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.p2-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(217,119,6,.1);border:1px solid rgba(217,119,6,.3);color:#B45309;padding:4px 12px;border-radius:16px;font-size:.73rem;font-weight:700;margin-bottom:14px}
+.p2-h1{font-size:2.3rem;font-weight:900;color:#3B1C08;line-height:1.2;margin-bottom:12px}
+.p2-h1 span{color:#D97706}
+.p2-sub{font-size:.87rem;color:#78481A;line-height:1.8;margin-bottom:20px}
+.p2-btns{display:flex;gap:10px}
+.p2-btn1{background:#D97706;color:#fff;padding:11px 22px;border-radius:24px;font-size:.85rem;font-weight:700;border:none;font-family:'Cairo',sans-serif;cursor:pointer}
+.p2-btn2{background:transparent;color:#3B1C08;padding:11px 22px;border-radius:24px;font-size:.85rem;font-weight:700;border:1.5px solid #EDD9C5;cursor:pointer;font-family:'Cairo',sans-serif}
+.p2-card{background:#FFFFFF;border:1px solid #EDD9C5;border-radius:18px;padding:22px;position:relative;overflow:hidden}
+.p2-card::before{content:'';position:absolute;top:0;right:0;left:0;height:3px;background:linear-gradient(90deg,transparent,#D97706,transparent)}
+.p2-card .cl{font-size:1.4rem;font-weight:900;color:#B45309;margin-bottom:4px}
+.p2-card .ct{font-size:.88rem;font-weight:700;color:#3B1C08;margin-bottom:12px}
+.p2-pkg{border-radius:11px;padding:11px 14px;margin-bottom:8px}
+.p2-pkg.g{background:#FFF7E6;border:1px solid rgba(217,119,6,.3)}
+.p2-pkg.gr{background:#F0FDF4;border:1px solid #BBF7D0}
+.p2-pkg .pr{display:flex;justify-content:space-between;align-items:center}
+.p2-pkg .pn{font-size:.8rem;font-weight:700;color:#3B1C08}
+.p2-pkg.g .pp{font-size:1rem;font-weight:900;color:#B45309}
+.p2-pkg.gr .pp{font-size:1rem;font-weight:900;color:#16A34A}
+.p2-pkg .pd{font-size:.69rem;color:#78481A;margin-top:2px}
+.p2-packages{background:#FFF3E6;padding:40px 28px}
+.p2-sec-tag{display:inline-block;background:#FFF7E6;border:1px solid rgba(217,119,6,.3);color:#B45309;padding:3px 12px;border-radius:14px;font-size:.72rem;font-weight:700;margin-bottom:8px}
+.p2-sec-h2{font-size:1.8rem;font-weight:900;color:#3B1C08;margin-bottom:6px}
+.p2-sec-h2 span{color:#D97706}
+.p2-sec-p{color:#78481A;font-size:.85rem;margin-bottom:24px}
+.p2-cards-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.p2-pcard{background:#FFFFFF;border:1px solid #EDD9C5;border-radius:18px;padding:20px}
+.p2-pcard h4{font-size:.9rem;font-weight:700;color:#3B1C08;margin:10px 0 6px}
+.p2-pcard p{font-size:.75rem;color:#78481A;line-height:1.5}
+.p2-pcard .price{font-size:1.8rem;font-weight:900;color:#D97706;margin:12px 0 10px}
+.p2-pcard .price span{font-size:.8rem;color:#78481A}
+.p2-pbtn{width:100%;background:#D97706;color:#fff;padding:11px;border-radius:11px;border:none;font-size:.85rem;font-weight:700;font-family:'Cairo',sans-serif;cursor:pointer}
+
+/* ════ PALETTE 3: Sand & Stone ════ */
+.p3-nav{background:#FAF7F2;border-bottom:1px solid #DDD5C8;padding:14px 28px;display:flex;justify-content:space-between;align-items:center}
+.p3-nav .brand{font-size:1.3rem;font-weight:900;color:#5C4A32}
+.p3-nav .links{display:flex;gap:20px;list-style:none}
+.p3-nav .links a{font-size:.82rem;font-weight:600;color:#7A6552;text-decoration:none}
+.p3-nav .cta{background:#5C4A32;color:#FAF7F2;padding:7px 18px;border-radius:20px;font-size:.8rem;font-weight:700;text-decoration:none}
+.p3-hero{background:linear-gradient(135deg,#FAF7F2,#F2EBE0);padding:52px 28px;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.p3-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(92,74,50,.08);border:1px solid rgba(92,74,50,.2);color:#5C4A32;padding:4px 12px;border-radius:16px;font-size:.73rem;font-weight:700;margin-bottom:14px}
+.p3-h1{font-size:2.3rem;font-weight:900;color:#2C2018;line-height:1.2;margin-bottom:12px}
+.p3-h1 span{color:#8B6914}
+.p3-sub{font-size:.87rem;color:#7A6552;line-height:1.8;margin-bottom:20px}
+.p3-btns{display:flex;gap:10px}
+.p3-btn1{background:#5C4A32;color:#FAF7F2;padding:11px 22px;border-radius:24px;font-size:.85rem;font-weight:700;border:none;font-family:'Cairo',sans-serif;cursor:pointer}
+.p3-btn2{background:transparent;color:#2C2018;padding:11px 22px;border-radius:24px;font-size:.85rem;font-weight:700;border:1.5px solid #DDD5C8;cursor:pointer;font-family:'Cairo',sans-serif}
+.p3-card{background:#FFFFFF;border:1px solid #DDD5C8;border-radius:18px;padding:22px;position:relative;overflow:hidden}
+.p3-card::before{content:'';position:absolute;top:0;right:0;left:0;height:3px;background:linear-gradient(90deg,transparent,#8B6914,transparent)}
+.p3-card .cl{font-size:1.4rem;font-weight:900;color:#5C4A32;margin-bottom:4px}
+.p3-card .ct{font-size:.88rem;font-weight:700;color:#2C2018;margin-bottom:12px}
+.p3-pkg{border-radius:11px;padding:11px 14px;margin-bottom:8px}
+.p3-pkg.g{background:#FAF5EC;border:1px solid #DDD5C8}
+.p3-pkg.gr{background:#F5FAF5;border:1px solid #C3E6C3}
+.p3-pkg .pr{display:flex;justify-content:space-between;align-items:center}
+.p3-pkg .pn{font-size:.8rem;font-weight:700;color:#2C2018}
+.p3-pkg.g .pp{font-size:1rem;font-weight:900;color:#8B6914}
+.p3-pkg.gr .pp{font-size:1rem;font-weight:900;color:#16A34A}
+.p3-pkg .pd{font-size:.69rem;color:#7A6552;margin-top:2px}
+.p3-packages{background:#F2EBE0;padding:40px 28px}
+.p3-sec-tag{display:inline-block;background:#FAF5EC;border:1px solid #DDD5C8;color:#5C4A32;padding:3px 12px;border-radius:14px;font-size:.72rem;font-weight:700;margin-bottom:8px}
+.p3-sec-h2{font-size:1.8rem;font-weight:900;color:#2C2018;margin-bottom:6px}
+.p3-sec-h2 span{color:#8B6914}
+.p3-sec-p{color:#7A6552;font-size:.85rem;margin-bottom:24px}
+.p3-cards-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.p3-pcard{background:#FFFFFF;border:1px solid #DDD5C8;border-radius:18px;padding:20px}
+.p3-pcard h4{font-size:.9rem;font-weight:700;color:#2C2018;margin:10px 0 6px}
+.p3-pcard p{font-size:.75rem;color:#7A6552;line-height:1.5}
+.p3-pcard .price{font-size:1.8rem;font-weight:900;color:#8B6914;margin:12px 0 10px}
+.p3-pcard .price span{font-size:.8rem;color:#7A6552}
+.p3-pbtn{width:100%;background:#5C4A32;color:#FAF7F2;padding:11px;border-radius:11px;border:none;font-size:.85rem;font-weight:700;font-family:'Cairo',sans-serif;cursor:pointer}
+
+.tag{display:inline-block;padding:5px 14px;border-radius:20px;font-size:.8rem;font-weight:700;font-family:'Cairo',sans-serif;margin-bottom:18px}
+.rec-tag{background:#16A34A;color:#fff}
+</style>
+</head>
+<body>
+<h1>مقترحات الألوان الفاتحة — vllogsraye</h1>
+<p class="sub">اختاري النمط اللي يعجبك وأطبّقه على الموقع</p>
+
+<div class="palettes">
+
+  <!-- ═══ PALETTE 1 ═══ -->
+  <div class="palette">
+    <div class="pal-label">① أوف وايت ذهبي — Off-White Gold</div>
+    <div class="swatches">
+      <div class="sw-group"><div class="swatch" style="background:#FFFDF9"></div><span class="swatch-lbl">#FFFDF9 خلفية</span></div>
+      <div class="sw-group"><div class="swatch" style="background:#F7F3EC"></div><span class="swatch-lbl">#F7F3EC ثانوي</span></div>
+      <div class="sw-group"><div class="swatch" style="background:#FFFFFF;border:1px solid #ccc"></div><span class="swatch-lbl">#FFFFFF بطاقات</span></div>
+      <div class="sw-group"><div class="swatch" style="background:#C9A96E"></div><span class="swatch-lbl">#C9A96E ذهبي</span></div>
+      <div class="sw-group"><div class="swatch" style="background:#1A1209"></div><span class="swatch-lbl">#1A1209 نص</span></div>
+      <div class="sw-group"><div class="swatch" style="background:#8B7355"></div><span class="swatch-lbl">#8B7355 ثانوي</span></div>
+      <span class="tag rec-tag">⭐ موصى به</span>
+    </div>
+    <div class="p1-nav">
+      <a class="brand">vllogsraye</a>
+      <ul class="links">
+        <li><a>الباقات</a></li>
+        <li><a>حاسبة السعرات</a></li>
+        <li><a>البلوق</a></li>
+        <li><a class="cta">اشتري الآن</a></li>
+      </ul>
+    </div>
+    <div class="p1-hero">
+      <div>
+        <div class="p1-badge">⚡ vllogsraye — مدربة شخصية</div>
+        <h1 class="p1-h1">تدخلين النادي<span> وتعرفين وش تسوين</span></h1>
+        <p class="p1-sub">جدول تدريب واضح — ما في تخمين ولا ضياع. كل يوم له هدف وكل تمرين بالتفصيل.</p>
+        <div class="p1-btns">
+          <button class="p1-btn1">🔥 شوفي الباقات</button>
+          <button class="p1-btn2">تواصلي معي</button>
+        </div>
+      </div>
+      <div class="p1-card">
+        <div class="cl">vllogsraye</div>
+        <div class="ct">ابدأي رحلتك بخطوتين</div>
+        <div class="p1-pkg g">
+          <div class="pr"><span class="pn">🔥 حاسبة السعرات</span><span class="pp">مجاناً</span></div>
+          <div class="pd">احسبي سعرات ثباتك وهدفك ←</div>
+        </div>
+        <div class="p1-pkg gr">
+          <div class="pr"><span class="pn">💪 الجداول الرياضية</span><span class="pp">4 باقات</span></div>
+          <div class="pd">اختاري الباقة اللي تناسبك ←</div>
+        </div>
+      </div>
+    </div>
+    <div class="p1-packages">
+      <div style="text-align:center;margin-bottom:24px">
+        <div class="p1-sec-tag">💎 الباقات</div>
+        <h2 class="p1-sec-h2">وش <span>الباقة اللي ودك؟</span></h2>
+        <p class="p1-sec-p">أربع باقات — اختاري اللي يناسبك</p>
+      </div>
+      <div class="p1-cards-row">
+        <div class="p1-pcard">
+          <div style="font-size:1.8rem">📄</div>
+          <h4>جدول موحد</h4>
+          <p>Body Recomposition — خسارة دهون وبناء عضلات</p>
+          <div class="price">50 <span>ريال</span></div>
+          <button class="p1-pbtn">حمّلي الجدول</button>
+        </div>
+        <div class="p1-pcard" style="border-color:#C9A96E">
+          <div style="font-size:1.8rem">🎯</div>
+          <h4>جدول مخصص</h4>
+          <p>مصمم لجسمك وهدفك + هدية ملف اعرف وش تاكل</p>
+          <div class="price">149 <span>ريال</span></div>
+          <button class="p1-pbtn">اطلبي جدولك</button>
+        </div>
+        <div class="p1-pcard">
+          <div style="font-size:1.8rem">👑</div>
+          <h4>متابعة شخصية</h4>
+          <p>جدول خاص + متابعة أسبوعية على واتساب</p>
+          <div class="price">299 <span>ريال</span></div>
+          <button class="p1-pbtn">ابدأي المتابعة</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PALETTE 2 ═══ -->
+  <div class="palette">
+    <div class="pal-label">② بيج دافئ — Warm Beige</div>
+    <div class="swatches">
+      <div class="sw-group"><div class="swatch" style="background:#FFF8F0"></div><span class="swatch-lbl">#FFF8F0 خلفية</span></div>
+      <div class="sw-group"><div class="swatch" style="background:#FFF3E6"></div><span class="swatch-lbl">#FFF3E6 ثانوي</span></div>
+      <div class="sw-group"><div class="swatch" style="background:#FFFFFF;border:1px solid #ccc"></div><span class="swatch-lbl">#FFFFFF بطاقات</span></div>
+      <div class="sw-group"><div class="swatch" style="background:#D97706"></div><span class="swatch-lbl">#D97706 برتقالي ذهبي</span></div>
+      <div class="sw-group"><div class="swatch" style="background:#3B1C08"></div><span class="swatch-lbl">#3B1C08 نص</span></div>
+      <div class="sw-group"><div class="swatch" style="background:#78481A"></div><span class="swatch-lbl">#78481A ثانوي</span></div>
+    </div>
+    <div class="p2-nav">
+      <a class="brand">vllogsraye</a>
+      <ul class="links">
+        <li><a>الباقات</a></li>
+        <li><a>حاسبة السعرات</a></li>
+        <li><a>البلوق</a></li>
+        <li><a class="cta">اشتري الآن</a></li>
+      </ul>
+    </div>
+    <div class="p2-hero">
+      <div>
+        <div class="p2-badge">⚡ vllogsraye — مدربة شخصية</div>
+        <h1 class="p2-h1">تدخلين النادي<span> وتعرفين وش تسوين</span></h1>
+        <p class="p2-sub">جدول تدريب واضح — ما في تخمين ولا ضياع. كل يوم له هدف وكل تمرين بالتفصيل.</p>
+        <div class="p2-btns">
+          <button class="p2-btn1">🔥 شوفي الباقات</button>
+          <button class="p2-btn2">تواصلي معي</button>
+        </div>
+      </div>
+      <div class="p2-card">
+        <div class="cl">vllogsraye</div>
+        <div class="ct">ابدأي رحلتك بخطوتين</div>
+        <div class="p2-pkg g">
+          <div class="pr"><span class="pn">🔥 حاسبة السعرات</span><span class="pp">مجاناً</span></div>
+          <div class="pd">احسبي سعرات ثباتك وهدفك ←</div>
+        </div>
+        <div class="p2-pkg gr">
+          <div class="pr"><span class="pn">💪 الجداول الرياضية</span><span class="pp">4 باقات</span></div>
+          <div class="pd">اختاري الباقة اللي تناسبك ←</div>
+        </div>
+      </div>
+    </div>
+    <div class="p2-packages">
+      <div style="text-align:center;margin-bottom:24px">
+        <div class="p2-sec-tag">💎 الباقات</div>
+        <h2 class="p2-sec-h2">وش <span>الباقة اللي ودك؟</span></h2>
+        <p class="p2-sec-p">أربع باقات — اختاري اللي يناسبك</p>
+      </div>
+      <div class="p2-cards-row">
+        <div class="p2-pcard">
+          <div style="font-size:1.8rem">📄</div>
+          <h4>جدول موحد</h4>
+          <p>Body Recomposition — خسارة دهون وبناء عضلات</p>
+          <div class="price">50 <span>ريال</span></div>
+          <button class="p2-pbtn">حمّلي الجدول</button>
+        </div>
+        <div class="p2-pcard" style="border-color:#D97706">
+          <div style="font-size:1.8rem">🎯</div>
+          <h4>جدول مخصص</h4>
+          <p>مصمم لجسمك وهدفك + هدية ملف اعرف وش تاكل</p>
+          <div class="price">149 <span>ريال</span></div>
+          <button class="p2-pbtn">اطلبي جدولك</button>
+        </div>
+        <div class="p2-pcard">
+          <div style="font-size:1.8rem">👑</div>
+          <h4>متابعة شخصية</h4>
+          <p>جدول خاص + متابعة أسبوعية على واتساب</p>
+          <div class="price">299 <span>ريال</span></div>
+          <button class="p2-pbtn">ابدأي المتابعة</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PALETTE 3 ═══ -->
+  <div class="palette">
+    <div class="pal-label">③ رملي حجري — Sand & Stone</div>
+    <div class="swatches">
+      <div class="sw-group"><div class="swatch" style="background:#FAF7F2"></div><span class="swatch-lbl">#FAF7F2 خلفية</span></div>
+      <div class="sw-group"><div class="swatch" style="background:#F2EBE0"></div><span class="swatch-lbl">#F2EBE0 ثانوي</span></div>
+      <div class="sw-group"><div class="swatch" style="background:#FFFFFF;border:1px solid #ccc"></div><span class="swatch-lbl">#FFFFFF بطاقات</span></div>
+      <div class="sw-group"><div class="swatch" style="background:#8B6914"></div><span class="swatch-lbl">#8B6914 ذهبي غامق</span></div>
+      <div class="sw-group"><div class="swatch" style="background:#5C4A32"></div><span class="swatch-lbl">#5C4A32 بني</span></div>
+      <div class="sw-group"><div class="swatch" style="background:#7A6552"></div><span class="swatch-lbl">#7A6552 ثانوي</span></div>
+    </div>
+    <div class="p3-nav">
+      <a class="brand">vllogsraye</a>
+      <ul class="links">
+        <li><a>الباقات</a></li>
+        <li><a>حاسبة السعرات</a></li>
+        <li><a>البلوق</a></li>
+        <li><a class="cta">اشتري الآن</a></li>
+      </ul>
+    </div>
+    <div class="p3-hero">
+      <div>
+        <div class="p3-badge">⚡ vllogsraye — مدربة شخصية</div>
+        <h1 class="p3-h1">تدخلين النادي<span> وتعرفين وش تسوين</span></h1>
+        <p class="p3-sub">جدول تدريب واضح — ما في تخمين ولا ضياع. كل يوم له هدف وكل تمرين بالتفصيل.</p>
+        <div class="p3-btns">
+          <button class="p3-btn1">🔥 شوفي الباقات</button>
+          <button class="p3-btn2">تواصلي معي</button>
+        </div>
+      </div>
+      <div class="p3-card">
+        <div class="cl">vllogsraye</div>
+        <div class="ct">ابدأي رحلتك بخطوتين</div>
+        <div class="p3-pkg g">
+          <div class="pr"><span class="pn">🔥 حاسبة السعرات</span><span class="pp">مجاناً</span></div>
+          <div class="pd">احسبي سعرات ثباتك وهدفك ←</div>
+        </div>
+        <div class="p3-pkg gr">
+          <div class="pr"><span class="pn">💪 الجداول الرياضية</span><span class="pp">4 باقات</span></div>
+          <div class="pd">اختاري الباقة اللي تناسبك ←</div>
+        </div>
+      </div>
+    </div>
+    <div class="p3-packages">
+      <div style="text-align:center;margin-bottom:24px">
+        <div class="p3-sec-tag">💎 الباقات</div>
+        <h2 class="p3-sec-h2">وش <span>الباقة اللي ودك؟</span></h2>
+        <p class="p3-sec-p">أربع باقات — اختاري اللي يناسبك</p>
+      </div>
+      <div class="p3-cards-row">
+        <div class="p3-pcard">
+          <div style="font-size:1.8rem">📄</div>
+          <h4>جدول موحد</h4>
+          <p>Body Recomposition — خسارة دهون وبناء عضلات</p>
+          <div class="price">50 <span>ريال</span></div>
+          <button class="p3-pbtn">حمّلي الجدول</button>
+        </div>
+        <div class="p3-pcard" style="border-color:#8B6914">
+          <div style="font-size:1.8rem">🎯</div>
+          <h4>جدول مخصص</h4>
+          <p>مصمم لجسمك وهدفك + هدية ملف اعرف وش تاكل</p>
+          <div class="price">149 <span>ريال</span></div>
+          <button class="p3-pbtn">اطلبي جدولك</button>
+        </div>
+        <div class="p3-pcard">
+          <div style="font-size:1.8rem">👑</div>
+          <h4>متابعة شخصية</h4>
+          <p>جدول خاص + متابعة أسبوعية على واتساب</p>
+          <div class="price">299 <span>ريال</span></div>
+          <button class="p3-pbtn">ابدأي المتابعة</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<p style="text-align:center;margin-top:40px;color:#888;font-size:.82rem;font-family:'Cairo',sans-serif">قوليلي أي نمط يعجبك وأطبّقه على الموقع الكامل</p>
+</body>
+</html>
