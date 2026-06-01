@@ -429,7 +429,21 @@ footer{background:#050505;border-top:1px solid var(--border);padding:42px 48px 2
 .cp-row:last-child{margin-bottom:0}
 .cp-row span:last-child{font-weight:700;color:var(--white)}
 @media(max-width:760px){.calc-wrap{grid-template-columns:1fr}.calc-fields-row{grid-template-columns:1fr 1fr}}
-@media(max-width:480px){.calc-fields-row{grid-template-columns:1fr}}
+/* ── TOOLS TABS ── */
+.tools-tabs{display:flex;gap:0;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:5px;margin-bottom:32px;max-width:420px;margin-left:auto;margin-right:auto}
+.tool-tab{flex:1;padding:11px 20px;border-radius:10px;border:none;font-family:var(--font);font-size:.88rem;font-weight:700;color:var(--g2);cursor:pointer;background:transparent;transition:.3s;display:flex;align-items:center;justify-content:center;gap:7px}
+.tool-tab.on{background:var(--gold);color:var(--bg0)}
+.tool-pane{display:none}.tool-pane.show{display:block}
+/* schedule tab */
+.sched-days-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px}
+.sd-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px 10px;text-align:center;transition:.3s;cursor:default}
+.sd-card:hover{border-color:var(--goldB);transform:translateY(-3px)}
+.sd-num{width:32px;height:32px;background:var(--goldL);border:1px solid var(--goldB);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:900;color:var(--gold);margin:0 auto 8px}
+.sd-name{font-size:.75rem;font-weight:700;margin-bottom:3px}
+.sd-goal{font-size:.68rem;color:var(--g2);line-height:1.4}
+.sd-muscles{font-size:.65rem;color:var(--gold);background:var(--goldL);border-radius:6px;padding:2px 6px;margin-top:5px;display:inline-block}
+@media(max-width:680px){.sched-days-grid{grid-template-columns:1fr 1fr}.tools-tabs{max-width:100%}}
+@media(max-width:420px){.sched-days-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -654,85 +668,106 @@ footer{background:#050505;border-top:1px solid var(--border);padding:42px 48px 2
   </div>
 </section>
 
-<!-- CALORIE CALCULATOR -->
+<!-- TOOLS SECTION -->
 <section class="sec calc-sec" id="calculator">
   <div class="sec-in">
     <div class="sec-hd fi">
-      <div class="sec-tag">🔥 مجاناً</div>
-      <h2 class="sec-h2">حاسبة <span>السعرات الحرارية</span></h2>
-      <p class="sec-p">احسبي سعرات الثبات وأهدافك في ثوانٍ — مجاناً</p>
+      <div class="sec-tag">🛠️ أدوات مجانية</div>
+      <h2 class="sec-h2">كل اللي <span>تحتاجينه</span></h2>
+      <p class="sec-p">جداولك وحاسبة سعراتك — مجاناً</p>
     </div>
-    <div class="calc-wrap fi">
 
-      <!-- FORM -->
-      <div class="calc-form-card">
-        <h3 style="font-size:.97rem;font-weight:700;margin-bottom:20px;color:var(--gold)">✏️ أدخلي بياناتك</h3>
-        <div class="calc-field">
-          <label>الجنس</label>
-          <div class="gender-btns">
-            <button class="gen-btn on" id="genF" onclick="setGender('f')">👩 أنثى</button>
-            <button class="gen-btn" id="genM" onclick="setGender('m')">👨 ذكر</button>
-          </div>
-        </div>
-        <div class="calc-fields-row">
-          <div class="calc-field">
-            <label>العمر (سنة)</label>
-            <input type="number" id="cAge" placeholder="25" min="10" max="90" inputmode="numeric">
-          </div>
-          <div class="calc-field">
-            <label>الوزن (كغ)</label>
-            <input type="number" id="cWeight" placeholder="65" min="30" max="300" inputmode="numeric">
-          </div>
-        </div>
-        <div class="calc-field">
-          <label>الطول (سم)</label>
-          <input type="number" id="cHeight" placeholder="165" min="100" max="230" inputmode="numeric">
-        </div>
-        <div class="calc-field">
-          <label>مستوى النشاط اليومي</label>
-          <select id="cActivity">
-            <option value="1.2">🪑 جالس معظم الوقت — عمل مكتبي</option>
-            <option value="1.375">🚶 نشاط خفيف — 1 إلى 3 أيام رياضة</option>
-            <option value="1.55" selected>🏃 نشاط معتدل — 3 إلى 5 أيام رياضة</option>
-            <option value="1.725">💪 نشاط عالي — 6 إلى 7 أيام رياضة</option>
-            <option value="1.9">🔥 نشاط مكثف جداً — رياضيين</option>
-          </select>
-        </div>
-        <button class="btn-gold" style="width:100%;justify-content:center;margin-top:4px" onclick="calcCalories()">
-          <i class="fas fa-calculator"></i> احسب سعراتي
-        </button>
-      </div>
-
-      <!-- RESULT -->
-      <div class="calc-result-card" id="calcResult">
-        <div class="calc-result-main">
-          <div class="rmain-lbl">سعرات الثبات اليومية</div>
-          <div class="rmain-num" id="rMaint">—</div>
-          <div class="rmain-unit">سعرة حرارية / يوم</div>
-        </div>
-        <div class="calc-goals">
-          <div class="cg-row loss">
-            <div><div class="cg-label">🔥 لحرق الدهون</div><div class="cg-note">عجز 500 سعرة يومياً</div></div>
-            <div class="cg-cal" id="rLoss">—</div>
-          </div>
-          <div class="cg-row maint">
-            <div><div class="cg-label">⚖️ للثبات</div><div class="cg-note">المحافظة على الوزن</div></div>
-            <div class="cg-cal" id="rMaintGoal">—</div>
-          </div>
-          <div class="cg-row gain">
-            <div><div class="cg-label">💪 لبناء العضلات</div><div class="cg-note">فائض 300 سعرة يومياً</div></div>
-            <div class="cg-cal" id="rGain">—</div>
-          </div>
-        </div>
-        <div class="calc-prot">
-          <h4>🥩 البروتين اليومي الموصى به</h4>
-          <div class="cp-row"><span>الحد الأدنى (1.6g / كغ)</span><span id="rProtMin">—</span></div>
-          <div class="cp-row"><span>المثالي (2.0g / كغ)</span><span id="rProtOpt">—</span></div>
-          <div class="cp-row"><span>الأقصى (2.5g / كغ)</span><span id="rProtMax">—</span></div>
-        </div>
-      </div>
-
+    <!-- TABS -->
+    <div class="tools-tabs fi">
+      <button class="tool-tab on" id="tabSched" onclick="switchToolTab('sched')">
+        <i class="fas fa-calendar-week"></i> الجداول
+      </button>
+      <button class="tool-tab" id="tabCalc" onclick="switchToolTab('calc')">
+        <i class="fas fa-calculator"></i> حاسبة السعرات
+      </button>
     </div>
+
+    <!-- PANE 1: SCHEDULES -->
+    <div class="tool-pane show" id="pane-sched">
+      <div class="sched-days-grid fi" id="schedDaysGrid"></div>
+      <div style="text-align:center">
+        <a href="#packages" class="btn-gold" style="display:inline-flex">
+          <i class="fas fa-fire"></i> احصلي على جدولك الكامل
+        </a>
+      </div>
+    </div>
+
+    <!-- PANE 2: CALCULATOR -->
+    <div class="tool-pane" id="pane-calc">
+      <div class="calc-wrap fi">
+        <div class="calc-form-card">
+          <h3 style="font-size:.97rem;font-weight:700;margin-bottom:20px;color:var(--gold)">✏️ أدخلي بياناتك</h3>
+          <div class="calc-field">
+            <label>الجنس</label>
+            <div class="gender-btns">
+              <button class="gen-btn on" id="genF" onclick="setGender('f')">👩 أنثى</button>
+              <button class="gen-btn" id="genM" onclick="setGender('m')">👨 ذكر</button>
+            </div>
+          </div>
+          <div class="calc-fields-row">
+            <div class="calc-field">
+              <label>العمر (سنة)</label>
+              <input type="number" id="cAge" placeholder="25" min="10" max="90" inputmode="numeric">
+            </div>
+            <div class="calc-field">
+              <label>الوزن (كغ)</label>
+              <input type="number" id="cWeight" placeholder="65" min="30" max="300" inputmode="numeric">
+            </div>
+          </div>
+          <div class="calc-field">
+            <label>الطول (سم)</label>
+            <input type="number" id="cHeight" placeholder="165" min="100" max="230" inputmode="numeric">
+          </div>
+          <div class="calc-field">
+            <label>مستوى النشاط اليومي</label>
+            <select id="cActivity">
+              <option value="1.2">🪑 جالس معظم الوقت — عمل مكتبي</option>
+              <option value="1.375">🚶 نشاط خفيف — 1 إلى 3 أيام رياضة</option>
+              <option value="1.55" selected>🏃 نشاط معتدل — 3 إلى 5 أيام رياضة</option>
+              <option value="1.725">💪 نشاط عالي — 6 إلى 7 أيام رياضة</option>
+              <option value="1.9">🔥 نشاط مكثف جداً — رياضيين</option>
+            </select>
+          </div>
+          <button class="btn-gold" style="width:100%;justify-content:center;margin-top:4px" onclick="calcCalories()">
+            <i class="fas fa-calculator"></i> احسب سعراتي
+          </button>
+        </div>
+
+        <div class="calc-result-card" id="calcResult">
+          <div class="calc-result-main">
+            <div class="rmain-lbl">سعرات الثبات اليومية</div>
+            <div class="rmain-num" id="rMaint">—</div>
+            <div class="rmain-unit">سعرة حرارية / يوم</div>
+          </div>
+          <div class="calc-goals">
+            <div class="cg-row loss">
+              <div><div class="cg-label">🔥 لحرق الدهون</div><div class="cg-note">عجز 500 سعرة يومياً</div></div>
+              <div class="cg-cal" id="rLoss">—</div>
+            </div>
+            <div class="cg-row maint">
+              <div><div class="cg-label">⚖️ للثبات</div><div class="cg-note">المحافظة على الوزن</div></div>
+              <div class="cg-cal" id="rMaintGoal">—</div>
+            </div>
+            <div class="cg-row gain">
+              <div><div class="cg-label">💪 لبناء العضلات</div><div class="cg-note">فائض 300 سعرة يومياً</div></div>
+              <div class="cg-cal" id="rGain">—</div>
+            </div>
+          </div>
+          <div class="calc-prot">
+            <h4>🥩 البروتين اليومي الموصى به</h4>
+            <div class="cp-row"><span>الحد الأدنى (1.6g / كغ)</span><span id="rProtMin">—</span></div>
+            <div class="cp-row"><span>المثالي (2.0g / كغ)</span><span id="rProtOpt">—</span></div>
+            <div class="cp-row"><span>الأقصى (2.5g / كغ)</span><span id="rProtMax">—</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -1703,6 +1738,28 @@ function fallbackCopy(text){
 }
 
 // ============================================================
+// TOOLS TABS
+// ============================================================
+function switchToolTab(tab){
+  ['sched','calc'].forEach(t=>{
+    document.getElementById('pane-'+t).classList.toggle('show',t===tab);
+    document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('on',t===tab);
+  });
+}
+function buildSchedDays(){
+  const ar=['١','٢','٣','٤','٥'];
+  const el=document.getElementById('schedDaysGrid');
+  if(!el)return;
+  el.innerHTML=S.days.map((d,i)=>`
+    <div class="sd-card">
+      <div class="sd-num">${ar[i]||i+1}</div>
+      <div class="sd-name">${d.name}</div>
+      <div class="sd-goal">${d.goal}</div>
+      <div class="sd-muscles">${d.muscles}</div>
+    </div>`).join('');
+}
+
+// ============================================================
 // CALORIE CALCULATOR
 // ============================================================
 let calcGender='f';
@@ -1737,7 +1794,7 @@ function calcCalories(){
 // INIT
 // ============================================================
 document.addEventListener('DOMContentLoaded',()=>{
-  buildTicker();buildWhat();renderDays();renderBlog();observe();
+  buildTicker();buildWhat();renderDays();renderBlog();buildSchedDays();observe();
   if(location.hash==='#admin')showAdmin();
   localStorage.setItem('vl_schedule',JSON.stringify(S.days));
 });
