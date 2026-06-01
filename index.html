@@ -373,25 +373,107 @@ footer{background:#050505;border-top:1px solid var(--border);padding:42px 48px 2
 /* ── FADE IN ── */
 .fi{opacity:0;transform:translateY(22px);transition:.55s ease}.fi.vis{opacity:1;transform:none}
 
-/* ── RESPONSIVE ── */
-@media(max-width:960px){
-  .hero-in,.sched-layout,.tt-layout{grid-template-columns:1fr}
-  .hero-card-wrap{display:none}
-  .what-grid{grid-template-columns:1fr 1fr}
-  .pkgs-grid{grid-template-columns:1fr}
-  .footer-top{grid-template-columns:1fr}
+/* ══════════════════════════════════════
+   RESPONSIVE — لابتوب صغير 1024px
+══════════════════════════════════════ */
+@media(max-width:1024px){
+  .nav{padding:14px 28px}
+  .nav.solid{padding:10px 28px}
+  .hero{padding:110px 28px 80px}
+  .hero-in{gap:36px}
+  .h-h1{font-size:2.9rem}
+  .sec{padding:80px 28px}
+  .pkgs-grid{grid-template-columns:repeat(2,1fr)}
+  .what-grid{grid-template-columns:repeat(3,1fr)}
+  .soc-strip,footer{padding-left:28px;padding-right:28px}
+  .footer-top{grid-template-columns:1.4fr 1fr 1fr;gap:28px}
+  .adm-wrap{padding:28px}
 }
-@media(max-width:660px){
-  .nav{padding:13px 16px}.nav.solid{padding:9px 16px}
+
+/* ══════════════════════════════════════
+   RESPONSIVE — تابلت / آيباد 768px
+══════════════════════════════════════ */
+@media(max-width:768px){
+  .nav{padding:13px 20px}.nav.solid{padding:10px 20px}
   .nav-links{display:none}.hbg{display:flex}
-  .hero{padding:95px 16px 60px}.h-h1{font-size:2.4rem}
-  .sec{padding:62px 16px}
-  .soc-strip,footer{padding-left:16px;padding-right:16px}
+  .hero{padding:100px 20px 70px}
+  .hero-in{grid-template-columns:1fr;gap:32px}
+  .hero-card-wrap{display:none}
+  .h-h1{font-size:2.5rem}
+  .h-sub{font-size:.95rem}
+  .sec{padding:70px 20px}
+  .sec-h2{font-size:2rem}
+  .pkgs-grid{grid-template-columns:repeat(2,1fr);gap:18px}
+  .what-grid{grid-template-columns:repeat(2,1fr)}
+  .sched-layout{grid-template-columns:1fr;gap:32px}
+  .tt-layout{grid-template-columns:1fr;gap:32px}
+  .blog-grid{grid-template-columns:repeat(2,1fr)}
+  .disc-grid{grid-template-columns:repeat(2,1fr)}
+  .footer-top{grid-template-columns:1fr 1fr;gap:24px}
+  .soc-strip,footer{padding-left:20px;padding-right:20px}
+  .calc-wrap{grid-template-columns:1fr}
+  .sched-days-grid{grid-template-columns:repeat(3,1fr)}
+  .tools-tabs{max-width:100%}
+  .stats-row{grid-template-columns:1fr 1fr}
+  .adm-wrap{padding:20px}
+  .fg2{grid-template-columns:1fr 1fr}
+  .modal{padding:26px 20px}
+}
+
+/* ══════════════════════════════════════
+   RESPONSIVE — جوال كبير 600px
+══════════════════════════════════════ */
+@media(max-width:600px){
+  .nav{padding:12px 16px}.nav.solid{padding:9px 16px}
+  .hero{padding:90px 16px 60px}
+  .h-h1{font-size:2.1rem;line-height:1.2}
+  .h-badge{font-size:.73rem}
+  .h-btns{gap:9px}
+  .btn-gold,.btn-ghost,.btn-wa{padding:11px 18px;font-size:.85rem}
+  .sec{padding:60px 16px}
+  .sec-h2{font-size:1.75rem}
+  .pkgs-grid{grid-template-columns:1fr;gap:16px}
   .what-grid{grid-template-columns:1fr}
-  .adm-wrap{padding:16px}
+  .blog-grid{grid-template-columns:1fr}
+  .disc-grid{grid-template-columns:1fr}
+  .soc-btns{gap:8px}
+  .soc-btn{padding:10px 14px;font-size:.8rem}
+  .footer-top{grid-template-columns:1fr;gap:22px}
+  .soc-strip,footer{padding-left:16px;padding-right:16px}
+  .footer-bot{flex-direction:column;text-align:center;gap:6px}
+  .ticker-track span{font-size:.75rem}
+  .adm-wrap{padding:14px}
   .fg2{grid-template-columns:1fr}
-  .modal{padding:22px 16px}
-  .wa-float{bottom:20px;left:16px}
+  .modal{padding:20px 14px}
+  .wa-float{bottom:16px;left:14px}
+  .orders-fab{bottom:14px;left:14px;padding:9px 13px;font-size:.76rem}
+  .sched-days-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .calc-fields-row{grid-template-columns:1fr 1fr}
+  .tools-tabs{max-width:100%}
+  .avoid-grid{grid-template-columns:1fr}
+  .macro-split{grid-template-columns:1fr}
+  .supps-grid{grid-template-columns:1fr 1fr}
+  .rules-grid{grid-template-columns:1fr 1fr}
+  .timing-item{grid-template-columns:1fr}
+}
+
+/* ══════════════════════════════════════
+   RESPONSIVE — جوال صغير 380px
+══════════════════════════════════════ */
+@media(max-width:380px){
+  .h-h1{font-size:1.85rem}
+  .sec-h2{font-size:1.55rem}
+  .calc-fields-row{grid-template-columns:1fr}
+  .sched-days-grid{grid-template-columns:1fr}
+  .gender-btns{flex-direction:column}
+  .pkg-price{font-size:2rem}
+  .h-btns{flex-direction:column}
+  .btn-gold,.btn-ghost,.btn-wa{width:100%;justify-content:center}
+  .pay-methods{flex-wrap:wrap}
+  .pm-tab{min-width:calc(50% - 4px)}
+  .supps-grid{grid-template-columns:1fr}
+  .rules-grid{grid-template-columns:1fr}
+  .otp-box{width:40px;height:50px;font-size:1.2rem}
 }
 
 /* ── CALORIE CALCULATOR ── */
