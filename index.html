@@ -497,23 +497,36 @@ footer{background:#050505;border-top:1px solid var(--border);padding:42px 48px 2
       </div>
     </div>
     <div class="hero-card-wrap fi">
-      <div class="float-p fp1"><i class="fas fa-bolt"></i> تحميل فوري بعد الدفع</div>
+      <div class="float-p fp1"><i class="fas fa-star"></i> ابدأي رحلتك اليوم</div>
       <div class="hero-card">
         <div class="hc-logo">vllogsraye</div>
-        <div class="hc-ttl">اختاري باقتك</div>
-        <div class="hc-sub">باقتان بس — بسيطة وواضحة</div>
-        <div class="hc-pkg p1">
-          <div class="pkg-row"><span class="pkg-name">💪 جدول موحد</span><span class="pkg-price">50 ر</span></div>
-          <div class="pkg-desc">Body Recomposition — تحمّل فوري</div>
-        </div>
-        <div class="hc-pkg" style="background:rgba(56,189,248,.05);border-color:rgba(56,189,248,.2);margin-bottom:10px;border-radius:13px;padding:13px 16px">
-          <div class="pkg-row"><span class="pkg-name">🥗 اعرف وش تاكل</span><span class="pkg-price" style="color:#38bdf8">50 ر</span></div>
-          <div class="pkg-desc">دليل غذائي — سعرات + مؤشر غلايسيمي</div>
-        </div>
-        <div class="hc-pkg p2">
-          <div class="pkg-row"><span class="pkg-name">👑 متابعة شخصية</span><span class="pkg-price" style="color:var(--green)">299 ر</span></div>
-          <div class="pkg-desc">جدول خاص بك + واتساب أسبوعي</div>
-        </div>
+        <div class="hc-ttl">ابدأي رحلتك بخطوتين بس</div>
+        <div class="hc-sub">كل اللي تحتاجينه في مكان واحد</div>
+
+        <!-- STEP 1 -->
+        <a href="#calculator" onclick="switchToolTab('calc')" style="text-decoration:none;display:block">
+          <div class="hc-pkg" style="background:rgba(201,169,110,.06);border-color:var(--goldB);margin-bottom:10px;transition:.3s;cursor:pointer" onmouseover="this.style.background='rgba(201,169,110,.12)'" onmouseout="this.style.background='rgba(201,169,110,.06)'">
+            <div class="pkg-row">
+              <span class="pkg-name">🔥 الخطوة الأولى</span>
+              <span style="background:var(--goldL);border:1px solid var(--goldB);color:var(--gold);padding:2px 8px;border-radius:8px;font-size:.68rem;font-weight:700">مجاناً</span>
+            </div>
+            <div class="pkg-desc" style="font-size:.78rem;color:var(--g1);margin-top:4px">حاسبة السعرات الحرارية والبروتين</div>
+            <div class="pkg-desc" style="font-size:.7rem;color:var(--g2);margin-top:2px">احسبي سعرات ثباتك وهدفك ←</div>
+          </div>
+        </a>
+
+        <!-- STEP 2 -->
+        <a href="#packages" style="text-decoration:none;display:block">
+          <div class="hc-pkg" style="background:rgba(74,222,128,.05);border-color:rgba(74,222,128,.2);transition:.3s;cursor:pointer" onmouseover="this.style.background='rgba(74,222,128,.1)'" onmouseout="this.style.background='rgba(74,222,128,.05)'">
+            <div class="pkg-row">
+              <span class="pkg-name">💪 الخطوة الثانية</span>
+              <span style="background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);color:var(--green);padding:2px 8px;border-radius:8px;font-size:.68rem;font-weight:700">4 باقات</span>
+            </div>
+            <div class="pkg-desc" style="font-size:.78rem;color:var(--g1);margin-top:4px">الجداول الرياضية المخصصة</div>
+            <div class="pkg-desc" style="font-size:.7rem;color:var(--g2);margin-top:2px">اختاري الباقة اللي تناسبك ←</div>
+          </div>
+        </a>
+
       </div>
       <div class="float-p fp2"><i class="fab fa-whatsapp"></i> دعم واتساب مباشر</div>
     </div>
