@@ -393,6 +393,43 @@ footer{background:#050505;border-top:1px solid var(--border);padding:42px 48px 2
   .modal{padding:22px 16px}
   .wa-float{bottom:20px;left:16px}
 }
+
+/* ── CALORIE CALCULATOR ── */
+.calc-sec{background:var(--bg1)}
+.calc-wrap{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:start}
+.calc-form-card{background:var(--bg2);border:1px solid var(--border);border-radius:22px;padding:28px;position:relative;overflow:hidden}
+.calc-form-card::before{content:'';position:absolute;top:0;right:0;left:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.calc-result-card{background:var(--bg2);border:1px solid var(--goldB);border-radius:22px;padding:28px;display:none}
+.calc-result-card.show{display:block;animation:fadeUp .4s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.calc-field{margin-bottom:15px}
+.calc-field label{display:block;font-size:.8rem;font-weight:700;color:var(--g1);margin-bottom:6px}
+.calc-field input,.calc-field select{width:100%;background:var(--bg1);border:1.5px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--white);font-size:.9rem;font-family:var(--font);outline:none;transition:.3s}
+.calc-field input:focus,.calc-field select:focus{border-color:var(--gold)}
+.calc-field select option{background:var(--bg1)}
+.gender-btns{display:flex;gap:10px}
+.gen-btn{flex:1;background:var(--bg1);border:1.5px solid var(--border);border-radius:10px;padding:11px;font-size:.85rem;font-weight:700;font-family:var(--font);color:var(--g2);cursor:pointer;transition:.3s}
+.gen-btn.on{border-color:var(--gold);color:var(--gold);background:var(--goldL)}
+.calc-fields-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.calc-result-main{text-align:center;padding:18px 0 20px;border-bottom:1px solid var(--border);margin-bottom:18px}
+.rmain-lbl{font-size:.83rem;color:var(--g2);margin-bottom:6px}
+.rmain-num{font-size:3.4rem;font-weight:900;color:var(--gold);line-height:1}
+.rmain-unit{font-size:.8rem;color:var(--g2);margin-top:5px}
+.calc-goals{display:flex;flex-direction:column;gap:9px;margin-bottom:18px}
+.cg-row{display:flex;align-items:center;justify-content:space-between;background:var(--bg1);border:1px solid var(--border);border-radius:12px;padding:12px 16px}
+.cg-label{font-size:.83rem;font-weight:600}
+.cg-note{font-size:.7rem;color:var(--g2);margin-top:1px}
+.cg-cal{font-size:1.05rem;font-weight:900;white-space:nowrap}
+.cg-row.loss .cg-cal{color:#f87171}
+.cg-row.maint .cg-cal{color:var(--gold)}
+.cg-row.gain .cg-cal{color:#4ade80}
+.calc-prot{background:var(--goldL);border:1px solid var(--goldB);border-radius:12px;padding:14px 16px}
+.calc-prot h4{font-size:.8rem;font-weight:700;color:var(--gold);margin-bottom:10px}
+.cp-row{display:flex;justify-content:space-between;font-size:.79rem;color:var(--g1);margin-bottom:5px}
+.cp-row:last-child{margin-bottom:0}
+.cp-row span:last-child{font-weight:700;color:var(--white)}
+@media(max-width:760px){.calc-wrap{grid-template-columns:1fr}.calc-fields-row{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.calc-fields-row{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -402,6 +439,7 @@ footer{background:#050505;border-top:1px solid var(--border);padding:42px 48px 2
   <a class="nav-brand" href="#" onclick="showMain()">vllogsraye</a>
   <ul class="nav-links">
     <li><a href="#packages">الباقات</a></li>
+    <li><a href="#calculator">حاسبة السعرات</a></li>
     <li><a href="#what">وش في الجدول</a></li>
     <li><a href="#discounts">أكواد الخصم</a></li>
     <li><a href="#blog">البلوقز</a></li>
@@ -414,6 +452,7 @@ footer{background:#050505;border-top:1px solid var(--border);padding:42px 48px 2
 </nav>
 <div class="mob-menu" id="mobMenu">
   <a href="#packages" onclick="toggleNav()">الباقات والأسعار</a>
+  <a href="#calculator" onclick="toggleNav()">🔥 حاسبة السعرات</a>
   <a href="#what" onclick="toggleNav()">وش في الجدول</a>
   <a href="#discounts" onclick="toggleNav()">🎁 أكواد الخصم</a>
   <a href="#blog" onclick="toggleNav()">البلوقز</a>
@@ -608,6 +647,88 @@ footer{background:#050505;border-top:1px solid var(--border);padding:42px 48px 2
           <a href="https://wa.me/966502212387?text=مرحبا vllogsraye، أبي أعرف أكثر عن باقة المتابعة الشخصية" target="_blank" class="btn-buy-wa">
             <i class="fab fa-whatsapp"></i> استفسري قبل الشراء
           </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CALORIE CALCULATOR -->
+<section class="sec calc-sec" id="calculator">
+  <div class="sec-in">
+    <div class="sec-hd fi">
+      <div class="sec-tag">🔥 مجاناً</div>
+      <h2 class="sec-h2">حاسبة <span>السعرات الحرارية</span></h2>
+      <p class="sec-p">احسبي سعرات الثبات وأهدافك في ثوانٍ — مجاناً</p>
+    </div>
+    <div class="calc-wrap fi">
+
+      <!-- FORM -->
+      <div class="calc-form-card">
+        <h3 style="font-size:.97rem;font-weight:700;margin-bottom:20px;color:var(--gold)">✏️ أدخلي بياناتك</h3>
+        <div class="calc-field">
+          <label>الجنس</label>
+          <div class="gender-btns">
+            <button class="gen-btn on" id="genF" onclick="setGender('f')">👩 أنثى</button>
+            <button class="gen-btn" id="genM" onclick="setGender('m')">👨 ذكر</button>
+          </div>
+        </div>
+        <div class="calc-fields-row">
+          <div class="calc-field">
+            <label>العمر (سنة)</label>
+            <input type="number" id="cAge" placeholder="25" min="10" max="90" inputmode="numeric">
+          </div>
+          <div class="calc-field">
+            <label>الوزن (كغ)</label>
+            <input type="number" id="cWeight" placeholder="65" min="30" max="300" inputmode="numeric">
+          </div>
+        </div>
+        <div class="calc-field">
+          <label>الطول (سم)</label>
+          <input type="number" id="cHeight" placeholder="165" min="100" max="230" inputmode="numeric">
+        </div>
+        <div class="calc-field">
+          <label>مستوى النشاط اليومي</label>
+          <select id="cActivity">
+            <option value="1.2">🪑 جالس معظم الوقت — عمل مكتبي</option>
+            <option value="1.375">🚶 نشاط خفيف — 1 إلى 3 أيام رياضة</option>
+            <option value="1.55" selected>🏃 نشاط معتدل — 3 إلى 5 أيام رياضة</option>
+            <option value="1.725">💪 نشاط عالي — 6 إلى 7 أيام رياضة</option>
+            <option value="1.9">🔥 نشاط مكثف جداً — رياضيين</option>
+          </select>
+        </div>
+        <button class="btn-gold" style="width:100%;justify-content:center;margin-top:4px" onclick="calcCalories()">
+          <i class="fas fa-calculator"></i> احسب سعراتي
+        </button>
+      </div>
+
+      <!-- RESULT -->
+      <div class="calc-result-card" id="calcResult">
+        <div class="calc-result-main">
+          <div class="rmain-lbl">سعرات الثبات اليومية</div>
+          <div class="rmain-num" id="rMaint">—</div>
+          <div class="rmain-unit">سعرة حرارية / يوم</div>
+        </div>
+        <div class="calc-goals">
+          <div class="cg-row loss">
+            <div><div class="cg-label">🔥 لحرق الدهون</div><div class="cg-note">عجز 500 سعرة يومياً</div></div>
+            <div class="cg-cal" id="rLoss">—</div>
+          </div>
+          <div class="cg-row maint">
+            <div><div class="cg-label">⚖️ للثبات</div><div class="cg-note">المحافظة على الوزن</div></div>
+            <div class="cg-cal" id="rMaintGoal">—</div>
+          </div>
+          <div class="cg-row gain">
+            <div><div class="cg-label">💪 لبناء العضلات</div><div class="cg-note">فائض 300 سعرة يومياً</div></div>
+            <div class="cg-cal" id="rGain">—</div>
+          </div>
+        </div>
+        <div class="calc-prot">
+          <h4>🥩 البروتين اليومي الموصى به</h4>
+          <div class="cp-row"><span>الحد الأدنى (1.6g / كغ)</span><span id="rProtMin">—</span></div>
+          <div class="cp-row"><span>المثالي (2.0g / كغ)</span><span id="rProtOpt">—</span></div>
+          <div class="cp-row"><span>الأقصى (2.5g / كغ)</span><span id="rProtMax">—</span></div>
         </div>
       </div>
 
@@ -1579,6 +1700,37 @@ function fallbackCopy(text){
   ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
   document.body.appendChild(ta); ta.select();
   document.execCommand('copy'); document.body.removeChild(ta);
+}
+
+// ============================================================
+// CALORIE CALCULATOR
+// ============================================================
+let calcGender='f';
+function setGender(g){
+  calcGender=g;
+  document.getElementById('genF').classList.toggle('on',g==='f');
+  document.getElementById('genM').classList.toggle('on',g==='m');
+}
+function calcCalories(){
+  const age=parseFloat(document.getElementById('cAge').value);
+  const weight=parseFloat(document.getElementById('cWeight').value);
+  const height=parseFloat(document.getElementById('cHeight').value);
+  const activity=parseFloat(document.getElementById('cActivity').value);
+  if(!age||!weight||!height||isNaN(activity)){showToast('⚠️ أدخلي جميع البيانات');return;}
+  const bmr=calcGender==='f'
+    ?(10*weight)+(6.25*height)-(5*age)-161
+    :(10*weight)+(6.25*height)-(5*age)+5;
+  const tdee=Math.round(bmr*activity);
+  document.getElementById('rMaint').textContent=tdee.toLocaleString();
+  document.getElementById('rMaintGoal').textContent=tdee.toLocaleString()+' سعرة';
+  document.getElementById('rLoss').textContent=Math.max(1200,tdee-500).toLocaleString()+' سعرة';
+  document.getElementById('rGain').textContent=(tdee+300).toLocaleString()+' سعرة';
+  document.getElementById('rProtMin').textContent=Math.round(weight*1.6)+'g';
+  document.getElementById('rProtOpt').textContent=Math.round(weight*2.0)+'g';
+  document.getElementById('rProtMax').textContent=Math.round(weight*2.5)+'g';
+  const card=document.getElementById('calcResult');
+  card.classList.add('show');
+  setTimeout(()=>card.scrollIntoView({behavior:'smooth',block:'nearest'}),100);
 }
 
 // ============================================================
