@@ -100,7 +100,7 @@ a{text-decoration:none;color:inherit}
 
 /* ── PACKAGES ── */
 .pkgs-sec{background:var(--bg1)}
-.pkgs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;max-width:1200px;margin:0 auto}
+.pkgs-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:26px;max-width:1200px;margin:0 auto}
 .pkg-card{background:var(--bg2);border:1px solid var(--border);border-radius:24px;overflow:hidden;transition:.3s;position:relative}
 .pkg-card:hover{transform:translateY(-6px);box-shadow:0 25px 60px rgba(0,0,0,.5)}
 .pkg-card.premium{border-color:var(--goldB)}
@@ -475,8 +475,8 @@ footer{background:#050505;border-top:1px solid var(--border);padding:42px 48px 2
   <div class="sec-in">
 <div class="sec-hd fi">
       <div class="sec-tag">💎 الباقات</div>
-      <h2 class="sec-h2">وش <span>تبينه؟</span></h2>
-      <p class="sec-p">ثلاث باقات — اختار اللي يناسبك</p>
+      <h2 class="sec-h2">وش <span>الباقة اللي ودك؟</span></h2>
+      <p class="sec-p">أربع باقات — اختاري اللي يناسبك</p>
     </div>
     <div class="pkgs-grid">
 
@@ -541,6 +541,37 @@ footer{background:#050505;border-top:1px solid var(--border);padding:42px 48px 2
           </div>
           <button class="btn-buy nutr-btn" onclick="openPay(3)" style="width:100%;justify-content:center">
             <i class="fas fa-shopping-cart"></i> احصل على الدليل — 20 ريال
+          </button>
+        </div>
+      </div>
+
+      <!-- PACKAGE 4 — CUSTOM PLAN -->
+      <div class="pkg-card fi" style="border-color:rgba(168,85,247,.3)">
+        <div class="pkg-top" style="position:relative">
+          <div style="position:absolute;top:0;right:0;left:0;height:3px;background:linear-gradient(90deg,transparent,#a855f7,transparent)"></div>
+          <div class="pkg-icon">🎯</div>
+          <div class="pkg-name">تصميم جدول مخصص حسب هدفك</div>
+          <div class="pkg-tagline">جدول مصمم لجسمك وهدفك — بدون متابعة أسبوعية</div>
+        </div>
+        <div class="pkg-body">
+          <ul class="pkg-feats">
+            <li><i class="fas fa-check"></i>جدول مصمم خصيصاً لجسمك وهدفك أنتِ</li>
+            <li><i class="fas fa-check"></i>يُسلَّم عبر واتساب بعد الدفع مباشرة</li>
+            <li><i class="fas fa-check"></i>بدون متابعة أسبوعية — جدولك بيدك</li>
+            <li><i class="fas fa-check" style="color:#a855f7"></i><span style="color:#e9d5ff">هدية مجانية 🎁 — ملف "اعرف وش تاكل"</span></li>
+          </ul>
+          <div class="pkg-price-row">
+            <span class="pkg-price" style="color:#a855f7">149</span>
+            <span class="pkg-cur">ريال</span>
+            <span class="pkg-per">/ مرة واحدة</span>
+          </div>
+          <div class="pay-icons-row">
+            <span class="pay-ic mada">mada</span>
+            <span class="pay-ic visa">VISA</span>
+            <span class="pay-ic">🍎 Pay</span>
+          </div>
+          <button class="btn-buy" onclick="openPay(4)" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">
+            <i class="fas fa-magic"></i> اطلبي جدولك المخصص — 149 ريال
           </button>
         </div>
       </div>
@@ -678,6 +709,30 @@ footer{background:#050505;border-top:1px solid var(--border);padding:42px 48px 2
             <div class="disc-code-row">
               <span class="disc-code" id="code-calo">R10AGD</span>
               <button class="disc-copy-btn" onclick="copyDiscCode('code-calo', this)">
+                <i class="fas fa-copy"></i> نسخ
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MARKET CALO -->
+      <div class="disc-card fi">
+        <div class="disc-top">
+          <div class="disc-brand-logo">🛒</div>
+          <div>
+            <div class="disc-brand">ماركت كالو</div>
+            <div class="disc-tagline">منتجات صحية وسبلمنتس<br>لكل متدرب جاد</div>
+          </div>
+          <div class="disc-badge">-٥٪</div>
+        </div>
+        <div class="disc-body">
+          <p class="disc-desc">تسوّقي منتجاتك الصحية من ماركت كالو بخصم ٥٪ باستخدام كودي — سبلمنتس وأكل صحي بسعر أحسن.</p>
+          <div class="disc-code-wrap">
+            <span class="disc-code-label">كود الخصم</span>
+            <div class="disc-code-row">
+              <span class="disc-code" id="code-mkcalo">MK4K</span>
+              <button class="disc-copy-btn" onclick="copyDiscCode('code-mkcalo', this)">
                 <i class="fas fa-copy"></i> نسخ
               </button>
             </div>
@@ -891,7 +946,7 @@ let S=JSON.parse(localStorage.getItem(KEY)||'null')||{
     {name:'اليوم الرابع',goal:'الكتفين',muscles:'كتف أمامي | جانبي | خلفي',exs:[{n:'كتف أمامي بالبار',s:'4×10'},{n:'رفع جانبي دمبل',s:'4×15'},{n:'رفع أمامي دمبل',s:'3×12'},{n:'كتف خلفي بيس ديك',s:'3×15'},{n:'شراجيم بار',s:'4×12'}]},
     {name:'اليوم الخامس',goal:'الأرجل الكاملة',muscles:'فخذ | مؤخرة | ساق',exs:[{n:'سكوات بالبار',s:'4×10'},{n:'ليج برس',s:'4×12'},{n:'لنجز بالدمبل',s:'3×12 لكل رجل'},{n:'كيرل أرجل',s:'4×15'},{n:'رومانية Deadlift',s:'4×12'},{n:'رفع كعب واقف',s:'5×20'}]}
   ],
-  settings:{moyasar:'',p1:50,p2:299,p3:20,wa:'966502212387',pw:'vllogs2025'}
+  settings:{moyasar:'',p1:50,p2:299,p3:20,p4:149,wa:'966502212387',pw:'vllogs2025'}
 };
 function save(){localStorage.setItem(KEY,JSON.stringify(S))}
 
@@ -1002,12 +1057,13 @@ let curPkg=null;
 const pkgs={
   1:{name:'جدول موحد — Body Recomposition',desc:'خسارة دهون + بناء عضلات بنفس الوقت',icon:'💪',action:'pdf',file:'/workout-guide.pdf'},
   2:{name:'متابعة شخصية أسبوعية',desc:'جدول مخصص + واتساب',icon:'👑',action:'wa'},
-  3:{name:'اعرف وش تاكل',desc:'دليل غذائي — سعرات + مؤشر غلايسيمي',icon:'🥗',action:'nutr',file:'/nutrition.html'}
+  3:{name:'اعرف وش تاكل',desc:'دليل غذائي — سعرات + مؤشر غلايسيمي',icon:'🥗',action:'nutr',file:'/nutrition.html'},
+  4:{name:'تصميم جدول مخصص حسب هدفك',desc:'جدول خاص بك + هدية ملف اعرف وش تاكل',icon:'🎯',action:'wa'}
 };
 function openPay(id){
   curPkg=id;
   const pkg=pkgs[id];
-  const price=id===1?S.settings.p1:id===2?S.settings.p2:S.settings.p3;
+  const price=id===1?S.settings.p1:id===2?S.settings.p2:id===3?S.settings.p3:S.settings.p4;
   document.getElementById('payTitle').textContent=`شراء: ${pkg.name}`;
   document.getElementById('paySub').textContent='أكملي الدفع بأمان عبر مويسر';
   document.getElementById('pkgName').textContent=`${pkg.icon} ${pkg.name}`;
