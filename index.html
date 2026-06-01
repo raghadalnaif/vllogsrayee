@@ -493,7 +493,7 @@ footer{background:#050505;border-top:1px solid var(--border);padding:42px 48px 2
           <div class="pkg-desc">Body Recomposition — تحمّل فوري</div>
         </div>
         <div class="hc-pkg" style="background:rgba(56,189,248,.05);border-color:rgba(56,189,248,.2);margin-bottom:10px;border-radius:13px;padding:13px 16px">
-          <div class="pkg-row"><span class="pkg-name">🥗 اعرف وش تاكل</span><span class="pkg-price" style="color:#38bdf8">20 ر</span></div>
+          <div class="pkg-row"><span class="pkg-name">🥗 اعرف وش تاكل</span><span class="pkg-price" style="color:#38bdf8">50 ر</span></div>
           <div class="pkg-desc">دليل غذائي — سعرات + مؤشر غلايسيمي</div>
         </div>
         <div class="hc-pkg p2">
@@ -569,7 +569,7 @@ footer{background:#050505;border-top:1px solid var(--border);padding:42px 48px 2
             <li><i class="fas fa-check"></i>يتحمّل فور ما تكمل الدفع</li>
           </ul>
           <div class="pkg-price-row">
-            <span class="pkg-price" style="color:#38bdf8">20</span>
+            <span class="pkg-price" style="color:#38bdf8">50</span>
             <span class="pkg-cur">ريال</span>
             <span class="pkg-per">/ مرة واحدة</span>
           </div>
@@ -579,7 +579,7 @@ footer{background:#050505;border-top:1px solid var(--border);padding:42px 48px 2
             <span class="pay-ic">🍎 Pay</span>
           </div>
           <button class="btn-buy nutr-btn" onclick="openPay(3)" style="width:100%;justify-content:center">
-            <i class="fas fa-shopping-cart"></i> احصل على الدليل — 20 ريال
+            <i class="fas fa-shopping-cart"></i> احصل على الدليل — 50 ريال
           </button>
         </div>
       </div>
@@ -1067,7 +1067,7 @@ let S=JSON.parse(localStorage.getItem(KEY)||'null')||{
     {name:'اليوم الرابع',goal:'الكتفين',muscles:'كتف أمامي | جانبي | خلفي',exs:[{n:'كتف أمامي بالبار',s:'4×10'},{n:'رفع جانبي دمبل',s:'4×15'},{n:'رفع أمامي دمبل',s:'3×12'},{n:'كتف خلفي بيس ديك',s:'3×15'},{n:'شراجيم بار',s:'4×12'}]},
     {name:'اليوم الخامس',goal:'الأرجل الكاملة',muscles:'فخذ | مؤخرة | ساق',exs:[{n:'سكوات بالبار',s:'4×10'},{n:'ليج برس',s:'4×12'},{n:'لنجز بالدمبل',s:'3×12 لكل رجل'},{n:'كيرل أرجل',s:'4×15'},{n:'رومانية Deadlift',s:'4×12'},{n:'رفع كعب واقف',s:'5×20'}]}
   ],
-  settings:{moyasar:'',p1:50,p2:299,p3:20,p4:149,wa:'966502212387',pw:'vllogs2025'}
+  settings:{moyasar:'',p1:50,p2:299,p3:50,p4:149,wa:'966502212387',pw:'vllogs2025'}
 };
 function save(){localStorage.setItem(KEY,JSON.stringify(S))}
 
@@ -1100,7 +1100,7 @@ function doLogin(){
 // TICKER
 // ============================================================
 function buildTicker(){
-  const items=['💪 جدول موحد Body Recomposition — 50 ريال','🥗 اعرف وش تاكل — 20 ريال','👑 متابعة أسبوعية — 299 ريال','💳 مدى | فيزا | آبل باي','📥 تحمّل فور الدفع','🏋️ من أول النادي لآخره','🎬 @vllogsraye تيك توك'];
+  const items=['💪 جدول موحد Body Recomposition — 50 ريال','🥗 اعرف وش تاكل — 50 ريال','👑 متابعة أسبوعية — 299 ريال','💳 مدى | فيزا | آبل باي','📥 تحمّل فور الدفع','🏋️ من أول النادي لآخره','🎬 @vllogsraye تيك توك'];
   const t=document.getElementById('tktrack');
   t.innerHTML=[...items,...items].map(i=>`<span>${i}</span>`).join('');
 }
