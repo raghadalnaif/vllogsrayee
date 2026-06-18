@@ -253,11 +253,7 @@ footer{background:#D8EDD8;border-top:1px solid var(--border);padding:42px 48px 2
 /* Success modal */
 .success-modal{text-align:center;padding:10px 0}
 
-/* ===== OTP / ORDERS SYSTEM ===== */
-/* Floating orders button */
-.orders-fab{position:fixed;bottom:24px;left:24px;z-index:900;background:linear-gradient(135deg,#1e3a5f,#1a5276);border:1px solid rgba(56,189,248,.35);color:#fff;padding:12px 18px;border-radius:50px;font-family:var(--font);font-size:.82rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.4);transition:.3s}
-.orders-fab:hover{background:linear-gradient(135deg,#2471a3,#1a5276);transform:translateY(-2px)}
-.orders-fab .fab-dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+/* ===== OTP SYSTEM ===== */
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 
 /* Phone input */
@@ -296,7 +292,6 @@ footer{background:#D8EDD8;border-top:1px solid var(--border);padding:42px 48px 2
 .free-banner-txt p{font-size:.78rem;color:var(--g2)}
 .free-banner a{display:flex;align-items:center;gap:7px;background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.3);color:var(--green);padding:9px 18px;border-radius:22px;font-size:.82rem;font-weight:700;text-decoration:none;white-space:nowrap;transition:.2s}
 .free-banner a:hover{background:rgba(74,222,128,.2)}
-@media(max-width:600px){.orders-fab{bottom:16px;left:16px;padding:10px 14px;font-size:.78rem}}
 .success-modal .s-icon{font-size:4rem;margin-bottom:16px}
 .success-modal h3{font-size:1.4rem;font-weight:700;margin-bottom:8px;color:#16A34A}
 .success-modal p{font-size:.87rem;color:var(--g1);line-height:1.7;margin-bottom:20px}
@@ -446,7 +441,6 @@ footer{background:#D8EDD8;border-top:1px solid var(--border);padding:42px 48px 2
   .fg2{grid-template-columns:1fr}
   .modal{padding:20px 14px}
   .wa-float{bottom:16px;left:14px}
-  .orders-fab{bottom:14px;left:14px;padding:9px 13px;font-size:.76rem}
   .sched-days-grid{grid-template-columns:repeat(2,1fr);gap:10px}
   .calc-fields-row{grid-template-columns:1fr 1fr}
   .tools-tabs{max-width:100%}
@@ -541,7 +535,6 @@ footer{background:#D8EDD8;border-top:1px solid var(--border);padding:42px 48px 2
     <li><a href="#blog">البلوقز</a></li>
     <li><a href="#tiktok">تيك توك</a></li>
     <li><a href="https://wa.me/966502212387" target="_blank" class="nav-wa"><i class="fab fa-whatsapp"></i> واتساب</a></li>
-    <li><button class="nav-cta" onclick="openOrdersModal()" style="background:transparent;border:1px solid rgba(56,189,248,.4);color:#38bdf8;padding:7px 14px;border-radius:20px;cursor:pointer;font-family:var(--font);font-size:.82rem;font-weight:700">📦 طلباتي</button></li>
     <li><a href="#packages" class="nav-cta">اشتري الآن</a></li>
   </ul>
   <button class="hbg" onclick="toggleNav()"><span></span><span></span><span></span></button>
@@ -1059,20 +1052,6 @@ footer{background:#D8EDD8;border-top:1px solid var(--border);padding:42px 48px 2
   </div>
 </div>
 
-<!-- FLOATING ORDERS BUTTON -->
-<button class="orders-fab" onclick="openOrdersModal()">
-  <div class="fab-dot"></div>
-  📦 طلباتي
-</button>
-
-<!-- ORDERS / LOGIN MODAL -->
-<div class="overlay" id="ordersOvl">
-  <div class="modal" style="max-width:420px">
-    <button class="mx" onclick="closeOrdersModal()"><i class="fas fa-times"></i></button>
-    <div id="ordersBody"></div>
-  </div>
-</div>
-
 <!-- SUCCESS MODAL -->
 <div class="overlay" id="successOvl">
   <div class="modal" style="max-width:460px">
@@ -1351,12 +1330,6 @@ function mountMoyasar(pkgId,price,name){
 // حالة OTP الحالية
 let otpState = { phone:'', token:'', ts:'', resendTimer:null };
 
-// ---- فتح/إغلاق مودال الطلبات ----
-function closeOrdersModal(){
-  document.getElementById('ordersOvl').classList.remove('open');
-  clearInterval(otpState.resendTimer);
-}
-
 // ---- رندر خطوة إدخال الجوال ----
 function renderPhoneStep(container, forPkg, afterVerifyCb){
   container.innerHTML = `
@@ -1424,7 +1397,7 @@ function renderSuccessStep(container, pkgId){
       <div class="s-icon">${pkg.icon}</div>
       <h3 style="color:var(--green)">✅ تم التحقق — طلبك محفوظ!</h3>
       <p style="font-size:.85rem;color:var(--g1);line-height:1.7;margin-bottom:20px">
-        ملفك متوفر مدى الحياة في قسم <strong>طلباتي</strong> — تقدر ترجع له من أي جهاز بنفس رقم جوالك.
+        راسلينا على واتساب وقت ما تحتاجين نعيد لك ملفك.
       </p>
       ${pkgId===2 ? `
         <a href="https://wa.me/${S.settings.wa}?text=مرحبا vllogsraye، دفعت لباقة المتابعة الشخصية 👑" target="_blank" class="btn-wa" style="display:inline-flex;justify-content:center">
@@ -1444,7 +1417,7 @@ function skipRegister(pkgId){
     <div class="success-modal">
       <div class="s-icon">${pkg.icon}</div>
       <h3 style="color:var(--green)">✅ تم الدفع — ${pkg.name} جاهز!</h3>
-      <p style="font-size:.82rem;color:var(--g2);margin-bottom:20px">سجّل رقمك لاحقاً من زر "طلباتي" لحفظ ملفك مدى الحياة.</p>
+      <p style="font-size:.82rem;color:var(--g2);margin-bottom:20px">احتفظي بهذا الرابط — وعند الحاجة راسلينا على واتساب.</p>
       ${pkgId===2 ? `
         <a href="https://wa.me/${S.settings.wa}?text=مرحبا، دفعت للمتابعة الشخصية 👑" target="_blank" class="btn-wa" style="display:inline-flex;justify-content:center">
           <i class="fab fa-whatsapp"></i> راسليني الآن
@@ -1528,8 +1501,6 @@ async function doVerifyOTP(forPkg){
         localStorage.setItem(key,JSON.stringify(orders));
       }
       renderSuccessStep(document.getElementById('successBody'), parseInt(forPkg));
-    } else {
-      renderOrdersLocal(document.getElementById('ordersBody'));
     }
     return;
   }
@@ -1545,8 +1516,6 @@ async function doVerifyOTP(forPkg){
       await fetch('/api/save-purchase',{method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({phone:otpState.phone, pkg:parseInt(forPkg), session:data.session})});
       renderSuccessStep(document.getElementById('successBody'), parseInt(forPkg));
-    } else {
-      renderOrders(document.getElementById('ordersBody'), {phone:otpState.phone, session:data.session});
     }
   }catch(e){
     errEl.textContent = e.message||'خطأ في التحقق';
@@ -1598,81 +1567,6 @@ function startResendTimer(){
       if(btn){btn.disabled=false;btn.textContent='إعادة الإرسال';}
     }
   },1000);
-}
-
-// ---- عرض الطلبات ----
-// عرض الطلبات في الوضع المحلي (localStorage)
-function renderOrdersLocal(container){
-  const sess = getSession();
-  const phone = sess?.phone || '---';
-  const orders = JSON.parse(localStorage.getItem('vl_orders')||'[]');
-  container.innerHTML = `
-    <div style="text-align:center;padding:20px 0">
-      <div style="font-size:2rem;margin-bottom:8px">📦</div>
-      <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:4px">طلباتي</h3>
-      <p style="font-size:.78rem;color:var(--g2);margin-bottom:20px">+${phone}</p>
-      <div>
-        ${orders.length ? orders.map(o=>`
-          <div class="order-card">
-            <div class="order-icon">${o.icon||'📄'}</div>
-            <div class="order-info">
-              <div class="order-name">${o.name}</div>
-              <div class="order-date">${o.dateFormatted}</div>
-            </div>
-            <a href="${o.url}" target="_blank" class="order-dl"><i class="fas fa-download"></i> فتح</a>
-          </div>`).join('') : '<p style="color:var(--g2);font-size:.85rem">لا توجد مشتريات بعد</p>'}
-      </div>
-      <button onclick="clearSession();localStorage.removeItem(\'vl_orders\');openOrdersModal()" style="margin-top:16px;background:none;border:none;color:var(--g3);font-family:var(--font);font-size:.78rem;cursor:pointer">تسجيل خروج</button>
-    </div>
-  `;
-}
-
-// فحص الجلسة عند فتح مودال الطلبات في الوضع المحلي
-function openOrdersModal(){
-  const body = document.getElementById('ordersBody');
-  const sess = getSession();
-  if(sess && IS_LOCAL){
-    renderOrdersLocal(body);
-  } else if(sess && !IS_LOCAL){
-    renderOrders(body, sess);
-  } else {
-    renderPhoneStep(body, false, null);
-  }
-  document.getElementById('ordersOvl').classList.add('open');
-}
-
-async function renderOrders(container, sess){
-  container.innerHTML = `
-    <div style="text-align:center;padding:20px 0">
-      <div style="font-size:2rem;margin-bottom:8px">📦</div>
-      <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:4px">طلباتي</h3>
-      <p style="font-size:.78rem;color:var(--g2);margin-bottom:20px">+${sess.phone}</p>
-      <div id="ordersList"><i class="fas fa-spinner fa-spin" style="color:var(--gold)"></i></div>
-      <button onclick="clearSession();openOrdersModal()" style="margin-top:16px;background:none;border:none;color:var(--g3);font-family:var(--font);font-size:.78rem;cursor:pointer">تسجيل خروج</button>
-    </div>
-  `;
-  try{
-    const res = await fetch('/api/get-orders',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({phone:sess.phone, session:sess.session})});
-    const data = await res.json();
-    const list = document.getElementById('ordersList');
-    if(!data.orders?.length){
-      list.innerHTML = '<p style="color:var(--g2);font-size:.85rem">لا توجد مشتريات بعد</p>';
-    } else {
-      list.innerHTML = data.orders.map(o=>`
-        <div class="order-card">
-          <div class="order-icon">${o.icon||'📄'}</div>
-          <div class="order-info">
-            <div class="order-name">${o.name||'طلب'}</div>
-            <div class="order-date">${o.dateFormatted||''}</div>
-          </div>
-          <a href="${o.url}" target="_blank" class="order-dl"><i class="fas fa-download"></i> فتح</a>
-        </div>
-      `).join('');
-    }
-  }catch(e){
-    document.getElementById('ordersList').innerHTML='<p style="color:var(--red);font-size:.83rem">خطأ في التحميل</p>';
-  }
 }
 
 // ---- حفظ/جلب الجلسة ----
