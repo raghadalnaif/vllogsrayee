@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>دخول المتابعات — vllogsraye</title>
-<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="/app/style.css">
 <style>
 .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;
   background:radial-gradient(ellipse at top,rgba(74,124,89,.1),transparent 60%),var(--bg0)}
@@ -40,10 +40,11 @@
   </div>
 </div>
 <script>
+const BASE='/app';
 // لو مسجّلة دخول مسبقاً، حوّليها
-fetch('/api/me').then(r=>r.json()).then(d=>{
-  if(d.role==='admin') location.href='/admin.html';
-  else if(d.role==='trainee') location.href='/trainee.html';
+fetch(BASE+'/api/me').then(r=>r.json()).then(d=>{
+  if(d.role==='admin') location.href=BASE+'/admin.html';
+  else if(d.role==='trainee') location.href=BASE+'/trainee.html';
 });
 const form=document.getElementById('loginForm');
 const err=document.getElementById('err');
@@ -53,11 +54,11 @@ form.addEventListener('submit',async e=>{
   err.classList.remove('show');
   btn.disabled=true;btn.textContent='جاري الدخول...';
   try{
-    const r=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},
+    const r=await fetch(BASE+'/api/login',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({username:username.value.trim(),password:password.value})});
     const d=await r.json();
     if(!r.ok){err.textContent=d.message||'خطأ في الدخول';err.classList.add('show');btn.disabled=false;btn.textContent='دخول';return;}
-    location.href = d.role==='admin' ? '/admin.html' : '/trainee.html';
+    location.href = d.role==='admin' ? BASE+'/admin.html' : BASE+'/trainee.html';
   }catch(_){err.textContent='تعذّر الاتصال، حاولي مرة ثانية';err.classList.add('show');btn.disabled=false;btn.textContent='دخول';}
 });
 </script>
