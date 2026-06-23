@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>لوحة الإدارة — vllogsraye</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">vllogsraye<small>لوحة الإدارة</small></div>
+  <button class="btn ghost sm" onclick="logout()">خروج</button>
+</div>
+<div class="tabs">
+  <button class="tab on" onclick="go('dash',this)">📊 اللوحة</button>
+  <button class="tab" onclick="go('trn',this)">👩 المشتركات</button>
+  <button class="tab" onclick="go('lib',this)">🏋️ مكتبة التمارين</button>
+  <button class="tab" onclick="go('set',this)">⚙️ الإعدادات</button>
+</div>
+
+<div class="wrap">
+  <!-- اللوحة -->
+  <div class="page on" id="p-dash"><div id="dashBody"><div class="empty">جاري التحميل...</div></div></div>
+
+  <!-- المشتركات -->
+  <div class="page" id="p-trn">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div><h2 class="page-h">المشتركات</h2><p class="page-sub" style="margin:0">أضيفي مشتركة وحدّدي مدة اشتراكها</p></div>
+      <button class="btn" onclick="openAddTrainee()">+ مشتركة</button>
+    </div>
+    <div id="trnList"><div class="empty">جاري التحميل...</div></div>
+  </div>
+
+  <!-- مكتبة التمارين -->
+  <div class="page" id="p-lib">
+    <h2 class="page-h">مكتبة التمارين</h2>
+    <p class="page-sub">أضيفي التمرين مع صورة GIF أو فيديو يوضّح التكنيك والعضلة المستهدفة</p>
+    <div class="card">
+      <div class="field"><label>اسم التمرين</label><input class="input" id="exName" placeholder="مثلاً: بنش بريس"></div>
+      <div class="field"><label>العضلة المستهدفة</label><input class="input" id="exMuscle" placeholder="مثلاً: صدر + ترايسبس"></div>
+      <div class="field"><label>رابط صورة/فيديو (GIF أو mp4) — اختياري</label><input class="input" id="exUrl" placeholder="https://..."></div>
+      <div class="field"><label>أو ارفعي ملف من جهازك</label><input class="input" id="exFile" type="file" accept="image/*,video/*"></div>
+      <div class="field"><label>ملاحظات (اختياري)</label><textarea class="input" id="exNotes" rows="2" placeholder="تفاصيل عن الأداء الصحيح"></textarea></div>
+      <button class="btn full" onclick="addExercise()" id="exBtn">+ إضافة للمكتبة</button>
+    </div>
+    <div id="libList" style="margin-top:16px"></div>
+  </div>
+
+  <!-- الإعدادات -->
+  <div class="page" id="p-set">
+    <h2 class="page-h">الإعدادات</h2>
+    <p class="page-sub">غيّري كلمة مرور الإدارة</p>
+    <div class="card" style="max-width:400px">
+      <div class="field"><label>كلمة المرور الجديدة</label><input class="input" id="newPass" type="password"></div>
+      <button class="btn full" onclick="changePass()">حفظ كلمة المرور</button>
+    </div>
+  </div>
+</div>
+
+<!-- مودال إضافة مشتركة -->
+<div class="overlay" id="ovlAdd">
+  <div class="modal">
+    <button class="x" onclick="closeM('ovlAdd')">✕</button>
+    <h3>مشتركة جديدة</h3>
+    <div class="field"><label>الاسم</label><input class="input" id="tName"></div>
+    <div class="row">
+      <div class="field"><label>اسم المستخدم</label><input class="input" id="tUser"></div>
+      <div class="field"><label>كلمة المرور</label><input class="input" id="tPass"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label>مدة الاشتراك</label>
+        <select class="input" id="tMonths">
+          <option value="1">شهر</option><option value="3">3 أشهر</option>
+          <option value="6">6 أشهر</option><option value="12">سنة</option>
+        </select>
+      </div>
+      <div class="field"><label>هدف السعرات اليومي</label><input class="input" id="tCal" type="number" value="2000"></div>
+    </div>
+    <button class="btn full" onclick="saveTrainee()">إضافة</button>
+  </div>
+</div>
+
+<!-- مودال الجدول -->
+<div class="overlay" id="ovlPlan">
+  <div class="modal" style="max-width:640px">
+    <button class="x" onclick="closeM('ovlPlan')">✕</button>
+    <h3 id="planTitle">جدول التمارين</h3>
+    <div id="planEditor"></div>
+  </div>
+</div>
+
+<!-- مودال التقرير -->
+<div class="overlay" id="ovlReport">
+  <div class="modal" style="max-width:640px">
+    <button class="x" onclick="closeM('ovlReport')">✕</button>
+    <h3 id="reportTitle">التقرير</h3>
+    <div id="reportBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="/app-common.js"></script>
+<script>
+let EXERCISES=[], curTrainee=null;
+
+function go(p,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
+  document.getElementById('p-'+p).classList.add('on');
+  if(p==='dash')loadDash();if(p==='trn')loadTrainees();if(p==='lib')loadLib();
+}
+function closeM(id){document.getElementById(id).classList.remove('open');}
+
+// ===== اللوحة =====
+async function loadDash(){
+  const d=await api('/api/admin/stats');if(!d)return;
+  document.getElementById('dashBody').innerHTML=`
+    <h2 class="page-h">نظرة عامة</h2><p class="page-sub">ملخص نشاط المشتركات</p>
+    <div class="stats">
+      <div class="stat"><div class="n">${d.total}</div><div class="l">إجمالي المشتركات</div></div>
+      <div class="stat"><div class="n">${d.active}</div><div class="l">نشطات</div></div>
+      <div class="stat"><div class="n">${d.expired}</div><div class="l">منتهيات</div></div>
+      <div class="stat"><div class="n">${d.trainedToday}</div><div class="l">تدرّبن اليوم</div></div>
+    </div>
+    <div class="card">
+      <b>آخر النشاطات</b>
+      ${d.recent.length? d.recent.map(r=>`<div class="list-item" style="margin-top:8px">
+        <div class="info"><div class="nm">${esc(r.trainee)}</div>
+        <div class="meta">${esc(r.exercise||'تمرين')} • ${r.weight}كجم × ${r.reps}</div></div>
+        <span class="muted">${new Date(r.created_at).toLocaleString('ar-SA',{hour:'2-digit',minute:'2-digit',day:'numeric',month:'numeric'})}</span>
+      </div>`).join('') : '<div class="empty">لا نشاطات بعد</div>'}
+    </div>`;
+}
+
+// ===== المشتركات =====
+async function loadTrainees(){
+  const rows=await api('/api/admin/trainees');if(!rows)return;
+  document.getElementById('trnList').innerHTML=rows.length? rows.map(t=>`
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:start;gap:10px;flex-wrap:wrap">
+        <div>
+          <div style="font-weight:800;font-size:1.05rem">${esc(t.name)}
+            ${t.status==='active'?`<span class="badge green">نشطة</span>`:`<span class="badge red">منتهية</span>`}</div>
+          <div class="muted">@${esc(t.username)} • ${t.days_left} يوم متبقي • ينتهي ${t.end_date}</div>
+        </div>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn sm" onclick="openPlan(${t.id},'${esc(t.name)}')">📋 الجدول</button>
+        <button class="btn ghost sm" onclick="openReport(${t.id},'${esc(t.name)}')">📈 التقرير</button>
+        <button class="btn ghost sm" onclick="extendT(${t.id})">+ تمديد</button>
+        ${t.active?`<button class="btn ghost sm" onclick="patchT(${t.id},{action:'stop'})">إيقاف</button>`
+                  :`<button class="btn ghost sm" onclick="patchT(${t.id},{action:'activate'})">تفعيل</button>`}
+        <button class="btn ghost sm" onclick="resetPass(${t.id})">🔑 كلمة المرور</button>
+        <button class="btn danger sm" onclick="delT(${t.id},'${esc(t.name)}')">حذف</button>
+      </div>
+    </div>`).join('') : '<div class="empty">لا مشتركات بعد — أضيفي أول مشتركة</div>';
+}
+function openAddTrainee(){['tName','tUser','tPass','tCal'].forEach(i=>document.getElementById(i).value='');document.getElementById('tCal').value='2000';document.getElementById('ovlAdd').classList.add('open');}
+async function saveTrainee(){
+  const body={name:tName.value.trim(),username:tUser.value.trim(),password:tPass.value,months:tMonths.value,daily_calorie_goal:tCal.value};
+  if(!body.name||!body.username||!body.password){toast('أكملي الحقول',true);return;}
+  const r=await api('/api/admin/trainees',{method:'POST',body});if(!r)return;
+  toast('تمت الإضافة ✓');closeM('ovlAdd');loadTrainees();
+}
+async function patchT(id,body){const r=await api('/api/admin/trainees/'+id,{method:'PATCH',body});if(r){toast('تم ✓');loadTrainees();}}
+function extendT(id){const m=prompt('كم شهر تمديد؟ (1 / 3 / 6 / 12)','1');if(m)patchT(id,{action:'extend',months:m});}
+function resetPass(id){const p=prompt('كلمة المرور الجديدة للمشتركة:');if(p)patchT(id,{action:'password',password:p});}
+async function delT(id,name){if(!confirm('حذف '+name+' وكل بياناتها نهائياً؟'))return;const r=await api('/api/admin/trainees/'+id,{method:'DELETE'});if(r){toast('تم الحذف');loadTrainees();}}
+
+// ===== مكتبة التمارين =====
+async function loadLib(){
+  EXERCISES=await api('/api/admin/exercises')||[];
+  document.getElementById('libList').innerHTML=EXERCISES.length? EXERCISES.map(e=>`
+    <div class="list-item">
+      ${e.media_url?`<img class="ex-thumb" src="${esc(e.media_url)}" alt="">`:'<div class="ex-thumb"></div>'}
+      <div class="info"><div class="nm">${esc(e.name)}</div><div class="meta">${esc(e.target_muscle||'—')}</div></div>
+      <button class="btn danger sm" onclick="delEx(${e.id})">حذف</button>
+    </div>`).join('') : '<div class="empty">المكتبة فاضية — أضيفي أول تمرين</div>';
+}
+async function addExercise(){
+  const name=document.getElementById('exName').value.trim();
+  if(!name){toast('اكتبي اسم التمرين',true);return;}
+  const fd=new FormData();
+  fd.append('name',name);
+  fd.append('target_muscle',document.getElementById('exMuscle').value.trim());
+  fd.append('media_url',document.getElementById('exUrl').value.trim());
+  fd.append('notes',document.getElementById('exNotes').value.trim());
+  const f=document.getElementById('exFile').files[0];
+  if(f)fd.append('media',f);
+  const btn=document.getElementById('exBtn');btn.disabled=true;btn.textContent='جاري الرفع...';
+  const r=await api('/api/admin/exercises',{method:'POST',body:fd});
+  btn.disabled=false;btn.textContent='+ إضافة للمكتبة';
+  if(!r)return;
+  ['exName','exMuscle','exUrl','exNotes'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('exFile').value='';
+  toast('تمت الإضافة ✓');loadLib();
+}
+async function delEx(id){if(!confirm('حذف التمرين من المكتبة؟'))return;const r=await api('/api/admin/exercises/'+id,{method:'DELETE'});if(r){toast('تم الحذف');loadLib();}}
+
+// ===== منشئ الجدول =====
+async function openPlan(id,name){
+  curTrainee=id;
+  if(!EXERCISES.length)EXERCISES=await api('/api/admin/exercises')||[];
+  document.getElementById('planTitle').textContent='جدول: '+name;
+  document.getElementById('ovlPlan').classList.add('open');
+  renderPlan();
+}
+async function renderPlan(){
+  const days=await api('/api/admin/trainees/'+curTrainee+'/plan')||[];
+  const opts=EXERCISES.map(e=>`<option value="${e.id}">${esc(e.name)}</option>`).join('');
+  document.getElementById('planEditor').innerHTML=`
+    ${days.map(d=>`
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <b>اليوم ${d.day_index}: ${esc(d.title)}</b>
+          <button class="btn danger sm" onclick="delDay(${d.id})">حذف اليوم</button>
+        </div>
+        ${d.goal?`<div class="muted">${esc(d.goal)}</div>`:''}
+        ${d.exercises.map(ex=>`<div class="list-item" style="margin-top:8px">
+          <div class="info"><div class="nm">${esc(ex.name)}</div><div class="meta">${ex.sets}×${esc(ex.reps)} ${ex.target_weight?'• '+esc(ex.target_weight):''}</div></div>
+          <button class="btn danger sm" onclick="delPE(${ex.id})">×</button></div>`).join('')}
+        <div style="border-top:1px dashed var(--border);margin-top:10px;padding-top:10px">
+          <div class="row">
+            <select class="input" id="ex-sel-${d.id}">${opts||'<option>أضيفي تمارين للمكتبة أولاً</option>'}</select>
+          </div>
+          <div class="row" style="margin-top:6px">
+            <input class="input" id="ex-sets-${d.id}" type="number" placeholder="مجموعات" value="3">
+            <input class="input" id="ex-reps-${d.id}" placeholder="تكرار (8-12)" value="8-12">
+            <input class="input" id="ex-w-${d.id}" placeholder="وزن مقترح">
+          </div>
+          <button class="btn sm full" style="margin-top:6px" onclick="addPE(${d.id})">+ أضيفي تمرين لليوم</button>
+        </div>
+      </div>`).join('')}
+    <div class="card" style="background:var(--bg3)">
+      <b>+ إضافة يوم جديد</b>
+      <div class="row" style="margin-top:8px">
+        <input class="input" id="newDayIdx" type="number" placeholder="رقم اليوم" value="${days.length+1}">
+        <input class="input" id="newDayTitle" placeholder="العنوان (صدر وترايسبس)">
+      </div>
+      <input class="input" id="newDayGoal" placeholder="الهدف (اختياري)" style="margin-top:6px">
+      <button class="btn full" style="margin-top:8px" onclick="addDay()">إضافة اليوم</button>
+    </div>`;
+}
+async function addDay(){
+  const body={day_index:newDayIdx.value,title:newDayTitle.value.trim(),goal:newDayGoal.value.trim()};
+  if(!body.title){toast('اكتبي عنوان اليوم',true);return;}
+  const r=await api('/api/admin/trainees/'+curTrainee+'/days',{method:'POST',body});if(r){toast('أُضيف اليوم');renderPlan();}
+}
+async function delDay(id){if(!confirm('حذف اليوم وتمارينه؟'))return;const r=await api('/api/admin/days/'+id,{method:'DELETE'});if(r){toast('تم');renderPlan();}}
+async function addPE(dayId){
+  const body={exercise_id:document.getElementById('ex-sel-'+dayId).value,
+    sets:document.getElementById('ex-sets-'+dayId).value,
+    reps:document.getElementById('ex-reps-'+dayId).value.trim(),
+    target_weight:document.getElementById('ex-w-'+dayId).value.trim()};
+  if(!body.exercise_id){toast('اختاري تمريناً',true);return;}
+  const r=await api('/api/admin/days/'+dayId+'/exercises',{method:'POST',body});if(r){toast('أُضيف التمرين');renderPlan();}
+}
+async function delPE(id){const r=await api('/api/admin/plan-exercises/'+id,{method:'DELETE'});if(r){toast('تم');renderPlan();}}
+
+// ===== التقرير =====
+async function openReport(id,name){
+  document.getElementById('reportTitle').textContent='تقرير: '+name;
+  document.getElementById('ovlReport').classList.add('open');
+  const d=await api('/api/admin/trainees/'+id+'/report');if(!d)return;
+  const t=d.trainee;
+  document.getElementById('reportBody').innerHTML=`
+    <div class="stats">
+      <div class="stat"><div class="n">${t.days_left}</div><div class="l">يوم متبقي</div></div>
+      <div class="stat"><div class="n">${d.totalSets}</div><div class="l">إجمالي الستات</div></div>
+      <div class="stat"><div class="n">${d.logs.length}</div><div class="l">أيام تدريب</div></div>
+    </div>
+    <div class="muted" style="margin-bottom:10px">آخر تمرين: ${d.lastWorkout||'لا يوجد'}</div>
+    <div class="card"><b>التمارين حسب اليوم</b>
+      ${d.logs.length? d.logs.map(l=>`<div class="list-item" style="margin-top:8px"><div class="info"><div class="nm">${l.log_date}</div></div><span class="badge gold">${l.sets} ست • ${l.exercises} تمرين</span></div>`).join('') : '<div class="empty">لا تمارين</div>'}
+    </div>
+    <div class="card"><b>السعرات حسب اليوم</b>
+      ${d.cals.length? d.cals.map(c=>`<div class="list-item" style="margin-top:8px"><div class="info"><div class="nm">${c.log_date}</div></div><span class="muted">${c.calories} سعرة • ${Math.round(c.protein)}g بروتين</span></div>`).join('') : '<div class="empty">لا سعرات مسجّلة</div>'}
+    </div>
+    <div class="card"><b>آخر الستات المسجّلة</b>
+      ${d.recentSets.length? d.recentSets.map(s=>`<div class="list-item" style="margin-top:6px"><div class="info"><div class="nm">${esc(s.exercise||'تمرين')}</div><div class="meta">${s.log_date} • ست ${s.set_number}</div></div><b style="color:var(--gold)">${s.weight}كجم × ${s.reps}</b></div>`).join('') : '<div class="empty">لا ستات</div>'}
+    </div>`;
+}
+
+// ===== الإعدادات =====
+async function changePass(){
+  const p=document.getElementById('newPass').value;
+  if(!p||p.length<6){toast('6 أحرف على الأقل',true);return;}
+  const r=await api('/api/admin/password',{method:'POST',body:{password:p}});
+  if(r){toast('تم تغيير كلمة المرور ✓');document.getElementById('newPass').value='';}
+}
+
+loadDash();
+</script>
+</body>
+</html>

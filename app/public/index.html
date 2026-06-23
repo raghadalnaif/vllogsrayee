@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>دخول المتابعات — vllogsraye</title>
+<link rel="stylesheet" href="/style.css">
+<style>
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;
+  background:radial-gradient(ellipse at top,rgba(74,124,89,.1),transparent 60%),var(--bg0)}
+.login-card{background:#fff;border:1px solid var(--border);border-radius:22px;padding:36px 28px;max-width:380px;width:100%;
+  box-shadow:0 10px 40px rgba(74,124,89,.1);text-align:center}
+.login-card .logo{font-size:2rem;font-weight:900;color:var(--gold)}
+.login-card .logo small{display:block;font-size:.72rem;color:var(--g2);font-weight:600;margin-top:2px}
+.login-card .welcome{font-size:.92rem;color:var(--g1);margin:18px 0 22px}
+.err{background:var(--redL);color:var(--red);border-radius:10px;padding:9px;font-size:.82rem;font-weight:700;margin-bottom:12px;display:none}
+.err.show{display:block}
+.login-card form{text-align:right}
+.back{display:inline-block;margin-top:18px;font-size:.82rem;color:var(--g2);font-weight:600}
+</style>
+</head>
+<body>
+<div class="login-wrap">
+  <div class="login-card">
+    <div class="logo">vllogsraye<small>منصة المتابعة الشخصية</small></div>
+    <p class="welcome">سجّلي دخولك لمتابعة جدولك وتمارينك 💪</p>
+    <div class="err" id="err"></div>
+    <form id="loginForm">
+      <div class="field">
+        <label>اسم المستخدم</label>
+        <input class="input" id="username" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label>كلمة المرور</label>
+        <input class="input" id="password" type="password" autocomplete="current-password" required>
+      </div>
+      <button class="btn full" type="submit" id="submitBtn">دخول</button>
+    </form>
+    <a class="back" href="https://vllogsraye.com">← رجوع للموقع الرئيسي</a>
+  </div>
+</div>
+<script>
+// لو مسجّلة دخول مسبقاً، حوّليها
+fetch('/api/me').then(r=>r.json()).then(d=>{
+  if(d.role==='admin') location.href='/admin.html';
+  else if(d.role==='trainee') location.href='/trainee.html';
+});
+const form=document.getElementById('loginForm');
+const err=document.getElementById('err');
+const btn=document.getElementById('submitBtn');
+form.addEventListener('submit',async e=>{
+  e.preventDefault();
+  err.classList.remove('show');
+  btn.disabled=true;btn.textContent='جاري الدخول...';
+  try{
+    const r=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({username:username.value.trim(),password:password.value})});
+    const d=await r.json();
+    if(!r.ok){err.textContent=d.message||'خطأ في الدخول';err.classList.add('show');btn.disabled=false;btn.textContent='دخول';return;}
+    location.href = d.role==='admin' ? '/admin.html' : '/trainee.html';
+  }catch(_){err.textContent='تعذّر الاتصال، حاولي مرة ثانية';err.classList.add('show');btn.disabled=false;btn.textContent='دخول';}
+});
+</script>
+</body>
+</html>

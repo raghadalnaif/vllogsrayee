@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>متابعتي — vllogsraye</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">vllogsraye<small>متابعتي</small></div>
+  <button class="btn ghost sm" onclick="logout()">خروج</button>
+</div>
+<div class="tabs">
+  <button class="tab on" onclick="go('home',this)">🏠 اليوم</button>
+  <button class="tab" onclick="go('plan',this)">📋 جدولي</button>
+  <button class="tab" onclick="go('cal',this)">🍎 سعراتي</button>
+  <button class="tab" onclick="go('prog',this)">📈 تقدمي</button>
+</div>
+
+<div class="wrap">
+  <!-- اليوم -->
+  <div class="page on" id="p-home">
+    <div id="homeBody"><div class="empty">جاري التحميل...</div></div>
+  </div>
+
+  <!-- الجدول -->
+  <div class="page" id="p-plan">
+    <h2 class="page-h">جدولي التدريبي</h2>
+    <p class="page-sub">سجّلي وزن وعدد تكرارات كل ست — تقريرك يوصل المدربة تلقائياً</p>
+    <div id="planBody"><div class="empty">جاري التحميل...</div></div>
+  </div>
+
+  <!-- السعرات -->
+  <div class="page" id="p-cal">
+    <h2 class="page-h">سعراتي اليوم</h2>
+    <p class="page-sub">أضيفي وجباتك لمتابعة السعرات والبروتين</p>
+    <div class="card">
+      <div class="row">
+        <div class="field" style="flex:2"><label>الوجبة</label><input class="input" id="cMeal" placeholder="مثلاً: دجاج وأرز"></div>
+        <div class="field"><label>سعرات</label><input class="input" id="cKcal" type="number" inputmode="numeric"></div>
+      </div>
+      <div class="row">
+        <div class="field"><label>بروتين (g)</label><input class="input" id="cProt" type="number" inputmode="numeric"></div>
+        <div class="field"><label>كارب (g)</label><input class="input" id="cCarb" type="number" inputmode="numeric"></div>
+        <div class="field"><label>دهون (g)</label><input class="input" id="cFat" type="number" inputmode="numeric"></div>
+      </div>
+      <button class="btn full" onclick="addCalorie()">+ إضافة وجبة</button>
+    </div>
+    <div id="calSummary" style="margin-top:16px"></div>
+    <div id="calList"></div>
+  </div>
+
+  <!-- التقدم -->
+  <div class="page" id="p-prog">
+    <h2 class="page-h">تقدمي</h2>
+    <p class="page-sub">آخر 14 يوم</p>
+    <div id="progBody"><div class="empty">جاري التحميل...</div></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="/app-common.js"></script>
+<script>
+let HOME=null;
+
+async function go(p,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
+  document.getElementById('p-'+p).classList.add('on');
+  if(p==='home') loadHome();
+  if(p==='plan') loadPlan();
+  if(p==='cal') loadCalories();
+  if(p==='prog') loadProgress();
+}
+
+async function loadHome(){
+  const d=await api('/api/trainee/home');
+  if(!d) return;
+  HOME=d;
+  const calPct=d.calorieGoal? Math.min(100,Math.round(d.caloriesToday/d.calorieGoal*100)):0;
+  document.getElementById('homeBody').innerHTML=`
+    <div class="card" style="background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;border:none">
+      <div style="font-size:.9rem;opacity:.9">أهلاً ${esc(d.name)} 👋</div>
+      <div style="font-size:2.4rem;font-weight:900;margin-top:6px">${d.daysLeft} <span style="font-size:1rem;font-weight:600">يوم متبقي</span></div>
+      <div style="font-size:.78rem;opacity:.85">ينتهي اشتراكك في ${d.endDate}</div>
+    </div>
+    <div class="stats" style="margin-top:14px">
+      <div class="stat"><div class="n">${d.setsToday}</div><div class="l">ست مسجّل اليوم</div></div>
+      <div class="stat"><div class="n">${d.caloriesToday}</div><div class="l">سعرة اليوم</div></div>
+      <div class="stat"><div class="n">${d.proteinToday}g</div><div class="l">بروتين اليوم</div></div>
+    </div>
+    <div class="card">
+      <div style="font-weight:700;margin-bottom:4px">🍎 هدف السعرات اليومي</div>
+      <div class="muted">${d.caloriesToday} من ${d.calorieGoal} سعرة</div>
+      <div class="bar"><i style="width:${calPct}%"></i></div>
+    </div>
+    ${d.hasPlan
+      ? `<button class="btn full" style="margin-top:14px" onclick="document.querySelectorAll('.tab')[1].click()">📋 ابدئي تمرين اليوم</button>`
+      : `<div class="card"><div class="empty">لسه ما تم إسناد جدول لك — راسلي المدربة 💬</div></div>`}
+  `;
+}
+
+async function loadPlan(){
+  const days=await api('/api/trainee/plan');
+  const box=document.getElementById('planBody');
+  if(!days || !days.length){box.innerHTML='<div class="card"><div class="empty">لا يوجد جدول بعد</div></div>';return;}
+  const logs=await api('/api/trainee/logs');
+  const doneCount={};
+  (logs||[]).forEach(l=>{doneCount[l.plan_exercise_id]=(doneCount[l.plan_exercise_id]||0)+1;});
+  box.innerHTML=days.map(d=>`
+    <div class="card">
+      <div style="font-weight:800;font-size:1.05rem">اليوم ${d.day_index}: ${esc(d.title)}</div>
+      ${d.goal?`<div class="muted" style="margin-bottom:8px">${esc(d.goal)}</div>`:''}
+      ${d.exercises.length? d.exercises.map(ex=>exerciseCard(ex,doneCount[ex.id]||0)).join('') : '<div class="muted">لا تمارين في هذا اليوم</div>'}
+    </div>`).join('');
+}
+
+function exerciseCard(ex,done){
+  const sets=ex.sets||3;
+  return `<div style="border:1px solid var(--border);border-radius:14px;padding:14px;margin-top:12px">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+      <div style="font-weight:700">${esc(ex.name)}</div>
+      ${done>=sets?'<span class="badge green">✓ مكتمل</span>':`<span class="badge gold">${done}/${sets} ست</span>`}
+    </div>
+    ${ex.target_muscle?`<div class="muted">🎯 ${esc(ex.target_muscle)}</div>`:''}
+    <div class="muted">${sets} مجموعات × ${esc(ex.reps||'')} تكرار ${ex.target_weight?'• وزن مقترح: '+esc(ex.target_weight):''}</div>
+    ${ex.media_url? mediaTag(ex.media_url):''}
+    <div class="row" style="margin-top:10px">
+      <div class="field" style="margin:0"><label>الوزن (كجم)</label><input class="input" type="number" inputmode="decimal" id="w-${ex.id}"></div>
+      <div class="field" style="margin:0"><label>التكرارات</label><input class="input" type="number" inputmode="numeric" id="r-${ex.id}"></div>
+    </div>
+    <button class="btn sm full" style="margin-top:8px" onclick="logSet(${ex.id},${ex.exercise_id},${sets})">+ سجّلي ست</button>
+  </div>`;
+}
+
+function mediaTag(url){
+  if(/\.(mp4|webm|mov)$/i.test(url)) return `<video class="ex-media" src="${esc(url)}" controls muted playsinline></video>`;
+  return `<img class="ex-media" src="${esc(url)}" alt="تمرين" loading="lazy">`;
+}
+
+async function logSet(peId,exId,totalSets){
+  const w=document.getElementById('w-'+peId).value;
+  const r=document.getElementById('r-'+peId).value;
+  if(!w||!r){toast('أدخلي الوزن والتكرارات',true);return;}
+  const logs=await api('/api/trainee/logs');
+  const setNo=(logs||[]).filter(l=>l.plan_exercise_id===peId).length+1;
+  await api('/api/trainee/log',{method:'POST',body:{plan_exercise_id:peId,exercise_id:exId,set_number:setNo,weight:w,reps:r}});
+  toast('تم تسجيل الست ✓');
+  loadPlan();
+}
+
+async function loadCalories(){
+  const rows=await api('/api/trainee/calories');
+  const goal=HOME?HOME.calorieGoal:2000;
+  let kcal=0,prot=0,carb=0,fat=0;
+  (rows||[]).forEach(r=>{kcal+=r.calories;prot+=r.protein;carb+=r.carbs;fat+=r.fat;});
+  const pct=goal?Math.min(100,Math.round(kcal/goal*100)):0;
+  document.getElementById('calSummary').innerHTML=`
+    <div class="card">
+      <div style="display:flex;justify-content:space-between"><b>المجموع اليوم</b><b style="color:var(--gold)">${kcal} سعرة</b></div>
+      <div class="bar"><i style="width:${pct}%"></i></div>
+      <div class="muted" style="margin-top:6px">الهدف ${goal} سعرة • بروتين ${Math.round(prot)}g • كارب ${Math.round(carb)}g • دهون ${Math.round(fat)}g</div>
+    </div>`;
+  document.getElementById('calList').innerHTML=(rows&&rows.length)? rows.map(r=>`
+    <div class="list-item">
+      <div class="info"><div class="nm">${esc(r.meal_name)}</div>
+      <div class="meta">${r.calories} سعرة • ب${Math.round(r.protein)} ك${Math.round(r.carbs)} د${Math.round(r.fat)}</div></div>
+      <button class="btn danger sm" onclick="delCal(${r.id})">حذف</button>
+    </div>`).join('') : '<div class="empty">ما أضفتي وجبات اليوم</div>';
+}
+
+async function addCalorie(){
+  const meal=document.getElementById('cMeal').value.trim();
+  const kcal=document.getElementById('cKcal').value;
+  if(!meal||!kcal){toast('اكتبي اسم الوجبة والسعرات',true);return;}
+  await api('/api/trainee/calories',{method:'POST',body:{
+    meal_name:meal,calories:kcal,
+    protein:document.getElementById('cProt').value||0,
+    carbs:document.getElementById('cCarb').value||0,
+    fat:document.getElementById('cFat').value||0}});
+  ['cMeal','cKcal','cProt','cCarb','cFat'].forEach(id=>document.getElementById(id).value='');
+  toast('تمت الإضافة ✓');loadCalories();
+}
+async function delCal(id){await api('/api/trainee/calories/'+id,{method:'DELETE'});loadCalories();}
+
+async function loadProgress(){
+  const d=await api('/api/trainee/progress');
+  const box=document.getElementById('progBody');
+  if(!d){return;}
+  const maxSets=Math.max(1,...d.days.map(x=>x.sets));
+  box.innerHTML=`
+    <div class="card">
+      <b>أيام التمرين (الستات المسجّلة)</b>
+      ${d.days.length? d.days.map(x=>`
+        <div style="margin-top:10px">
+          <div style="display:flex;justify-content:space-between" class="muted"><span>${x.log_date}</span><span>${x.sets} ست</span></div>
+          <div class="bar"><i style="width:${Math.round(x.sets/maxSets*100)}%"></i></div>
+        </div>`).join('') : '<div class="empty">لا تمارين مسجّلة بعد</div>'}
+    </div>
+    <div class="card">
+      <b>السعرات اليومية</b>
+      ${d.cals.length? d.cals.map(x=>`<div class="list-item" style="margin-top:8px"><div class="info"><div class="nm">${x.log_date}</div></div><b style="color:var(--gold)">${x.calories} سعرة</b></div>`).join('') : '<div class="empty">لا سعرات مسجّلة</div>'}
+    </div>`;
+}
+
+loadHome();
+</script>
+</body>
+</html>
