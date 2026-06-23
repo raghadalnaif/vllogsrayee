@@ -27,6 +27,11 @@ CREATE TABLE IF NOT EXISTS trainees (
   gender TEXT DEFAULT 'female',
   activity_level TEXT DEFAULT 'moderate',
   deficit_pct REAL DEFAULT 0,
+  macro_style TEXT DEFAULT 'balanced',
+  protein_g INTEGER DEFAULT 0,
+  carb_g INTEGER DEFAULT 0,
+  fat_g INTEGER DEFAULT 0,
+  password_plain TEXT DEFAULT NULL,
   active INTEGER DEFAULT 1,
   created_at TEXT
 );
@@ -101,6 +106,11 @@ addColIfMissing('age', 'INTEGER');
 addColIfMissing('gender', "TEXT DEFAULT 'female'");
 addColIfMissing('activity_level', "TEXT DEFAULT 'moderate'");
 addColIfMissing('deficit_pct', 'REAL DEFAULT 0');
+addColIfMissing('macro_style', "TEXT DEFAULT 'balanced'");
+addColIfMissing('protein_g', 'INTEGER DEFAULT 0');
+addColIfMissing('carb_g', 'INTEGER DEFAULT 0');
+addColIfMissing('fat_g', 'INTEGER DEFAULT 0');
+addColIfMissing('password_plain', 'TEXT DEFAULT NULL');
 
 // ===== زرع مكتبة تمارين كاملة (مرة واحدة فقط) =====
 const EXERCISE_LIBRARY = [

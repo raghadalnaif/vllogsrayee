@@ -95,6 +95,21 @@ async function loadHome(){
       <div style="font-weight:700;margin-bottom:4px">🍎 هدف السعرات اليومي</div>
       <div class="muted">${d.caloriesToday} من ${d.calorieGoal} سعرة</div>
       <div class="bar"><i style="width:${calPct}%"></i></div>
+      ${(d.proteinGoal||d.carbGoal||d.fatGoal)?`
+      <div style="margin-top:14px;font-weight:700;margin-bottom:6px">📊 الماكروز اليوم</div>
+      ${[
+        {label:'بروتين',today:d.proteinToday,goal:d.proteinGoal,color:'#4A7C59'},
+        {label:'كارب',today:d.carbToday,goal:d.carbGoal,color:'#7CB87A'},
+        {label:'دهون',today:d.fatToday,goal:d.fatGoal,color:'#B8A44A'},
+      ].map(m=>{
+        const pct=m.goal?Math.min(100,Math.round(m.today/m.goal*100)):0;
+        return `<div style="margin-top:8px">
+          <div style="display:flex;justify-content:space-between" class="muted">
+            <span>${m.label}</span><span>${m.today}g / ${m.goal||'—'}g</span>
+          </div>
+          <div class="bar"><i style="width:${pct}%;background:${m.color}"></i></div>
+        </div>`;
+      }).join('')}`:''}
     </div>
     ${d.hasPlan
       ? `<button class="btn full" style="margin-top:14px" onclick="document.querySelectorAll('.tab')[1].click()">📋 ابدئي تمرين اليوم</button>`

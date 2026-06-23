@@ -101,7 +101,16 @@
       </div>
       <div class="muted" id="calcInfo" style="margin:6px 0;min-height:18px"></div>
     </div>
-    <div class="field"><label>هدف السعرات اليومي (تُحسب تلقائياً أو عدّليها يدوياً)</label><input class="input" id="tCal" type="number" value="2000"></div>
+    <div class="field"><label>هدف السعرات اليومي (تُحسب تلقائياً أو عدّليها يدوياً)</label><input class="input" id="tCal" type="number" value="2000" oninput="updateMacros()"></div>
+    <div class="field">
+      <label>نمط الكارب (نسبة الماكروز)</label>
+      <select class="input" id="tMacroStyle" onchange="updateMacros()">
+        <option value="balanced">معتدل — بروتين 30% / كارب 40% / دهون 30%</option>
+        <option value="high_carb">عالي الكارب — بروتين 25% / كارب 50% / دهون 25%</option>
+        <option value="low_carb">منخفض الكارب — بروتين 35% / كارب 20% / دهون 45%</option>
+      </select>
+    </div>
+    <div class="muted" id="macroInfo" style="padding:8px 10px;background:var(--bg3);border-radius:10px;min-height:18px"></div>
     <button class="btn full" onclick="saveTrainee()" id="saveTBtn">إضافة</button>
   </div>
 </div>
@@ -129,6 +138,11 @@
 <script>
 let EXERCISES=[], curTrainee=null, TRAINEES=[], TEMPLATE_LIST=[], editingId=null;
 const ACTIVITY_FACTORS={sedentary:1.2, light:1.375, moderate:1.55, active:1.725, very_active:1.9};
+const MACRO_STYLES={
+  balanced:  {protein:0.30, carb:0.40, fat:0.30},
+  high_carb: {protein:0.25, carb:0.50, fat:0.25},
+  low_carb:  {protein:0.35, carb:0.20, fat:0.45},
+};
 
 function go(p,el){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');
@@ -168,17 +182,19 @@ async function loadTrainees(){
         <div>
           <div style="font-weight:800;font-size:1.05rem">${esc(t.name)}
             ${t.status==='active'?`<span class="badge green">نشطة</span>`:`<span class="badge red">منتهية</span>`}</div>
-          <div class="muted">@${esc(t.username)} • ${t.days_left} يوم متبقي • ينتهي ${t.end_date} • هدف ${t.daily_calorie_goal||2000} سعرة</div>
+          <div class="muted">@${esc(t.username)} • 🔑 ${esc(t.password_plain||'—')} • ${t.days_left} يوم متبقي • ينتهي ${t.end_date}</div>
+          <div class="muted">${t.daily_calorie_goal||2000} سعرة ${t.protein_g?`• بروتين ${t.protein_g}g • كارب ${t.carb_g}g • دهون ${t.fat_g}g`:''}</div>
         </div>
       </div>
       <div class="row" style="margin-top:12px">
         <button class="btn sm" onclick="openPlan(${t.id},'${esc(t.name)}')">📋 الجدول</button>
         <button class="btn ghost sm" onclick="openReport(${t.id},'${esc(t.name)}')">📈 التقرير</button>
         <button class="btn ghost sm" onclick="openEditTrainee(${t.id})">✏️ تعديل</button>
+        <button class="btn ghost sm" onclick="copyCreds(${t.id})">📋 نسخ الدخول</button>
         <button class="btn ghost sm" onclick="extendT(${t.id})">+ تمديد</button>
         ${t.active?`<button class="btn ghost sm" onclick="patchT(${t.id},{action:'stop'})">إيقاف</button>`
                   :`<button class="btn ghost sm" onclick="patchT(${t.id},{action:'activate'})">تفعيل</button>`}
-        <button class="btn ghost sm" onclick="resetPass(${t.id})">🔑 كلمة المرور</button>
+        <button class="btn ghost sm" onclick="resetPass(${t.id})">🔑 باسورد</button>
         <button class="btn danger sm" onclick="delT(${t.id},'${esc(t.name)}')">حذف</button>
       </div>
     </div>`).join('') : '<div class="empty">لا مشتركات بعد — أضيفي أول مشتركة</div>';
@@ -197,9 +213,30 @@ function calcCalories(){
   const tdee=bmr*(ACTIVITY_FACTORS[act]||1.55);
   const target=Math.max(800,Math.round(tdee*(1-def/100)));
   document.getElementById('tCal').value=target;
-  info.textContent=`معدل الأيض: ${Math.round(bmr)} سعرة • الحرق اليومي: ${Math.round(tdee)} سعرة • السعرات المستهدفة: ${target} سعرة`;
+  info.textContent=`معدل الأيض: ${Math.round(bmr)} سعرة • الحرق اليومي: ${Math.round(tdee)} سعرة • المستهدف: ${target} سعرة`;
+  updateMacros();
+}
+function updateMacros(){
+  const cal=parseFloat(document.getElementById('tCal').value)||0;
+  const style=MACRO_STYLES[document.getElementById('tMacroStyle').value]||MACRO_STYLES.balanced;
+  if(!cal){document.getElementById('macroInfo').textContent='';return;}
+  const p=Math.round(cal*style.protein/4);
+  const c=Math.round(cal*style.carb/4);
+  const f=Math.round(cal*style.fat/9);
+  document.getElementById('macroInfo').textContent=`بروتين: ${p}g  •  كارب: ${c}g  •  دهون: ${f}g`;
 }
 
+function _getMacroBody(){
+  const cal=parseFloat(document.getElementById('tCal').value)||0;
+  const styleKey=document.getElementById('tMacroStyle').value||'balanced';
+  const style=MACRO_STYLES[styleKey]||MACRO_STYLES.balanced;
+  return {
+    macro_style:styleKey,
+    protein_g:Math.round(cal*style.protein/4),
+    carb_g:Math.round(cal*style.carb/4),
+    fat_g:Math.round(cal*style.fat/9)
+  };
+}
 function openAddTrainee(){
   editingId=null;
   ['tName','tUser','tPass','tWeight','tHeight','tAge'].forEach(i=>document.getElementById(i).value='');
@@ -207,12 +244,15 @@ function openAddTrainee(){
   document.getElementById('tGender').value='female';
   document.getElementById('tActivity').value='moderate';
   document.getElementById('tDeficit').value='0';
+  document.getElementById('tMacroStyle').value='balanced';
   document.getElementById('tMonths').value='1';
   document.getElementById('calcInfo').textContent='';
+  document.getElementById('macroInfo').textContent='';
   document.getElementById('addTitle').textContent='مشتركة جديدة';
   document.getElementById('addOnlyFields').style.display='';
   document.getElementById('saveTBtn').textContent='إضافة';
   document.getElementById('ovlAdd').classList.add('open');
+  updateMacros();
 }
 function openEditTrainee(id){
   const t=TRAINEES.find(x=>x.id===id);if(!t)return;
@@ -225,17 +265,20 @@ function openEditTrainee(id){
   document.getElementById('tActivity').value=t.activity_level||'moderate';
   document.getElementById('tDeficit').value=t.deficit_pct||0;
   document.getElementById('tCal').value=t.daily_calorie_goal||2000;
+  document.getElementById('tMacroStyle').value=t.macro_style||'balanced';
   document.getElementById('calcInfo').textContent='';
   document.getElementById('addTitle').textContent='تعديل: '+t.name;
   document.getElementById('addOnlyFields').style.display='none';
   document.getElementById('saveTBtn').textContent='حفظ التعديلات';
   document.getElementById('ovlAdd').classList.add('open');
+  updateMacros();
 }
 async function saveTrainee(){
   const name=tName.value.trim();
   if(!name){toast('اكتبي الاسم',true);return;}
   const calcBody={name, daily_calorie_goal:tCal.value, weight_kg:tWeight.value, height_cm:tHeight.value,
-    age:tAge.value, gender:tGender.value, activity_level:tActivity.value, deficit_pct:tDeficit.value};
+    age:tAge.value, gender:tGender.value, activity_level:tActivity.value, deficit_pct:tDeficit.value,
+    ..._getMacroBody()};
   if(editingId){
     const r=await api('/api/admin/trainees/'+editingId,{method:'PATCH',body:{action:'edit',...calcBody}});
     if(!r)return;
@@ -245,6 +288,13 @@ async function saveTrainee(){
   if(!body.username||!body.password){toast('أكملي اسم المستخدم وكلمة المرور',true);return;}
   const r=await api('/api/admin/trainees',{method:'POST',body});if(!r)return;
   toast('تمت الإضافة ✓');closeM('ovlAdd');loadTrainees();
+}
+function copyCreds(id){
+  const t=TRAINEES.find(x=>x.id===id);if(!t)return;
+  const text=`بيانات الدخول — vllogsraye\nالرابط: https://app.vllogsraye.com\nاسم المستخدم: ${t.username}\nكلمة المرور: ${t.password_plain||'—'}`;
+  navigator.clipboard.writeText(text)
+    .then(()=>toast('تم نسخ بيانات الدخول ✓'))
+    .catch(()=>toast('تعذّر النسخ — انسخي يدوياً',true));
 }
 async function patchT(id,body){const r=await api('/api/admin/trainees/'+id,{method:'PATCH',body});if(r){toast('تم ✓');loadTrainees();}}
 function extendT(id){const m=prompt('كم شهر تمديد؟ (1 / 3 / 6 / 12)','1');if(m)patchT(id,{action:'extend',months:m});}

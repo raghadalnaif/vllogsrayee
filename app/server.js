@@ -101,8 +101,8 @@ app.get('/api/admin/stats', requireAuth, requireAdmin, (req, res) => {
 
 // ===== الإدارة: المشتركات =====
 app.get('/api/admin/trainees', requireAuth, requireAdmin, (req, res) => {
-  const rows = db.prepare(`SELECT id,name,username,start_date,end_date,daily_calorie_goal,
-    weight_kg,height_cm,age,gender,activity_level,deficit_pct,active FROM trainees ORDER BY id DESC`).all();
+  const rows = db.prepare(`SELECT id,name,username,password_plain,start_date,end_date,daily_calorie_goal,
+    weight_kg,height_cm,age,gender,activity_level,deficit_pct,macro_style,protein_g,carb_g,fat_g,active FROM trainees ORDER BY id DESC`).all();
   const t = today();
   rows.forEach(r => {
     r.days_left = daysLeft(r.end_date);
@@ -113,21 +113,26 @@ app.get('/api/admin/trainees', requireAuth, requireAdmin, (req, res) => {
 
 app.post('/api/admin/trainees', requireAuth, requireAdmin, (req, res) => {
   const { name, username, password, months, daily_calorie_goal,
-    weight_kg, height_cm, age, gender, activity_level, deficit_pct } = req.body;
+    weight_kg, height_cm, age, gender, activity_level, deficit_pct,
+    macro_style, protein_g, carb_g, fat_g } = req.body;
   if (!name || !username || !password || !months) return res.status(400).json({ message: 'أكملي كل الحقول' });
   if (db.prepare('SELECT id FROM trainees WHERE username=?').get(username))
     return res.status(400).json({ message: 'اسم المستخدم مستخدم مسبقاً' });
   const start = new Date();
   const end = new Date(); end.setMonth(end.getMonth() + parseInt(months));
   const info = db.prepare(`INSERT INTO trainees
-    (name,username,password_hash,start_date,end_date,daily_calorie_goal,weight_kg,height_cm,age,gender,activity_level,deficit_pct,active,created_at)
-    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,1,?)`).run(
-    name, username, bcrypt.hashSync(password, 10),
+    (name,username,password_hash,password_plain,start_date,end_date,daily_calorie_goal,
+     weight_kg,height_cm,age,gender,activity_level,deficit_pct,
+     macro_style,protein_g,carb_g,fat_g,active,created_at)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,?)`).run(
+    name, username, bcrypt.hashSync(password, 10), password,
     start.toISOString().slice(0, 10), end.toISOString().slice(0, 10),
     parseInt(daily_calorie_goal) || 2000,
     weight_kg ? parseFloat(weight_kg) : null, height_cm ? parseFloat(height_cm) : null,
     age ? parseInt(age) : null, gender || 'female', activity_level || 'moderate',
     (deficit_pct !== undefined && deficit_pct !== '') ? parseFloat(deficit_pct) : 0,
+    macro_style || 'balanced',
+    parseInt(protein_g) || 0, parseInt(carb_g) || 0, parseInt(fat_g) || 0,
     new Date().toISOString());
   res.json({ id: info.lastInsertRowid });
 });
@@ -147,17 +152,24 @@ app.patch('/api/admin/trainees/:id', requireAuth, requireAdmin, (req, res) => {
   } else if (action === 'activate') {
     db.prepare('UPDATE trainees SET active=1 WHERE id=?').run(id);
   } else if (action === 'password' && password) {
-    db.prepare('UPDATE trainees SET password_hash=? WHERE id=?').run(bcrypt.hashSync(password, 10), id);
+    db.prepare('UPDATE trainees SET password_hash=?, password_plain=? WHERE id=?')
+      .run(bcrypt.hashSync(password, 10), password, id);
   } else if (action === 'edit') {
+    const { macro_style, protein_g, carb_g, fat_g } = req.body;
     db.prepare(`UPDATE trainees SET
       name=COALESCE(?,name), daily_calorie_goal=COALESCE(?,daily_calorie_goal),
       weight_kg=COALESCE(?,weight_kg), height_cm=COALESCE(?,height_cm), age=COALESCE(?,age),
-      gender=COALESCE(?,gender), activity_level=COALESCE(?,activity_level), deficit_pct=COALESCE(?,deficit_pct)
+      gender=COALESCE(?,gender), activity_level=COALESCE(?,activity_level), deficit_pct=COALESCE(?,deficit_pct),
+      macro_style=COALESCE(?,macro_style), protein_g=COALESCE(?,protein_g),
+      carb_g=COALESCE(?,carb_g), fat_g=COALESCE(?,fat_g)
       WHERE id=?`).run(
       name || null, daily_calorie_goal ? parseInt(daily_calorie_goal) : null,
       weight_kg ? parseFloat(weight_kg) : null, height_cm ? parseFloat(height_cm) : null,
       age ? parseInt(age) : null, gender || null, activity_level || null,
       (deficit_pct !== undefined && deficit_pct !== '') ? parseFloat(deficit_pct) : null,
+      macro_style || null,
+      protein_g ? parseInt(protein_g) : null, carb_g ? parseInt(carb_g) : null,
+      fat_g ? parseInt(fat_g) : null,
       id);
   }
   res.json({ ok: true });
@@ -289,12 +301,16 @@ app.post('/api/admin/password', requireAuth, requireAdmin, (req, res) => {
 app.get('/api/trainee/home', requireAuth, requireTrainee, (req, res) => {
   const t = db.prepare('SELECT * FROM trainees WHERE id=?').get(req.session.uid);
   if (!traineeActive(t)) { req.session = null; return res.status(403).json({ error: 'expired' }); }
-  const cal = db.prepare('SELECT COALESCE(SUM(calories),0) c, COALESCE(SUM(protein),0) p FROM calorie_logs WHERE trainee_id=? AND log_date=?').get(t.id, today());
+  const cal = db.prepare(`SELECT COALESCE(SUM(calories),0) c, COALESCE(SUM(protein),0) p,
+    COALESCE(SUM(carbs),0) cb, COALESCE(SUM(fat),0) f
+    FROM calorie_logs WHERE trainee_id=? AND log_date=?`).get(t.id, today());
   const setsToday = db.prepare('SELECT COUNT(*) c FROM workout_logs WHERE trainee_id=? AND log_date=?').get(t.id, today()).c;
   const daysCount = db.prepare('SELECT COUNT(*) c FROM plan_days WHERE trainee_id=?').get(t.id).c;
   res.json({
     name: t.name, daysLeft: daysLeft(t.end_date), endDate: t.end_date,
-    calorieGoal: t.daily_calorie_goal, caloriesToday: cal.c, proteinToday: Math.round(cal.p),
+    calorieGoal: t.daily_calorie_goal, caloriesToday: cal.c,
+    proteinGoal: t.protein_g || 0, carbGoal: t.carb_g || 0, fatGoal: t.fat_g || 0,
+    proteinToday: Math.round(cal.p), carbToday: Math.round(cal.cb), fatToday: Math.round(cal.f),
     setsToday, hasPlan: daysCount > 0
   });
 });
