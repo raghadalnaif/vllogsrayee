@@ -57,26 +57,52 @@
   </div>
 </div>
 
-<!-- مودال إضافة مشتركة -->
+<!-- مودال إضافة/تعديل مشتركة -->
 <div class="overlay" id="ovlAdd">
   <div class="modal">
     <button class="x" onclick="closeM('ovlAdd')">✕</button>
-    <h3>مشتركة جديدة</h3>
+    <h3 id="addTitle">مشتركة جديدة</h3>
     <div class="field"><label>الاسم</label><input class="input" id="tName"></div>
-    <div class="row">
-      <div class="field"><label>اسم المستخدم</label><input class="input" id="tUser"></div>
-      <div class="field"><label>كلمة المرور</label><input class="input" id="tPass"></div>
-    </div>
-    <div class="row">
+    <div id="addOnlyFields">
+      <div class="row">
+        <div class="field"><label>اسم المستخدم</label><input class="input" id="tUser"></div>
+        <div class="field"><label>كلمة المرور</label><input class="input" id="tPass"></div>
+      </div>
       <div class="field"><label>مدة الاشتراك</label>
         <select class="input" id="tMonths">
           <option value="1">شهر</option><option value="3">3 أشهر</option>
           <option value="6">6 أشهر</option><option value="12">سنة</option>
         </select>
       </div>
-      <div class="field"><label>هدف السعرات اليومي</label><input class="input" id="tCal" type="number" value="2000"></div>
     </div>
-    <button class="btn full" onclick="saveTrainee()">إضافة</button>
+    <div style="border-top:1px dashed var(--border);margin-top:14px;padding-top:14px">
+      <b>🍎 حاسبة السعرات (اختياري)</b>
+      <div class="row" style="margin-top:8px">
+        <div class="field"><label>الوزن (كجم)</label><input class="input" id="tWeight" type="number" oninput="calcCalories()"></div>
+        <div class="field"><label>الطول (سم)</label><input class="input" id="tHeight" type="number" oninput="calcCalories()"></div>
+        <div class="field"><label>العمر</label><input class="input" id="tAge" type="number" oninput="calcCalories()"></div>
+      </div>
+      <div class="row">
+        <div class="field"><label>الجنس</label>
+          <select class="input" id="tGender" onchange="calcCalories()">
+            <option value="female">أنثى</option><option value="male">ذكر</option>
+          </select>
+        </div>
+        <div class="field"><label>مستوى النشاط</label>
+          <select class="input" id="tActivity" onchange="calcCalories()">
+            <option value="sedentary">قليل الحركة</option>
+            <option value="light">نشاط خفيف (1-3 أيام)</option>
+            <option value="moderate" selected>متوسط (3-5 أيام)</option>
+            <option value="active">نشط (6-7 أيام)</option>
+            <option value="very_active">رياضية محترفة</option>
+          </select>
+        </div>
+        <div class="field"><label>نسبة العجز/الزيادة %</label><input class="input" id="tDeficit" type="number" value="0" oninput="calcCalories()" placeholder="20 للعجز، -10 للزيادة"></div>
+      </div>
+      <div class="muted" id="calcInfo" style="margin:6px 0;min-height:18px"></div>
+    </div>
+    <div class="field"><label>هدف السعرات اليومي (تُحسب تلقائياً أو عدّليها يدوياً)</label><input class="input" id="tCal" type="number" value="2000"></div>
+    <button class="btn full" onclick="saveTrainee()" id="saveTBtn">إضافة</button>
   </div>
 </div>
 
@@ -101,7 +127,8 @@
 <div class="toast" id="toast"></div>
 <script src="/app-common.js"></script>
 <script>
-let EXERCISES=[], curTrainee=null;
+let EXERCISES=[], curTrainee=null, TRAINEES=[], TEMPLATE_LIST=[], editingId=null;
+const ACTIVITY_FACTORS={sedentary:1.2, light:1.375, moderate:1.55, active:1.725, very_active:1.9};
 
 function go(p,el){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');
@@ -134,19 +161,20 @@ async function loadDash(){
 
 // ===== المشتركات =====
 async function loadTrainees(){
-  const rows=await api('/api/admin/trainees');if(!rows)return;
-  document.getElementById('trnList').innerHTML=rows.length? rows.map(t=>`
+  TRAINEES=await api('/api/admin/trainees')||[];
+  document.getElementById('trnList').innerHTML=TRAINEES.length? TRAINEES.map(t=>`
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:start;gap:10px;flex-wrap:wrap">
         <div>
           <div style="font-weight:800;font-size:1.05rem">${esc(t.name)}
             ${t.status==='active'?`<span class="badge green">نشطة</span>`:`<span class="badge red">منتهية</span>`}</div>
-          <div class="muted">@${esc(t.username)} • ${t.days_left} يوم متبقي • ينتهي ${t.end_date}</div>
+          <div class="muted">@${esc(t.username)} • ${t.days_left} يوم متبقي • ينتهي ${t.end_date} • هدف ${t.daily_calorie_goal||2000} سعرة</div>
         </div>
       </div>
       <div class="row" style="margin-top:12px">
         <button class="btn sm" onclick="openPlan(${t.id},'${esc(t.name)}')">📋 الجدول</button>
         <button class="btn ghost sm" onclick="openReport(${t.id},'${esc(t.name)}')">📈 التقرير</button>
+        <button class="btn ghost sm" onclick="openEditTrainee(${t.id})">✏️ تعديل</button>
         <button class="btn ghost sm" onclick="extendT(${t.id})">+ تمديد</button>
         ${t.active?`<button class="btn ghost sm" onclick="patchT(${t.id},{action:'stop'})">إيقاف</button>`
                   :`<button class="btn ghost sm" onclick="patchT(${t.id},{action:'activate'})">تفعيل</button>`}
@@ -155,10 +183,66 @@ async function loadTrainees(){
       </div>
     </div>`).join('') : '<div class="empty">لا مشتركات بعد — أضيفي أول مشتركة</div>';
 }
-function openAddTrainee(){['tName','tUser','tPass','tCal'].forEach(i=>document.getElementById(i).value='');document.getElementById('tCal').value='2000';document.getElementById('ovlAdd').classList.add('open');}
+
+function calcCalories(){
+  const w=parseFloat(document.getElementById('tWeight').value);
+  const h=parseFloat(document.getElementById('tHeight').value);
+  const a=parseFloat(document.getElementById('tAge').value);
+  const g=document.getElementById('tGender').value;
+  const act=document.getElementById('tActivity').value;
+  const def=parseFloat(document.getElementById('tDeficit').value)||0;
+  const info=document.getElementById('calcInfo');
+  if(!w||!h||!a){info.textContent='أدخلي الوزن والطول والعمر لحساب السعرات تلقائياً';return;}
+  const bmr=g==='male'? (10*w+6.25*h-5*a+5) : (10*w+6.25*h-5*a-161);
+  const tdee=bmr*(ACTIVITY_FACTORS[act]||1.55);
+  const target=Math.max(800,Math.round(tdee*(1-def/100)));
+  document.getElementById('tCal').value=target;
+  info.textContent=`معدل الأيض: ${Math.round(bmr)} سعرة • الحرق اليومي: ${Math.round(tdee)} سعرة • السعرات المستهدفة: ${target} سعرة`;
+}
+
+function openAddTrainee(){
+  editingId=null;
+  ['tName','tUser','tPass','tWeight','tHeight','tAge'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('tCal').value='2000';
+  document.getElementById('tGender').value='female';
+  document.getElementById('tActivity').value='moderate';
+  document.getElementById('tDeficit').value='0';
+  document.getElementById('tMonths').value='1';
+  document.getElementById('calcInfo').textContent='';
+  document.getElementById('addTitle').textContent='مشتركة جديدة';
+  document.getElementById('addOnlyFields').style.display='';
+  document.getElementById('saveTBtn').textContent='إضافة';
+  document.getElementById('ovlAdd').classList.add('open');
+}
+function openEditTrainee(id){
+  const t=TRAINEES.find(x=>x.id===id);if(!t)return;
+  editingId=id;
+  document.getElementById('tName').value=t.name;
+  document.getElementById('tWeight').value=t.weight_kg||'';
+  document.getElementById('tHeight').value=t.height_cm||'';
+  document.getElementById('tAge').value=t.age||'';
+  document.getElementById('tGender').value=t.gender||'female';
+  document.getElementById('tActivity').value=t.activity_level||'moderate';
+  document.getElementById('tDeficit').value=t.deficit_pct||0;
+  document.getElementById('tCal').value=t.daily_calorie_goal||2000;
+  document.getElementById('calcInfo').textContent='';
+  document.getElementById('addTitle').textContent='تعديل: '+t.name;
+  document.getElementById('addOnlyFields').style.display='none';
+  document.getElementById('saveTBtn').textContent='حفظ التعديلات';
+  document.getElementById('ovlAdd').classList.add('open');
+}
 async function saveTrainee(){
-  const body={name:tName.value.trim(),username:tUser.value.trim(),password:tPass.value,months:tMonths.value,daily_calorie_goal:tCal.value};
-  if(!body.name||!body.username||!body.password){toast('أكملي الحقول',true);return;}
+  const name=tName.value.trim();
+  if(!name){toast('اكتبي الاسم',true);return;}
+  const calcBody={name, daily_calorie_goal:tCal.value, weight_kg:tWeight.value, height_cm:tHeight.value,
+    age:tAge.value, gender:tGender.value, activity_level:tActivity.value, deficit_pct:tDeficit.value};
+  if(editingId){
+    const r=await api('/api/admin/trainees/'+editingId,{method:'PATCH',body:{action:'edit',...calcBody}});
+    if(!r)return;
+    toast('تم حفظ التعديلات ✓');closeM('ovlAdd');loadTrainees();return;
+  }
+  const body={...calcBody,username:tUser.value.trim(),password:tPass.value,months:tMonths.value};
+  if(!body.username||!body.password){toast('أكملي اسم المستخدم وكلمة المرور',true);return;}
   const r=await api('/api/admin/trainees',{method:'POST',body});if(!r)return;
   toast('تمت الإضافة ✓');closeM('ovlAdd');loadTrainees();
 }
@@ -201,14 +285,30 @@ async function delEx(id){if(!confirm('حذف التمرين من المكتبة�
 async function openPlan(id,name){
   curTrainee=id;
   if(!EXERCISES.length)EXERCISES=await api('/api/admin/exercises')||[];
+  if(!TEMPLATE_LIST.length)TEMPLATE_LIST=await api('/api/admin/templates')||[];
   document.getElementById('planTitle').textContent='جدول: '+name;
   document.getElementById('ovlPlan').classList.add('open');
   renderPlan();
 }
+async function applyTemplate(){
+  const key=document.getElementById('tplSelect').value;
+  if(!key)return;
+  const r=await api('/api/admin/trainees/'+curTrainee+'/apply-template',{method:'POST',body:{template:key}});
+  if(r){toast('تم تطبيق القالب ✓');renderPlan();}
+}
 async function renderPlan(){
   const days=await api('/api/admin/trainees/'+curTrainee+'/plan')||[];
   const opts=EXERCISES.map(e=>`<option value="${e.id}">${esc(e.name)}</option>`).join('');
+  const tplOpts=TEMPLATE_LIST.map(t=>`<option value="${t.key}">${esc(t.label)}</option>`).join('');
   document.getElementById('planEditor').innerHTML=`
+    <div class="card" style="background:var(--bg3)">
+      <b>⚡ تطبيق قالب جاهز</b>
+      <p class="muted" style="margin:4px 0 8px">يضيف أيام القالب لجدولها الحالي (لا يحذف الموجود) — منزلي أو نادي، 3 إلى 5 أيام، تستهدف غلوتس/أرجل/ظهر/يدين/كور</p>
+      <div class="row">
+        <select class="input" id="tplSelect">${tplOpts||'<option value="">لا قوالب متاحة</option>'}</select>
+        <button class="btn sm" onclick="applyTemplate()">تطبيق</button>
+      </div>
+    </div>
     ${days.map(d=>`
       <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center">

@@ -6,6 +6,7 @@ const bcrypt = require('bcryptjs');
 const cookieSession = require('cookie-session');
 const multer = require('multer');
 const db = require('./db');
+const TEMPLATES = require('./templates');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -100,7 +101,8 @@ app.get('/api/admin/stats', requireAuth, requireAdmin, (req, res) => {
 
 // ===== الإدارة: المشتركات =====
 app.get('/api/admin/trainees', requireAuth, requireAdmin, (req, res) => {
-  const rows = db.prepare('SELECT id,name,username,start_date,end_date,daily_calorie_goal,active FROM trainees ORDER BY id DESC').all();
+  const rows = db.prepare(`SELECT id,name,username,start_date,end_date,daily_calorie_goal,
+    weight_kg,height_cm,age,gender,activity_level,deficit_pct,active FROM trainees ORDER BY id DESC`).all();
   const t = today();
   rows.forEach(r => {
     r.days_left = daysLeft(r.end_date);
@@ -110,18 +112,23 @@ app.get('/api/admin/trainees', requireAuth, requireAdmin, (req, res) => {
 });
 
 app.post('/api/admin/trainees', requireAuth, requireAdmin, (req, res) => {
-  const { name, username, password, months, daily_calorie_goal } = req.body;
+  const { name, username, password, months, daily_calorie_goal,
+    weight_kg, height_cm, age, gender, activity_level, deficit_pct } = req.body;
   if (!name || !username || !password || !months) return res.status(400).json({ message: 'أكملي كل الحقول' });
   if (db.prepare('SELECT id FROM trainees WHERE username=?').get(username))
     return res.status(400).json({ message: 'اسم المستخدم مستخدم مسبقاً' });
   const start = new Date();
   const end = new Date(); end.setMonth(end.getMonth() + parseInt(months));
   const info = db.prepare(`INSERT INTO trainees
-    (name,username,password_hash,start_date,end_date,daily_calorie_goal,active,created_at)
-    VALUES (?,?,?,?,?,?,1,?)`).run(
+    (name,username,password_hash,start_date,end_date,daily_calorie_goal,weight_kg,height_cm,age,gender,activity_level,deficit_pct,active,created_at)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,1,?)`).run(
     name, username, bcrypt.hashSync(password, 10),
     start.toISOString().slice(0, 10), end.toISOString().slice(0, 10),
-    parseInt(daily_calorie_goal) || 2000, new Date().toISOString());
+    parseInt(daily_calorie_goal) || 2000,
+    weight_kg ? parseFloat(weight_kg) : null, height_cm ? parseFloat(height_cm) : null,
+    age ? parseInt(age) : null, gender || 'female', activity_level || 'moderate',
+    (deficit_pct !== undefined && deficit_pct !== '') ? parseFloat(deficit_pct) : 0,
+    new Date().toISOString());
   res.json({ id: info.lastInsertRowid });
 });
 
@@ -129,7 +136,8 @@ app.patch('/api/admin/trainees/:id', requireAuth, requireAdmin, (req, res) => {
   const id = req.params.id;
   const t = db.prepare('SELECT * FROM trainees WHERE id=?').get(id);
   if (!t) return res.status(404).json({ message: 'غير موجودة' });
-  const { action, months, password, name, daily_calorie_goal } = req.body;
+  const { action, months, password, name, daily_calorie_goal,
+    weight_kg, height_cm, age, gender, activity_level, deficit_pct } = req.body;
   if (action === 'extend') {
     const base = t.end_date > today() ? new Date(t.end_date) : new Date();
     base.setMonth(base.getMonth() + (parseInt(months) || 1));
@@ -141,8 +149,16 @@ app.patch('/api/admin/trainees/:id', requireAuth, requireAdmin, (req, res) => {
   } else if (action === 'password' && password) {
     db.prepare('UPDATE trainees SET password_hash=? WHERE id=?').run(bcrypt.hashSync(password, 10), id);
   } else if (action === 'edit') {
-    db.prepare('UPDATE trainees SET name=COALESCE(?,name), daily_calorie_goal=COALESCE(?,daily_calorie_goal) WHERE id=?')
-      .run(name || null, daily_calorie_goal ? parseInt(daily_calorie_goal) : null, id);
+    db.prepare(`UPDATE trainees SET
+      name=COALESCE(?,name), daily_calorie_goal=COALESCE(?,daily_calorie_goal),
+      weight_kg=COALESCE(?,weight_kg), height_cm=COALESCE(?,height_cm), age=COALESCE(?,age),
+      gender=COALESCE(?,gender), activity_level=COALESCE(?,activity_level), deficit_pct=COALESCE(?,deficit_pct)
+      WHERE id=?`).run(
+      name || null, daily_calorie_goal ? parseInt(daily_calorie_goal) : null,
+      weight_kg ? parseFloat(weight_kg) : null, height_cm ? parseFloat(height_cm) : null,
+      age ? parseInt(age) : null, gender || null, activity_level || null,
+      (deficit_pct !== undefined && deficit_pct !== '') ? parseFloat(deficit_pct) : null,
+      id);
   }
   res.json({ ok: true });
 });
@@ -213,6 +229,33 @@ app.post('/api/admin/days/:dayId/exercises', requireAuth, requireAdmin, (req, re
 
 app.delete('/api/admin/plan-exercises/:id', requireAuth, requireAdmin, (req, res) => {
   db.prepare('DELETE FROM plan_exercises WHERE id=?').run(req.params.id);
+  res.json({ ok: true });
+});
+
+// ===== الإدارة: قوالب جاهزة =====
+app.get('/api/admin/templates', requireAuth, requireAdmin, (req, res) => {
+  res.json(Object.entries(TEMPLATES).map(([key, t]) => ({ key, label: t.label })));
+});
+
+app.post('/api/admin/trainees/:id/apply-template', requireAuth, requireAdmin, (req, res) => {
+  const tpl = TEMPLATES[req.body.template];
+  if (!tpl) return res.status(400).json({ message: 'قالب غير معروف' });
+  const traineeId = req.params.id;
+  const baseIdx = db.prepare('SELECT COALESCE(MAX(day_index),0) m FROM plan_days WHERE trainee_id=?').get(traineeId).m;
+  const insertDay = db.prepare('INSERT INTO plan_days (trainee_id,day_index,title,goal) VALUES (?,?,?,?)');
+  const findEx = db.prepare('SELECT id FROM exercises WHERE name=?');
+  const insertPE = db.prepare('INSERT INTO plan_exercises (plan_day_id,exercise_id,sets,reps,target_weight,order_index) VALUES (?,?,?,?,?,?)');
+  const apply = db.transaction(() => {
+    tpl.days.forEach((day, i) => {
+      const dayId = insertDay.run(traineeId, baseIdx + i + 1, day.title, day.goal || '').lastInsertRowid;
+      day.exercises.forEach((ex, idx) => {
+        const exRow = findEx.get(ex.name);
+        if (!exRow) return;
+        insertPE.run(dayId, exRow.id, ex.sets, ex.reps, '', idx + 1);
+      });
+    });
+  });
+  apply();
   res.json({ ok: true });
 });
 
