@@ -1,8 +1,7 @@
 # نظام متابعة المتدربات — vllogsraye
 
 تطبيق Node.js + SQLite لإدارة المتدربات، الجداول، تتبّع التمارين، والسعرات.
-يُخدَّم على **نفس الدومين** تحت المسار `vllogsraye.com/app` (نفس شهادة SSL، بدون نطاق فرعي).
-الموقع الرئيسي يبقى كما هو ولا يتأثر.
+يُرفع على نطاق فرعي منفصل (`app.vllogsraye.com`) ولا يؤثر على الموقع الرئيسي.
 
 ## المزايا
 - **الإدارة**: لوحة إحصائيات، إضافة مشتركات بمدة اشتراك، تمديد/إيقاف، مكتبة تمارين (مع GIF/فيديو)، منشئ جداول، تقارير لكل مشتركة.
@@ -34,14 +33,19 @@ SESSION_SECRET="اكتبي-هنا-جملة-سرية-طويلة-عشوائية" p
 pm2 save
 pm2 startup    # نفّذي السطر الذي يطبعه لك لتشغيل التطبيق تلقائياً بعد إعادة التشغيل
 ```
-التطبيق الآن يعمل على المنفذ 3001 داخلياً تحت المسار `/app`.
+التطبيق الآن يعمل على المنفذ 3001 داخلياً.
 
-### 3) أضيفي بلوك التمرير لإعداد Nginx الحالي لموقعك
-داخل `server` block الخاص بـ vllogsraye.com (المنفذ 443 — الذي أنشأه certbot)،
-أضيفي هذا البلوك قبل `location / {`:
-```nginx
+### 3) أضيفي A record للنطاق الفرعي في Netlify
+- النوع: `A` — الاسم: `app` — القيمة: `207.180.202.200`
+
+### 4) أنشئي إعداد Nginx للنطاق الفرعي
+```bash
+cat > /etc/nginx/sites-available/app.vllogsraye << 'EOF'
+server {
+    listen 80;
+    server_name app.vllogsraye.com;
     client_max_body_size 30M;
-    location /app/ {
+    location / {
         proxy_pass http://127.0.0.1:3001;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
@@ -49,16 +53,18 @@ pm2 startup    # نفّذي السطر الذي يطبعه لك لتشغيل ا�
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
     }
-    location = /app { return 301 /app/; }
-```
-ثم:
-```bash
+}
+EOF
+ln -s /etc/nginx/sites-available/app.vllogsraye /etc/nginx/sites-enabled/app.vllogsraye
 nginx -t && systemctl reload nginx
 ```
 
-> لا حاجة لسجل DNS جديد ولا شهادة SSL جديدة — يستخدم دومين وشهادة vllogsraye.com نفسها.
+### 5) فعّلي شهادة SSL (https)
+```bash
+certbot --nginx -d app.vllogsraye.com
+```
 
-افتحي الآن: **https://vllogsraye.com/app** 🎉
+افتحي الآن: **https://app.vllogsraye.com** 🎉
 
 ---
 

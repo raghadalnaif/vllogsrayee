@@ -1,6 +1,4 @@
 // ===== دوال مشتركة =====
-// المسار الأساسي للتطبيق (vllogsraye.com/app)
-const BASE = '/app';
 async function api(url, opts = {}) {
   const o = { headers: {}, ...opts };
   if (o.body && typeof o.body === 'object' && !(o.body instanceof FormData)) {
@@ -8,9 +6,9 @@ async function api(url, opts = {}) {
     o.body = JSON.stringify(o.body);
   }
   try {
-    const r = await fetch(BASE + url, o);
+    const r = await fetch(url, o);
     if (r.status === 401 || (r.status === 403 && url.includes('/home'))) {
-      location.href = BASE + '/';
+      location.href = '/';
       return null;
     }
     const d = await r.json().catch(() => ({}));
@@ -40,6 +38,6 @@ function toast(msg, isErr) {
 }
 
 async function logout() {
-  await fetch(BASE + '/api/logout', { method: 'POST' });
-  location.href = BASE + '/';
+  await fetch('/api/logout', { method: 'POST' });
+  location.href = '/';
 }
