@@ -304,13 +304,6 @@ async function loadHome() {
         <span style="color:var(--gold)">📊</span> السعرات والماكروز اليومية
       </div>
       ${(() => {
-        const protCal = (d.proteinToday||0)*4;
-        const carbCal = (d.carbToday||0)*4;
-        const fatCal  = (d.fatToday||0)*9;
-        const totalMC = protCal + carbCal + fatCal || 1;
-        const protBar = Math.round(protCal/totalMC*100);
-        const carbBar = Math.round(carbCal/totalMC*100);
-        const fatBar  = 100 - protBar - carbBar;
         const gCal = d.calorieGoal || 1;
         const protPct = d.proteinGoal ? Math.round(d.proteinGoal*4/gCal*100) : 30;
         const carbPct = d.carbGoal    ? Math.round(d.carbGoal*4/gCal*100)    : 35;
@@ -318,30 +311,30 @@ async function loadHome() {
         return `
         <div class="macro-grid">
           <div class="macro-card mc-fat">
-            <div class="mc-num">${d.fatToday||0}</div>
+            <div class="mc-num">${d.fatGoal||0}</div>
             <div class="mc-unit">جرام</div>
             <div class="mc-lbl">دهون – ${fatPct}٪</div>
           </div>
           <div class="macro-card mc-carb">
-            <div class="mc-num">${d.carbToday||0}</div>
+            <div class="mc-num">${d.carbGoal||0}</div>
             <div class="mc-unit">جرام</div>
             <div class="mc-lbl">كارب – ${carbPct}٪</div>
           </div>
           <div class="macro-card mc-prot">
-            <div class="mc-num">${d.proteinToday||0}</div>
+            <div class="mc-num">${d.proteinGoal||0}</div>
             <div class="mc-unit">جرام</div>
             <div class="mc-lbl">بروتين – ${protPct}٪</div>
           </div>
           <div class="macro-card mc-cal">
-            <div class="mc-num">${d.caloriesToday||0}</div>
+            <div class="mc-num">${d.calorieGoal||0}</div>
             <div class="mc-unit">سعرة</div>
-            <div class="mc-lbl">اليومية</div>
+            <div class="mc-lbl">هدفك اليومي</div>
           </div>
         </div>
         <div class="macro-bar">
-          <div style="flex:${fatBar};background:#1e88e5"></div>
-          <div style="flex:${carbBar};background:#fb8c00"></div>
-          <div style="flex:${protBar};background:#e53935"></div>
+          <div style="flex:${fatPct};background:#1e88e5"></div>
+          <div style="flex:${carbPct};background:#fb8c00"></div>
+          <div style="flex:${protPct};background:#e53935"></div>
         </div>
         <div class="macro-legend">
           <span><span class="mc-dot" style="background:#e53935"></span>بروتين ${protPct}٪</span>
