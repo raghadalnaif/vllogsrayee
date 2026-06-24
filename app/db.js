@@ -286,4 +286,9 @@ if (adminCount === 0) {
   console.log(`✅ تم إنشاء حساب الإدارة الافتراضي — المستخدم: ${user} / كلمة المرور: ${pass} (غيّريها من الإعدادات)`);
 }
 
+// إيقاف اشتراكات المتدربات المنتهية تلقائياً عند كل تشغيل
+const todayDate = () => new Date().toISOString().slice(0, 10);
+const deactivated = db.prepare("UPDATE trainees SET active=0 WHERE active=1 AND end_date < ?").run(todayDate());
+if (deactivated.changes > 0) console.log(`⏸️ تم إيقاف ${deactivated.changes} اشتراك منتهي`);
+
 module.exports = db;

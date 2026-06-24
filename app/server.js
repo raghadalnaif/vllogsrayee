@@ -422,4 +422,10 @@ app.get('/api/admin/notifications', requireAuth, requireAdmin, (req, res) => {
   res.json({ completions, inactive, date: t });
 });
 
+// تحقق يومي من انتهاء الاشتراكات (كل 24 ساعة)
+setInterval(() => {
+  const r = db.prepare("UPDATE trainees SET active=0 WHERE active=1 AND end_date < ?").run(today());
+  if (r.changes > 0) console.log(`⏸️ [auto] تم إيقاف ${r.changes} اشتراك منتهي`);
+}, 24 * 60 * 60 * 1000);
+
 app.listen(PORT, () => console.log(`🚀 نظام vllogsraye يعمل على المنفذ ${PORT}`));
