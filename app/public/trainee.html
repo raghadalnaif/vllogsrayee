@@ -285,7 +285,32 @@ async function loadHome() {
     </button>`).join('');
   document.getElementById('homeBody').innerHTML = `
     ${d.coachNote ? `<div class="coach-note"><div class="from">📌 رسالة من مدربتك</div><div class="msg">${esc(d.coachNote)}</div></div>` : ''}
-    <div class="home-top">
+    <div class="card" style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div style="font-weight:800;font-size:.95rem">🍎 السعرات اليوم</div>
+        <div style="font-weight:900;font-size:1.1rem;color:var(--gold)">${d.caloriesToday} <span style="font-size:.75rem;font-weight:600;color:var(--muted)">/ ${d.calorieGoal}</span></div>
+      </div>
+      <div class="bar" style="margin-bottom:${(d.proteinGoal||d.carbGoal||d.fatGoal)?'14px':'4px'}"><i style="width:${calPct}%"></i></div>
+      ${(d.proteinGoal || d.carbGoal || d.fatGoal) ? `
+      <div style="font-weight:700;margin-bottom:8px;font-size:.88rem">📊 الماكروز</div>
+      ${[
+        {label:'بروتين', today:d.proteinToday, goal:d.proteinGoal, color:'#4A7C59'},
+        {label:'كارب',   today:d.carbToday,    goal:d.carbGoal,    color:'#7CB87A'},
+        {label:'دهون',   today:d.fatToday,     goal:d.fatGoal,     color:'#B8A44A'},
+      ].map(m => {
+        const pct = m.goal ? Math.min(100, Math.round(m.today / m.goal * 100)) : 0;
+        return `<div style="margin-bottom:8px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:3px" class="muted"><span style="font-size:.8rem">${m.label}</span><span style="font-size:.8rem">${m.today}g / ${m.goal||'—'}g</span></div>
+          <div class="bar"><i style="width:${pct}%;background:${m.color}"></i></div>
+        </div>`;
+      }).join('')}` : ''}
+      <div class="stats" style="margin-top:10px;margin-bottom:0">
+        <div class="stat"><div class="n">${d.setsToday}</div><div class="l">ست اليوم</div></div>
+        <div class="stat"><div class="n">${d.caloriesToday}</div><div class="l">سعرة</div></div>
+        <div class="stat"><div class="n">${d.proteinToday}g</div><div class="l">بروتين</div></div>
+      </div>
+    </div>
+    <div class="home-top" style="margin-bottom:14px">
       <div class="days-left-card">
         <div class="days-num">${d.daysLeft}</div>
         <div class="days-lbl">يوم متبقي</div>
@@ -298,32 +323,9 @@ async function loadHome() {
         </div>
       </div>
     </div>
-    <div class="stats" style="margin-bottom:14px">
-      <div class="stat"><div class="n">${d.setsToday}</div><div class="l">ست مسجّل اليوم</div></div>
-      <div class="stat"><div class="n">${d.caloriesToday}</div><div class="l">سعرة اليوم</div></div>
-      <div class="stat"><div class="n">${d.proteinToday}g</div><div class="l">بروتين اليوم</div></div>
-    </div>
-    <div class="card">
-      <div style="font-weight:700;margin-bottom:4px">🍎 هدف السعرات اليومي</div>
-      <div class="muted">${d.caloriesToday} من ${d.calorieGoal} سعرة</div>
-      <div class="bar"><i style="width:${calPct}%"></i></div>
-      ${(d.proteinGoal || d.carbGoal || d.fatGoal) ? `
-      <div style="margin-top:14px;font-weight:700;margin-bottom:6px">📊 الماكروز اليوم</div>
-      ${[
-        {label:'بروتين', today:d.proteinToday, goal:d.proteinGoal, color:'#4A7C59'},
-        {label:'كارب',   today:d.carbToday,    goal:d.carbGoal,    color:'#7CB87A'},
-        {label:'دهون',   today:d.fatToday,     goal:d.fatGoal,     color:'#B8A44A'},
-      ].map(m => {
-        const pct = m.goal ? Math.min(100, Math.round(m.today / m.goal * 100)) : 0;
-        return `<div style="margin-top:8px">
-          <div style="display:flex;justify-content:space-between" class="muted"><span>${m.label}</span><span>${m.today}g / ${m.goal||'—'}g</span></div>
-          <div class="bar"><i style="width:${pct}%;background:${m.color}"></i></div>
-        </div>`;
-      }).join('')}` : ''}
-    </div>
     ${d.hasPlan
-      ? `<button class="btn full" style="margin-top:14px" onclick="document.querySelectorAll('.tab')[1].click()">💪 ابدئي تمرين اليوم</button>`
-      : `<div class="card"><div class="empty">لسه ما تم إسناد جدول لك — راسلي المدربة 💬</div></div>`}`;
+      ? `<button class="btn full" onclick="document.querySelectorAll('.tab')[1].click()">💪 ابدئي تمرين اليوم</button>`
+      : `<div class="card"><div class="empty">لم يتم إسناد جدول لك بعد — تواصلي مع المدربة 💬</div></div>`}`;
 }
 
 // ===== الجدول (بوست‑كامب) =====
@@ -589,11 +591,32 @@ function renderGuide() {
 
     <div class="guide-sec-title">🏃 خطوات النادي — من الدخول للخروج</div>
     <div class="guide-step"><div class="step-num">1</div><div class="step-body"><h4>الوصول والتحضير</h4><p>بدّلي ملابس التمرين، اشربي ماء (250-300 مل)، ضعي السماعات وجهّزي الموسيقى المحفزة</p></div></div>
-    <div class="guide-step"><div class="step-num">2</div><div class="step-body"><h4>الإحماء الديناميكي — 8-10 دقائق</h4><p>دوران الكتفين (10×)، رفع الركبتين (20×)، قرفصاء بدون وزن (15×)، Hip Circle (10×)، Leg Swing (10×). لا تتجاهلي هذه الخطوة أبداً</p></div></div>
+    <div class="guide-step"><div class="step-num">2</div><div class="step-body"><h4>الإحماء الديناميكي — 8-10 دقائق</h4><p>لا تتجاهلي هذه الخطوة أبداً — تُقلل الإصابات وترفع الأداء</p></div></div>
     <div class="guide-step"><div class="step-num">3</div><div class="step-body"><h4>التمارين الرئيسية — 40-55 دقيقة</h4><p>ابدئي بالتمارين المركبة (الثقيلة) ثم انتقلي للعزل. اتبعي الجدول بالترتيب المذكور تماماً</p></div></div>
     <div class="guide-step"><div class="step-num">4</div><div class="step-body"><h4>الكارديو — 15-20 دقيقة بعد الأوزان</h4><p>تريدميل منحدر (8-12%) سرعة 5-6، دراجة هوائية، أو إليبتيكال. الهدف: 120-140 ضربة قلب/دقيقة. سجّليه هنا في التطبيق</p></div></div>
-    <div class="guide-step"><div class="step-num">5</div><div class="step-body"><h4>التمدد والإطالة — 8-10 دقائق</h4><p>تمدد ستاتيكي (ثابت) بعد التمرين فقط — العضلات تكون دافئة فيُعطي نتائج أفضل</p></div></div>
+    <div class="guide-step"><div class="step-num">5</div><div class="step-body"><h4>التمدد والإطالة — 8-10 دقائق</h4><p>تمدد ثابت بعد التمرين فقط — العضلات دافئة فيُعطي نتائج أفضل</p></div></div>
     <div class="guide-step"><div class="step-num">6</div><div class="step-body"><h4>بعد التمرين مباشرة</h4><p>اشربي ماء (500-700 مل)، أكلي وجبتك البروتينية خلال 30-60 دقيقة — هذه أهم وجبة في اليوم</p></div></div>
+
+    <div class="guide-sec-title">🔥 تمارين الإحماء الديناميكي</div>
+    <div class="card" style="padding:10px 14px">
+      ${[
+        {n:'دوران الكتفين',       d:'10 دورات للأمام + 10 للخلف', q:'shoulder+circles+warmup+exercise'},
+        {n:'رفع الركبتين',        d:'20 تكراراً متبادلاً',         q:'high+knees+warmup+exercise'},
+        {n:'قرفصاء الجسم',       d:'15 تكراراً بطيئاً',           q:'bodyweight+squat+warmup'},
+        {n:'Hip Circle',          d:'10 دورات كل جهة',             q:'hip+circles+warmup+exercise'},
+        {n:'Leg Swing',           d:'10 تكرارات كل رجل',           q:'leg+swings+warmup+exercise'},
+        {n:'Band Hip Abduction',  d:'20 تكراراً كل جهة بالبند الخفيف', q:'band+hip+abduction+warmup'},
+      ].map(e=>`<div class="stretch-row">
+        <div>
+          <div style="font-weight:700;font-size:.85rem">${e.n}</div>
+          <div class="muted" style="font-size:.75rem">${e.d}</div>
+        </div>
+        <a href="https://www.youtube.com/results?search_query=${e.q}" target="_blank" rel="noopener noreferrer"
+          style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;background:#ff0000;color:#fff;border-radius:8px;font-size:.75rem;font-weight:800;text-decoration:none;white-space:nowrap;flex-shrink:0">
+          <i class="fab fa-youtube"></i> شاهدي
+        </a>
+      </div>`).join('')}
+    </div>
 
     <div class="guide-sec-title">📐 مبادئ البرنامج — لا تتجاهليها</div>
     <div class="guide-grid">
@@ -603,18 +626,26 @@ function renderGuide() {
       <div class="guide-card"><div class="gc-title">4️⃣ التركيز العضلي</div><div class="gc-body">اشعري بالعضلة المستهدفة في كل تكرار — ركّزي على الإحساس لا على إكمال الأرقام</div></div>
     </div>
 
-    <div class="guide-sec-title">🧘 التمدد بعد التمرين</div>
-    <div class="card">
+    <div class="guide-sec-title">🧘 التمدد والإطالة بعد التمرين</div>
+    <div class="card" style="padding:10px 14px">
       ${[
-        {name:'تمدد الغلوتس والورك',en:'Pigeon Pose / Figure 4',time:'30-45ث كل جهة'},
-        {name:'تمدد الفخذ الأمامي',en:'Standing Quad Stretch',time:'30ث كل رجل'},
-        {name:'تمدد الكتف والصدر',en:'Cross-Body Shoulder Stretch',time:'30ث كل جهة'},
-        {name:'تمدد عضلات الظهر',en:'Cat-Cow + Child\'s Pose',time:'60ث'},
-        {name:'تمدد الهامسترينج',en:'Standing Forward Fold',time:'30-45ث'},
-        {name:'تمدد الكتف الخلفي',en:'Rear Delt Stretch',time:'30ث كل جهة'},
+        {name:'تمدد الغلوتس والورك',   en:'Pigeon Pose / Figure 4',           time:'30-45ث', q:'pigeon+pose+glute+stretch'},
+        {name:'تمدد الفخذ الأمامي',    en:'Standing Quad Stretch',             time:'30ث',    q:'standing+quad+stretch'},
+        {name:'تمدد الكتف والصدر',     en:'Cross-Body Shoulder Stretch',       time:'30ث',    q:'cross+body+shoulder+stretch'},
+        {name:'تمدد عضلات الظهر',      en:'Cat-Cow + Child\'s Pose',           time:'60ث',    q:'cat+cow+childs+pose+stretch'},
+        {name:'تمدد الهامسترينج',      en:'Standing Forward Fold',             time:'30-45ث', q:'standing+forward+fold+hamstring+stretch'},
+        {name:'تمدد الكتف الخلفي',    en:'Rear Delt Stretch',                 time:'30ث',    q:'rear+delt+shoulder+stretch'},
+        {name:'تمدد عضلة الصدر',      en:'Doorway Chest Stretch',             time:'30ث',    q:'chest+doorway+stretch'},
+        {name:'تمدد الساق السفلية',   en:'Standing Calf Stretch',             time:'30ث',    q:'standing+calf+stretch'},
       ].map(s=>`<div class="stretch-row">
-        <div><div style="font-weight:700;font-size:.85rem">${s.name}</div><div class="muted" style="font-size:.75rem">${s.en}</div></div>
-        <div class="stretch-time">${s.time}</div>
+        <div>
+          <div style="font-weight:700;font-size:.85rem">${s.name}</div>
+          <div class="muted" style="font-size:.75rem">${s.en} — ${s.time}</div>
+        </div>
+        <a href="https://www.youtube.com/results?search_query=${s.q}" target="_blank" rel="noopener noreferrer"
+          style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;background:#ff0000;color:#fff;border-radius:8px;font-size:.75rem;font-weight:800;text-decoration:none;white-space:nowrap;flex-shrink:0">
+          <i class="fab fa-youtube"></i> شاهدي
+        </a>
       </div>`).join('')}
     </div>
 
