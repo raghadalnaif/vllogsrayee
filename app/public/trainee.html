@@ -105,6 +105,20 @@
 .cardio-row .field{flex:1;margin:0}
 .edit-set-btn{background:none;border:none;color:var(--muted);font-size:.8rem;cursor:pointer;padding:2px 6px;border-radius:6px;flex-shrink:0}
 .edit-set-btn:hover{background:var(--border);color:var(--white)}
+/* ===== بطاقات الماكروز ===== */
+.macro-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+.macro-card{background:#fff;border-radius:14px;padding:12px 6px 10px;text-align:center;position:relative;overflow:hidden;border:1.5px solid var(--border)}
+.macro-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:14px 14px 0 0}
+.mc-cal::before{background:#4A7C59}
+.mc-prot::before{background:#e53935}
+.mc-carb::before{background:#fb8c00}
+.mc-fat::before{background:#1e88e5}
+.mc-num{font-size:1.6rem;font-weight:900;color:var(--white);line-height:1;margin:10px 0 2px}
+.mc-unit{font-size:.72rem;font-weight:700;color:var(--gold);margin-bottom:2px}
+.mc-lbl{font-size:.68rem;color:var(--muted);line-height:1.3}
+.macro-bar{height:10px;border-radius:99px;overflow:hidden;display:flex;margin:10px 0 6px}
+.macro-legend{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;font-size:.72rem;color:var(--muted);margin-bottom:2px}
+.mc-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-left:3px;vertical-align:middle}
 /* ===== دليل ===== */
 .guide-hero{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;border-radius:16px;padding:20px;margin-bottom:16px;text-align:center}
 .guide-hero h3{margin:0 0 6px;font-size:1.2rem}
@@ -285,30 +299,56 @@ async function loadHome() {
     </button>`).join('');
   document.getElementById('homeBody').innerHTML = `
     ${d.coachNote ? `<div class="coach-note"><div class="from">📌 رسالة من مدربتك</div><div class="msg">${esc(d.coachNote)}</div></div>` : ''}
-    <div class="card" style="margin-bottom:14px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <div style="font-weight:800;font-size:.95rem">🍎 السعرات اليوم</div>
-        <div style="font-weight:900;font-size:1.1rem;color:var(--gold)">${d.caloriesToday} <span style="font-size:.75rem;font-weight:600;color:var(--muted)">/ ${d.calorieGoal}</span></div>
+    <div style="margin-bottom:14px">
+      <div style="font-weight:800;font-size:.9rem;margin-bottom:10px;display:flex;align-items:center;gap:6px">
+        <span style="color:var(--gold)">📊</span> السعرات والماكروز اليومية
       </div>
-      <div class="bar" style="margin-bottom:${(d.proteinGoal||d.carbGoal||d.fatGoal)?'14px':'4px'}"><i style="width:${calPct}%"></i></div>
-      ${(d.proteinGoal || d.carbGoal || d.fatGoal) ? `
-      <div style="font-weight:700;margin-bottom:8px;font-size:.88rem">📊 الماكروز</div>
-      ${[
-        {label:'بروتين', today:d.proteinToday, goal:d.proteinGoal, color:'#4A7C59'},
-        {label:'كارب',   today:d.carbToday,    goal:d.carbGoal,    color:'#7CB87A'},
-        {label:'دهون',   today:d.fatToday,     goal:d.fatGoal,     color:'#B8A44A'},
-      ].map(m => {
-        const pct = m.goal ? Math.min(100, Math.round(m.today / m.goal * 100)) : 0;
-        return `<div style="margin-bottom:8px">
-          <div style="display:flex;justify-content:space-between;margin-bottom:3px" class="muted"><span style="font-size:.8rem">${m.label}</span><span style="font-size:.8rem">${m.today}g / ${m.goal||'—'}g</span></div>
-          <div class="bar"><i style="width:${pct}%;background:${m.color}"></i></div>
+      ${(() => {
+        const protCal = (d.proteinToday||0)*4;
+        const carbCal = (d.carbToday||0)*4;
+        const fatCal  = (d.fatToday||0)*9;
+        const totalMC = protCal + carbCal + fatCal || 1;
+        const protBar = Math.round(protCal/totalMC*100);
+        const carbBar = Math.round(carbCal/totalMC*100);
+        const fatBar  = 100 - protBar - carbBar;
+        const gCal = d.calorieGoal || 1;
+        const protPct = d.proteinGoal ? Math.round(d.proteinGoal*4/gCal*100) : 30;
+        const carbPct = d.carbGoal    ? Math.round(d.carbGoal*4/gCal*100)    : 35;
+        const fatPct  = d.fatGoal     ? Math.round(d.fatGoal*9/gCal*100)     : 35;
+        return `
+        <div class="macro-grid">
+          <div class="macro-card mc-fat">
+            <div class="mc-num">${d.fatToday||0}</div>
+            <div class="mc-unit">جرام</div>
+            <div class="mc-lbl">دهون – ${fatPct}٪</div>
+          </div>
+          <div class="macro-card mc-carb">
+            <div class="mc-num">${d.carbToday||0}</div>
+            <div class="mc-unit">جرام</div>
+            <div class="mc-lbl">كارب – ${carbPct}٪</div>
+          </div>
+          <div class="macro-card mc-prot">
+            <div class="mc-num">${d.proteinToday||0}</div>
+            <div class="mc-unit">جرام</div>
+            <div class="mc-lbl">بروتين – ${protPct}٪</div>
+          </div>
+          <div class="macro-card mc-cal">
+            <div class="mc-num">${d.caloriesToday||0}</div>
+            <div class="mc-unit">سعرة</div>
+            <div class="mc-lbl">اليومية</div>
+          </div>
+        </div>
+        <div class="macro-bar">
+          <div style="flex:${fatBar};background:#1e88e5"></div>
+          <div style="flex:${carbBar};background:#fb8c00"></div>
+          <div style="flex:${protBar};background:#e53935"></div>
+        </div>
+        <div class="macro-legend">
+          <span><span class="mc-dot" style="background:#e53935"></span>بروتين ${protPct}٪</span>
+          <span><span class="mc-dot" style="background:#fb8c00"></span>كارب ${carbPct}٪</span>
+          <span><span class="mc-dot" style="background:#1e88e5"></span>دهون ${fatPct}٪</span>
         </div>`;
-      }).join('')}` : ''}
-      <div class="stats" style="margin-top:10px;margin-bottom:0">
-        <div class="stat"><div class="n">${d.setsToday}</div><div class="l">ست اليوم</div></div>
-        <div class="stat"><div class="n">${d.caloriesToday}</div><div class="l">سعرة</div></div>
-        <div class="stat"><div class="n">${d.proteinToday}g</div><div class="l">بروتين</div></div>
-      </div>
+      })()}
     </div>
     <div class="home-top" style="margin-bottom:14px">
       <div class="days-left-card">
@@ -413,7 +453,7 @@ function renderExercise(ex) {
     </div>
     <div class="ex-body ${autoOpen ? 'open' : ''}" id="ex-body-${ex.id}">
       ${ex.notes ? `<div class="technique-note">📝 ${esc(ex.notes)}</div>` : ''}
-      ${ex.media_url ? mediaTag(ex.media_url) : ''}
+      ${mediaTag(ex.media_url, ex.name)}
       <div class="sets-list">
         ${Array.from({length: sets}, (_, i) => renderSetRow(ex, i + 1, logs[i])).join('')}
       </div>
@@ -796,15 +836,22 @@ function renderGuide() {
     </div>`;
 }
 
-function mediaTag(url) {
-  if (!url) return '';
-  if (/\.(mp4|webm|mov)$/i.test(url)) return `<video class="ex-media" src="${esc(url)}" controls muted playsinline></video>`;
-  if (/\.(gif|jpg|jpeg|png|webp)$/i.test(url)) return `<img class="ex-media" src="${esc(url)}" alt="تمرين" loading="lazy">`;
-  return `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer"
+function mediaTag(url, name) {
+  const ytBtn = (href) => `<a href="${href}" target="_blank" rel="noopener noreferrer"
     style="display:inline-flex;align-items:center;gap:7px;margin-top:10px;padding:9px 16px;
     background:#ff0000;color:#fff;border-radius:11px;font-size:.82rem;font-weight:800;
     text-decoration:none;font-family:inherit">
-    <i class="fab fa-youtube"></i> شاهدي تكنيك التمرين على يوتيوب</a>`;
+    <i class="fab fa-youtube"></i> شاهدي تكنيك التمرين</a>`;
+  if (url) {
+    if (/\.(mp4|webm|mov)$/i.test(url)) return `<video class="ex-media" src="${esc(url)}" controls muted playsinline></video>`;
+    if (/\.(gif|jpg|jpeg|png|webp)$/i.test(url)) return `<img class="ex-media" src="${esc(url)}" alt="تمرين" loading="lazy">`;
+    return ytBtn(esc(url));
+  }
+  if (name) {
+    const q = encodeURIComponent(name + ' exercise technique how to');
+    return ytBtn('https://www.youtube.com/results?search_query=' + q);
+  }
+  return '';
 }
 
 // ===== قائمة الوجبات (من الحمية التفصيلية) =====

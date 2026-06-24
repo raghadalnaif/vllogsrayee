@@ -208,12 +208,12 @@ async function loadDash(){
       </div>`).join('')}
     </div>` : ''}
     <div class="card">
-      <b>آخر النشاطات</b>
+      <b>آخر التمارين المكتملة</b>
       ${d.recent.length? d.recent.map(r=>`<div class="list-item" style="margin-top:8px">
         <div class="info"><div class="nm">${esc(r.trainee)}</div>
-        <div class="meta">${esc(r.exercise||'تمرين')} • ${r.weight}كجم × ${r.reps}</div></div>
-        <span class="muted">${new Date(r.created_at).toLocaleString('ar-SA',{hour:'2-digit',minute:'2-digit',day:'numeric',month:'numeric'})}</span>
-      </div>`).join('') : '<div class="empty">لا نشاطات بعد</div>'}
+        <div class="meta">✅ ${esc(r.day_title||'تمرين')} • ${r.duration_min||0} دقيقة</div></div>
+        <span class="muted">${new Date(r.completed_at).toLocaleString('ar-SA',{hour:'2-digit',minute:'2-digit',day:'numeric',month:'numeric'})}</span>
+      </div>`).join('') : '<div class="empty">لا تمارين مكتملة بعد</div>'}
     </div>`;
 }
 

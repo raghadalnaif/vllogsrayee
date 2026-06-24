@@ -91,11 +91,11 @@ app.get('/api/admin/stats', requireAuth, requireAdmin, (req, res) => {
   const active = db.prepare('SELECT COUNT(*) c FROM trainees WHERE active=1 AND end_date>=?').get(t).c;
   const trainedToday = db.prepare('SELECT COUNT(DISTINCT trainee_id) c FROM workout_logs WHERE log_date=?').get(t).c;
   const recent = db.prepare(`
-    SELECT w.created_at, w.weight, w.reps, tr.name AS trainee, e.name AS exercise
-    FROM workout_logs w
-    JOIN trainees tr ON tr.id = w.trainee_id
-    LEFT JOIN exercises e ON e.id = w.exercise_id
-    ORDER BY w.id DESC LIMIT 15`).all();
+    SELECT ws.completed_at, ws.duration_min, tr.name AS trainee, pd.title AS day_title
+    FROM workout_sessions ws
+    JOIN trainees tr ON tr.id = ws.trainee_id
+    LEFT JOIN plan_days pd ON pd.id = ws.plan_day_id
+    ORDER BY ws.id DESC LIMIT 20`).all();
   res.json({ total, active, expired: total - active, trainedToday, recent });
 });
 
