@@ -600,18 +600,18 @@ function renderGuide() {
     <div class="guide-sec-title">🔥 تمارين الإحماء الديناميكي</div>
     <div class="card" style="padding:10px 14px">
       ${[
-        {n:'دوران الكتفين',       d:'10 دورات للأمام + 10 للخلف', q:'shoulder+circles+warmup+exercise'},
-        {n:'رفع الركبتين',        d:'20 تكراراً متبادلاً',         q:'high+knees+warmup+exercise'},
-        {n:'قرفصاء الجسم',       d:'15 تكراراً بطيئاً',           q:'bodyweight+squat+warmup'},
-        {n:'Hip Circle',          d:'10 دورات كل جهة',             q:'hip+circles+warmup+exercise'},
-        {n:'Leg Swing',           d:'10 تكرارات كل رجل',           q:'leg+swings+warmup+exercise'},
-        {n:'Band Hip Abduction',  d:'20 تكراراً كل جهة بالبند الخفيف', q:'band+hip+abduction+warmup'},
+        {n:'دوران الكتفين',       d:'10 دورات للأمام + 10 للخلف',      v:'https://www.youtube.com/watch?v=1wEuXXtq4EE'},
+        {n:'رفع الركبتين',        d:'20 تكراراً متبادلاً',              v:'https://www.youtube.com/watch?v=FX8X2S2d9Ww'},
+        {n:'قرفصاء الجسم',        d:'15 تكراراً بطيئاً',               v:'https://www.youtube.com/watch?v=P-yaD24bUE8'},
+        {n:'Hip Circle',          d:'10 دورات كل جهة',                  v:'https://www.youtube.com/watch?v=JYqLwajOGjI'},
+        {n:'Leg Swing',           d:'10 تكرارات كل رجل',               v:'https://www.youtube.com/watch?v=difYoBtZi2s'},
+        {n:'Band Hip Abduction',  d:'20 تكراراً كل جهة بالبند الخفيف', v:'https://www.youtube.com/watch?v=_GtRRr4dPVw'},
       ].map(e=>`<div class="stretch-row">
         <div>
           <div style="font-weight:700;font-size:.85rem">${e.n}</div>
           <div class="muted" style="font-size:.75rem">${e.d}</div>
         </div>
-        <a href="https://www.youtube.com/results?search_query=${e.q}" target="_blank" rel="noopener noreferrer"
+        <a href="${e.v}" target="_blank" rel="noopener noreferrer"
           style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;background:#ff0000;color:#fff;border-radius:8px;font-size:.75rem;font-weight:800;text-decoration:none;white-space:nowrap;flex-shrink:0">
           <i class="fab fa-youtube"></i> شاهدي
         </a>
@@ -629,20 +629,20 @@ function renderGuide() {
     <div class="guide-sec-title">🧘 التمدد والإطالة بعد التمرين</div>
     <div class="card" style="padding:10px 14px">
       ${[
-        {name:'تمدد الغلوتس والورك',   en:'Pigeon Pose / Figure 4',           time:'30-45ث', q:'pigeon+pose+glute+stretch'},
-        {name:'تمدد الفخذ الأمامي',    en:'Standing Quad Stretch',             time:'30ث',    q:'standing+quad+stretch'},
-        {name:'تمدد الكتف والصدر',     en:'Cross-Body Shoulder Stretch',       time:'30ث',    q:'cross+body+shoulder+stretch'},
-        {name:'تمدد عضلات الظهر',      en:'Cat-Cow + Child\'s Pose',           time:'60ث',    q:'cat+cow+childs+pose+stretch'},
-        {name:'تمدد الهامسترينج',      en:'Standing Forward Fold',             time:'30-45ث', q:'standing+forward+fold+hamstring+stretch'},
-        {name:'تمدد الكتف الخلفي',    en:'Rear Delt Stretch',                 time:'30ث',    q:'rear+delt+shoulder+stretch'},
-        {name:'تمدد عضلة الصدر',      en:'Doorway Chest Stretch',             time:'30ث',    q:'chest+doorway+stretch'},
-        {name:'تمدد الساق السفلية',   en:'Standing Calf Stretch',             time:'30ث',    q:'standing+calf+stretch'},
+        {name:'تمدد الغلوتس والورك',   en:'Pigeon Pose / Figure 4',      time:'30-45ث', v:'https://www.youtube.com/watch?v=9yAVhthhDNc'},
+        {name:'تمدد الفخذ الأمامي',    en:'Standing Quad Stretch',       time:'30ث',    v:'https://www.youtube.com/watch?v=kia2OzZiwqw'},
+        {name:'تمدد الكتف والصدر',     en:'Cross-Body Shoulder Stretch', time:'30ث',    v:'https://www.youtube.com/watch?v=O5bFanxcpWE'},
+        {name:'تمدد عضلات الظهر',      en:'Cat-Cow + Child\'s Pose',    time:'60ث',    v:'https://www.youtube.com/watch?v=dsFkxTsyxiM'},
+        {name:'تمدد الهامسترينج',      en:'Standing Forward Fold',       time:'30-45ث', v:'https://www.youtube.com/watch?v=goN4rWbQUn4'},
+        {name:'تمدد الكتف الخلفي',     en:'Rear Delt Stretch',          time:'30ث',    v:'https://www.youtube.com/watch?v=cmE9YvjJVZk'},
+        {name:'تمدد عضلة الصدر',       en:'Doorway Chest Stretch',      time:'30ث',    v:'https://www.youtube.com/watch?v=B9uY01NoqBg'},
+        {name:'تمدد الساق السفلية',    en:'Standing Calf Stretch',      time:'30ث',    v:'https://www.youtube.com/watch?v=GTOBvb45lgg'},
       ].map(s=>`<div class="stretch-row">
         <div>
           <div style="font-weight:700;font-size:.85rem">${s.name}</div>
           <div class="muted" style="font-size:.75rem">${s.en} — ${s.time}</div>
         </div>
-        <a href="https://www.youtube.com/results?search_query=${s.q}" target="_blank" rel="noopener noreferrer"
+        <a href="${s.v}" target="_blank" rel="noopener noreferrer"
           style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;background:#ff0000;color:#fff;border-radius:8px;font-size:.75rem;font-weight:800;text-decoration:none;white-space:nowrap;flex-shrink:0">
           <i class="fab fa-youtube"></i> شاهدي
         </a>
@@ -686,6 +686,107 @@ function renderGuide() {
         {t:'🚫 ما تتجنبينه',b:'اللحوم المصنعة (السجق، اللانشون)، الزيوت المهدرجة، المقليات، الكارب المكرر الزائد'},
         {t:'🐟 أوميغا 3',b:'سمك سالمون مرتين أسبوعياً أو كبسولات أوميغا 3 — يُخفض الدهون الثلاثية بشكل ملحوظ'},
         {t:'🫘 بروتين نباتي',b:'استبدلي جزءاً من البروتين الحيواني ببقوليات (عدس، حمص) — تُساعد على خفض LDL'},
+      ].map(i=>`<div class="guide-step" style="margin-bottom:6px"><div class="step-body"><h4>${i.t}</h4><p>${i.b}</p></div></div>`).join('')}
+    </div>
+
+    <div class="guide-sec-title">💧 الماء والترطيب — القاعدة الذهبية</div>
+    <div class="card">
+      <div class="guide-card" style="background:#e0f7fa;border:1.5px solid #00838f;border-radius:12px;padding:14px;margin-bottom:10px">
+        <div class="gc-title" style="color:#00838f">📐 احسبي احتياجك اليومي</div>
+        <div class="gc-body">وزنك بالكيلو × 35 مل = احتياجك اليومي من الماء. مثال: 65كجم × 35 = 2.275 لتر. في أيام التمرين أضيفي 500 مل إضافية</div>
+      </div>
+      ${[
+        {t:'🌅 عند الاستيقاظ',b:'كوبان ماء (400-500 مل) قبل أي شيء — يُعيد تشغيل الأيض ويُنظّف الكلى بعد الليل'},
+        {t:'🏋️ قبل التمرين',b:'اشربي 300-400 مل قبل التمرين بـ 30 دقيقة — ليس أثناءه مباشرة حتى لا يثقل المعدة'},
+        {t:'⚡ أثناء التمرين',b:'رشفات صغيرة كل 15-20 دقيقة (150-200 مل) — لا تشربي دفعة واحدة كبيرة'},
+        {t:'🔄 بعد التمرين',b:'500-700 مل خلال أول ساعة — يُعجّل التعافي ويُقلل آلام العضلات'},
+        {t:'🚫 علامات الجفاف',b:'بول داكن، صداع، دوخة أثناء التمرين، إرهاق مبكر — كلها تقول الجسم يحتاج ماء'},
+      ].map(i=>`<div class="guide-step" style="margin-bottom:6px"><div class="step-body"><h4>${i.t}</h4><p>${i.b}</p></div></div>`).join('')}
+    </div>
+
+    <div class="guide-sec-title">😴 النوم والتعافي — حيث تبنى العضلات فعلاً</div>
+    <div class="card">
+      <div class="guide-card" style="background:#f3e5f5;border:1.5px solid #7b1fa2;border-radius:12px;padding:14px;margin-bottom:10px">
+        <div class="gc-title" style="color:#7b1fa2">🔑 الحقيقة التي تجهلها كثيرات</div>
+        <div class="gc-body">العضلات لا تنمو في النادي — تنمو أثناء النوم. التمرين يُمزّق الألياف العضلية، والنوم هو وقت الإصلاح والبناء. بدون 7-9 ساعات نوم، جهودك في النادي تُهدر</div>
+      </div>
+      ${[
+        {t:'⏰ 7-9 ساعات لا تفاوض',b:'دراسات تثبت أن قلة النوم تُقلل بناء العضلات 60% وترفع الكورتيزول (هرمون الهدم) — ينهدم ما بنيتيه في النادي'},
+        {t:'🌙 روتين النوم المثالي',b:'نفس وقت النوم كل يوم. أغلقي الشاشات قبل 30 دقيقة. الغرفة باردة (18-20 درجة). هذا يُضاعف جودة النوم'},
+        {t:'🍌 مغنيسيوم قبل النوم',b:'ملعقة كبيرة زبدة لوز أو حفنة مكسرات قبل النوم تُرفع المغنيسيوم — يُحسّن جودة النوم وتعافي العضلات'},
+        {t:'🏋️ يوم الراحة ليس كسلاً',b:'الراحة جزء من البرنامج. عضلاتك تحتاج 48 ساعة بين تمرين نفس المجموعة. القصور في الراحة = القصور في النتائج'},
+        {t:'📱 الشاشات عدو التعافي',b:'الضوء الأزرق يُثبّط الميلاتونين (هرمون النوم). ضعي الموبايل بعيداً ساعة قبل النوم — فرق ملحوظ في طاقة الغد'},
+      ].map(i=>`<div class="guide-step" style="margin-bottom:6px"><div class="step-body"><h4>${i.t}</h4><p>${i.b}</p></div></div>`).join('')}
+    </div>
+
+    <div class="guide-sec-title">🔴 الدورة الشهرية والتمرين — دليلك الكامل</div>
+    <div class="card">
+      <div class="guide-card" style="background:#fce4ec;border:1.5px solid #c62828;border-radius:12px;padding:14px;margin-bottom:10px">
+        <div class="gc-title" style="color:#c62828">💡 جسمك يتغير كل أسبوع</div>
+        <div class="gc-body">الدورة الشهرية لها 4 مراحل تؤثر مباشرة على طاقتك، قوتك، وقدرتك على بناء العضلة. العمل مع هرموناتك لا ضدها يُضاعف النتائج</div>
+      </div>
+      ${[
+        {t:'📅 أيام 1-5 (الحيض)',b:'الطاقة منخفضة والألم محتمل — خففي الوزن 20-30% أو اكتفي بمشي ويوغا. لا عقاب على الراحة، جسمك يعمل بجد'},
+        {t:'🌱 أيام 6-13 (الجريبي)',b:'هرمون الإستروجين يرتفع = طاقة عالية + قوة أكبر + تحمّل أفضل للألم. أفضل وقت للتمارين الثقيلة وزيادة الأوزان'},
+        {t:'⭐ أيام 14-17 (التبويض)',b:'ذروة القوة والطاقة — استغليها! وزن أثقل، تمارين مركبة. لكن انتبهي للمفاصل (إستروجين عالي = مرونة زائدة = خطر الإصابة)'},
+        {t:'🌊 أيام 18-28 (الجسمي)',b:'البروجستيرون يرتفع = انتفاخ + إرهاق + تراجع الأداء — طبيعي 100%. ركزي على تمارين متوسطة وكارديو خفيف'},
+        {t:'🍫 رغبة السكر قبل الدورة',b:'طبيعية بسبب انخفاض السيروتونين — تمبّليها بالشوكولاتة الداكنة (1-2 قطعة) أو التمر مع اللوز بدلاً من الحلويات المصنعة'},
+      ].map(i=>`<div class="guide-step" style="margin-bottom:6px"><div class="step-body"><h4>${i.t}</h4><p>${i.b}</p></div></div>`).join('')}
+    </div>
+
+    <div class="guide-sec-title">💊 المكملات الغذائية للمرأة — الحقيقة بدون مبالغة</div>
+    <div class="card">
+      <div class="guide-card" style="background:#e8f5e9;border:1.5px solid #2e7d32;border-radius:12px;padding:14px;margin-bottom:10px">
+        <div class="gc-title" style="color:#2e7d32">⚠️ قاعدة أساسية</div>
+        <div class="gc-body">المكملات تُكمّل النظام الغذائي لا تُعوّض عنه. الأولوية دائماً: نوم جيد ← غذاء متوازن ← تمرين منتظم ← ثم المكملات</div>
+      </div>
+      ${[
+        {t:'✅ بروتين واي — الأهم',b:'إضافة 1-2 سكوب يومياً إذا لم تكوني تحققين هدف البروتين من الطعام (1.6-2غ/كجم). ليس إلزامياً إذا كان الغذاء كافياً'},
+        {t:'✅ كرياتين — مفيد للنساء',b:'3-5 غرامات يومياً. يرفع القوة ويحسّن الأداء والتعافي — كثير من النساء لا يعرفن أنه آمن ومفيد لهن تماماً كالرجال'},
+        {t:'✅ فيتامين D3 + K2',b:'معظم السعوديات ناقصات فيتامين D رغم الشمس. 2000-4000 وحدة يومياً (بعد الأكل). K2 يساعد الكالسيوم يصل للعظام'},
+        {t:'✅ أوميغا 3',b:'1-2 غرام EPA+DHA يومياً — يُقلل الالتهاب، يُحسّن التعافي، مفيد جداً لمقاومة الأنسولين وصحة القلب'},
+        {t:'✅ الحديد + فيتامين C',b:'خاصة للنساء في سن الإنجاب — فحصي مستوى الحديد والفيريتين. خذيه مع عصير ليمون لا مع القهوة'},
+        {t:'❌ محارق الدهون',b:'لا تصدقي الإعلانات — معظمها مجرد كافيين ومنشطات. تؤذي القلب ولا تحرق الدهون إذا الغذاء غير منضبط'},
+      ].map(i=>`<div class="guide-step" style="margin-bottom:6px"><div class="step-body"><h4>${i.t}</h4><p>${i.b}</p></div></div>`).join('')}
+    </div>
+
+    <div class="guide-sec-title">😮‍💨 تقنية التنفس — تفاصيل تُضاعف القوة</div>
+    <div class="card">
+      ${[
+        {t:'📌 القاعدة الذهبية',b:'ازفري عند المجهود (الجزء الصعب) — شهيق عند العودة. مثال في الضغط: ازفري وأنت ترفعين الجسم للأعلى، شهيق عند النزول'},
+        {t:'🏋️ التمارين الثقيلة (سكوات، ديدليفت)',b:'شهيق عميق قبل البدء، احبسي النفس أثناء المجهود (Valsalva)، ازفري بعد الانتهاء — يحمي الظهر ويرفع القوة حتى 20%'},
+        {t:'🚫 لا تحبسي النفس باستمرار',b:'حبس النفس المزمن يرفع ضغط الدم. فقط في اللحظة الحرجة من الرفعة الثقيلة، ثم أكملي التنفس بشكل طبيعي'},
+        {t:'🧘 التنفس أثناء الكارديو',b:'تنفسي من الأنف عند إمكانية ذلك — يُرطّب الهواء ويُنقيه. عند ارتفاع الشدة: أنف + فم معاً. حافظي على إيقاع ثابت'},
+      ].map(i=>`<div class="guide-step" style="margin-bottom:6px"><div class="step-body"><h4>${i.t}</h4><p>${i.b}</p></div></div>`).join('')}
+    </div>
+
+    <div class="guide-sec-title">⚠️ علامات الإفراط في التمرين — متى تتوقفين</div>
+    <div class="card">
+      <div class="guide-card" style="background:#fff8e1;border:1.5px solid #f57f17;border-radius:12px;padding:14px;margin-bottom:10px">
+        <div class="gc-title" style="color:#f57f17">🔑 DOMS مقابل إصابة حقيقية</div>
+        <div class="gc-body">ألم العضلات بعد 24-48 ساعة (DOMS) طبيعي جداً — دليل على تكيّف العضلة. الألم الحاد المفاجئ أثناء التمرين أو ألم المفصل = توقفي فوراً واستشيري</div>
+      </div>
+      ${[
+        {t:'😴 إرهاق لا يتحسن بالنوم',b:'لو استيقظتِ تعبانة رغم النوم الكافي لأكثر من 3 أيام — جسمك يقول "أعطني راحة". خففي الحمل 40% هذا الأسبوع'},
+        {t:'📉 انخفاض الأداء المستمر',b:'لو أوزانك تنزل لا ترتفع لأسبوعين — مش كسل، الجسم محتاج راحة أو تغيير في البرنامج. تواصلي مع مدربتك'},
+        {t:'🤒 مرض متكرر',b:'كثرة الزكام والأمراض علامة أن الجهاز المناعي ضعيف من الإرهاق. خذي أسبوع راحة كامل'},
+        {t:'😤 فقدان الشغف',b:'لو بدأتِ تكرهين التمرين — ليس ضعفاً، هو إشارة Burnout. قسّمي: هل تأخذين راحة كافية؟ هل تنامين جيداً؟ هل التغذية كافية؟'},
+        {t:'💓 ألم في الصدر أو دوخة',b:'توقفي فوراً وأخبري المشرف. لا تكملي التمرين. هذه علامات خطيرة تستوجب الاستشارة الطبية فوراً'},
+      ].map(i=>`<div class="guide-step" style="margin-bottom:6px"><div class="step-body"><h4>${i.t}</h4><p>${i.b}</p></div></div>`).join('')}
+    </div>
+
+    <div class="guide-sec-title">📏 قياس التقدم الحقيقي — بعيداً عن الميزان</div>
+    <div class="card">
+      <div class="guide-card" style="background:#e8eaf6;border:1.5px solid #3949ab;border-radius:12px;padding:14px;margin-bottom:10px">
+        <div class="gc-title" style="color:#3949ab">💡 الميزان يكذب</div>
+        <div class="gc-body">الميزان يقيس كل شيء: عضلة، دهون، ماء، وجبة، ملح. يتغير 1-3 كيلو يومياً بشكل طبيعي. اعتمدي على مقاييس أدق</div>
+      </div>
+      ${[
+        {t:'📸 الصور الشهرية',b:'التقطي صورة كل 4 أسابيع بنفس الإضاءة والملابس والوقت. هذا أفضل مقياس — الجسم يتغير قبل أن يتغير الميزان'},
+        {t:'📐 القياسات الجسدية',b:'قيسي: الخصر، الورك، الفخذ، الذراع مرة شهرياً. انخفاض القياسات مع ثبات الوزن = تنشيف حقيقي'},
+        {t:'💪 قوة التمارين',b:'هل ترفعين وزناً أثقل من الشهر الماضي؟ هل تمرين أكثر تكراراً؟ القوة المتزايدة = بناء عضلي حقيقي'},
+        {t:'🩺 مؤشرات الصحة',b:'ضغط الدم، سكر الصيام، تحليل الدهون — هذه المقاييس تُثبت تحسن صحتك الفعلي، وهو الهدف الأهم'},
+        {t:'⚡ مستوى الطاقة',b:'هل طاقتك أفضل؟ هل نومك أعمق؟ هل مزاجك أحسن؟ هذه نتائج حقيقية لا تظهر على الميزان'},
       ].map(i=>`<div class="guide-step" style="margin-bottom:6px"><div class="step-body"><h4>${i.t}</h4><p>${i.b}</p></div></div>`).join('')}
     </div>
 
