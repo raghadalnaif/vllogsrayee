@@ -101,9 +101,19 @@ CREATE TABLE IF NOT EXISTS workout_sessions (
   duration_min INTEGER DEFAULT 0
 );
 
+CREATE TABLE IF NOT EXISTS cardio_logs (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  trainee_id INTEGER NOT NULL,
+  session_date TEXT NOT NULL,
+  machine TEXT DEFAULT '',
+  duration_min INTEGER DEFAULT 0,
+  created_at TEXT
+);
+
 CREATE INDEX IF NOT EXISTS idx_wl_trainee_date ON workout_logs(trainee_id, log_date);
 CREATE INDEX IF NOT EXISTS idx_cl_trainee_date ON calorie_logs(trainee_id, log_date);
 CREATE INDEX IF NOT EXISTS idx_ws_trainee_date ON workout_sessions(trainee_id, session_date);
+CREATE INDEX IF NOT EXISTS idx_cardio_trainee_date ON cardio_logs(trainee_id, session_date);
 `);
 
 // ترقية قواعد بيانات قديمة (أُنشئت قبل إضافة أعمدة حاسبة السعرات)

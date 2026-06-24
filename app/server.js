@@ -63,12 +63,12 @@ app.post('/api/login', (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) return res.status(400).json({ message: 'أدخلي اسم المستخدم وكلمة المرور' });
 
-  const admin = db.prepare('SELECT * FROM admins WHERE username=?').get(username);
+  const admin = db.prepare('SELECT * FROM admins WHERE LOWER(username)=LOWER(?)').get(username);
   if (admin && bcrypt.compareSync(password, admin.password_hash)) {
     req.session.uid = admin.id; req.session.role = 'admin';
     return res.json({ role: 'admin' });
   }
-  const t = db.prepare('SELECT * FROM trainees WHERE username=?').get(username);
+  const t = db.prepare('SELECT * FROM trainees WHERE LOWER(username)=LOWER(?)').get(username);
   if (t && bcrypt.compareSync(password, t.password_hash)) {
     if (!traineeActive(t)) return res.status(403).json({ message: 'انتهى اشتراكك أو تم إيقافه. تواصلي مع المدربة.' });
     req.session.uid = t.id; req.session.role = 'trainee';
@@ -310,13 +310,19 @@ app.get('/api/trainee/home', requireAuth, requireTrainee, (req, res) => {
     COALESCE(SUM(carbs),0) cb, COALESCE(SUM(fat),0) f
     FROM calorie_logs WHERE trainee_id=? AND log_date=?`).get(t.id, today());
   const setsToday = db.prepare('SELECT COUNT(*) c FROM workout_logs WHERE trainee_id=? AND log_date=?').get(t.id, today()).c;
-  const daysCount = db.prepare('SELECT COUNT(*) c FROM plan_days WHERE trainee_id=?').get(t.id).c;
+  const planDays = db.prepare('SELECT id, day_index, title FROM plan_days WHERE trainee_id=? ORDER BY day_index').all(t.id);
+  const completedToday = new Set(
+    db.prepare('SELECT plan_day_id FROM workout_sessions WHERE trainee_id=? AND session_date=?')
+      .all(t.id, today()).map(r => r.plan_day_id)
+  );
+  planDays.forEach(d => { d.doneToday = completedToday.has(d.id); });
   res.json({
     name: t.name, daysLeft: daysLeft(t.end_date), endDate: t.end_date,
     calorieGoal: t.daily_calorie_goal, caloriesToday: cal.c,
     proteinGoal: t.protein_g || 0, carbGoal: t.carb_g || 0, fatGoal: t.fat_g || 0,
     proteinToday: Math.round(cal.p), carbToday: Math.round(cal.cb), fatToday: Math.round(cal.f),
-    setsToday, hasPlan: daysCount > 0,
+    setsToday, hasPlan: planDays.length > 0,
+    planDays,
     coachNote: t.coach_note || null
   });
 });
@@ -333,10 +339,23 @@ app.get('/api/trainee/plan', requireAuth, requireTrainee, (req, res) => {
 
 app.post('/api/trainee/log', requireAuth, requireTrainee, (req, res) => {
   const { plan_exercise_id, exercise_id, set_number, weight, reps } = req.body;
-  db.prepare(`INSERT INTO workout_logs (trainee_id,plan_exercise_id,exercise_id,log_date,set_number,weight,reps,created_at)
+  const info = db.prepare(`INSERT INTO workout_logs (trainee_id,plan_exercise_id,exercise_id,log_date,set_number,weight,reps,created_at)
     VALUES (?,?,?,?,?,?,?,?)`).run(
     req.session.uid, plan_exercise_id || null, exercise_id || null, today(),
     parseInt(set_number) || 1, parseFloat(weight) || 0, parseInt(reps) || 0, new Date().toISOString());
+  res.json({ ok: true, id: info.lastInsertRowid });
+});
+
+app.delete('/api/trainee/log/:id', requireAuth, requireTrainee, (req, res) => {
+  db.prepare('DELETE FROM workout_logs WHERE id=? AND trainee_id=?').run(req.params.id, req.session.uid);
+  res.json({ ok: true });
+});
+
+app.post('/api/trainee/log-cardio', requireAuth, requireTrainee, (req, res) => {
+  const { machine, duration_min } = req.body;
+  if (!machine || !duration_min) return res.status(400).json({ message: 'اختاري الجهاز والمدة' });
+  db.prepare(`INSERT INTO cardio_logs (trainee_id,session_date,machine,duration_min,created_at)
+    VALUES (?,?,?,?,?)`).run(req.session.uid, today(), machine, parseInt(duration_min) || 0, new Date().toISOString());
   res.json({ ok: true });
 });
 
@@ -377,6 +396,30 @@ app.get('/api/trainee/progress', requireAuth, requireTrainee, (req, res) => {
   const cals = db.prepare(`SELECT log_date, SUM(calories) calories FROM calorie_logs WHERE trainee_id=?
     GROUP BY log_date ORDER BY log_date DESC LIMIT 14`).all(req.session.uid);
   res.json({ days, cals });
+});
+
+// ===== الإدارة: التنبيهات =====
+app.get('/api/admin/notifications', requireAuth, requireAdmin, (req, res) => {
+  const t = today();
+  const completions = db.prepare(`
+    SELECT ws.completed_at, ws.duration_min, tr.name, pd.title as day_title
+    FROM workout_sessions ws
+    JOIN trainees tr ON tr.id = ws.trainee_id
+    LEFT JOIN plan_days pd ON pd.id = ws.plan_day_id
+    WHERE ws.session_date=?
+    ORDER BY ws.completed_at DESC`).all(t);
+  const threeDaysAgo = new Date();
+  threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+  const cutoff = threeDaysAgo.toISOString().slice(0, 10);
+  const inactive = db.prepare(`
+    SELECT tr.id, tr.name, MAX(wl.log_date) as last_workout
+    FROM trainees tr
+    LEFT JOIN workout_logs wl ON wl.trainee_id = tr.id
+    WHERE tr.active=1 AND tr.end_date >= ?
+    GROUP BY tr.id
+    HAVING last_workout IS NULL OR last_workout < ?
+    ORDER BY last_workout ASC`).all(t, cutoff);
+  res.json({ completions, inactive, date: t });
 });
 
 app.listen(PORT, () => console.log(`🚀 نظام vllogsraye يعمل على المنفذ ${PORT}`));

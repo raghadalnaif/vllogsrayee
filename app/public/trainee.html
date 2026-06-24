@@ -7,7 +7,24 @@
 <link rel="stylesheet" href="/style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-/* ===== بوست‑كامب: بطاقات التمارين ===== */
+/* ===== بطاقات أيام التمرين (Home) ===== */
+.home-top{display:flex;gap:12px;align-items:stretch;margin-bottom:14px}
+.days-left-card{flex:0 0 auto;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;border-radius:16px;padding:16px 18px;text-align:center;min-width:100px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.days-left-card .days-num{font-size:2.6rem;font-weight:900;line-height:1}
+.days-left-card .days-lbl{font-size:.8rem;opacity:.9;margin-top:2px}
+.days-left-card .days-end{font-size:.7rem;opacity:.75;margin-top:6px}
+.plan-days-card{flex:1;background:var(--bg1);border-radius:16px;padding:14px}
+.plan-days-card h4{font-size:.85rem;font-weight:800;margin:0 0 10px;color:var(--white)}
+.day-chips{display:flex;flex-direction:column;gap:7px}
+.day-chip{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:#fff;border:1.5px solid var(--border);cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:700;color:var(--white);text-align:right;width:100%}
+.day-chip.done{background:#e8f5ec;border-color:#4A7C59;color:#4A7C59}
+.day-chip .chip-icon{width:24px;height:24px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:900;flex-shrink:0}
+.day-chip.done .chip-icon{background:#4A7C59;color:#fff}
+.day-chip .chip-title{flex:1;font-size:.78rem;color:var(--muted);font-weight:400}
+/* MFP quick entry */
+.mfp-guide{background:#e8f0fe;border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:.82rem;line-height:1.7;color:#1a237e}
+.mfp-guide b{display:block;margin-bottom:4px;font-size:.88rem}
+.quick-entry-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
 .ex-card{border:1.5px solid var(--border);border-radius:16px;margin:10px 0;overflow:hidden;transition:border-color .2s,background .2s}
 .ex-card.ex-done{border-color:#4A7C59;background:#f0faf3}
 .ex-header{display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;user-select:none}
@@ -80,6 +97,34 @@
 .meal-note-tip{font-size:.78rem;margin-top:6px;padding:6px 10px;background:#f0faf3;border-radius:8px;line-height:1.5}
 .meal-log-btn{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:8px 16px;background:var(--gold);color:#fff;border:none;border-radius:10px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit}
 .tip-card{background:var(--bg1);border-radius:10px;padding:10px 14px;font-size:.82rem;color:var(--muted);line-height:1.6;margin-bottom:8px}
+/* ===== كارديو ===== */
+.cardio-card{background:linear-gradient(135deg,#e8f5ec,#f0faf3);border:1.5px solid #4A7C59;border-radius:14px;padding:14px 16px;margin-top:14px}
+.cardio-card h4{margin:0 0 10px;font-size:.9rem;color:#4A7C59}
+.cardio-note{background:rgba(74,124,89,.1);border-right:3px solid #4A7C59;border-radius:8px;padding:8px 12px;font-size:.8rem;color:#2d5a3d;margin-bottom:12px;line-height:1.6}
+.cardio-row{display:flex;gap:8px;align-items:flex-end}
+.cardio-row .field{flex:1;margin:0}
+.edit-set-btn{background:none;border:none;color:var(--muted);font-size:.8rem;cursor:pointer;padding:2px 6px;border-radius:6px;flex-shrink:0}
+.edit-set-btn:hover{background:var(--border);color:var(--white)}
+/* ===== دليل ===== */
+.guide-hero{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;border-radius:16px;padding:20px;margin-bottom:16px;text-align:center}
+.guide-hero h3{margin:0 0 6px;font-size:1.2rem}
+.guide-hero p{margin:0;font-size:.85rem;opacity:.9}
+.guide-step{display:flex;gap:12px;background:var(--bg1);border-radius:12px;padding:14px;margin-bottom:10px;align-items:flex-start}
+.step-num{min-width:32px;height:32px;border-radius:50%;background:var(--gold);color:#fff;font-weight:900;font-size:.9rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-body{flex:1}
+.step-body h4{margin:0 0 4px;font-size:.92rem;color:var(--white)}
+.step-body p{margin:0;font-size:.8rem;color:var(--muted);line-height:1.6}
+.guide-sec-title{font-weight:900;font-size:.95rem;margin:16px 0 8px;color:var(--gold);display:flex;align-items:center;gap:6px}
+.guide-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.guide-card{background:var(--bg1);border-radius:12px;padding:12px;font-size:.82rem}
+.guide-card .gc-title{font-weight:800;margin-bottom:4px;color:var(--white)}
+.guide-card .gc-body{color:var(--muted);line-height:1.6}
+.pre-opt{background:var(--bg1);border-radius:12px;padding:12px 14px;margin-bottom:8px;font-size:.82rem}
+.pre-opt b{display:block;margin-bottom:3px;color:var(--gold)}
+.pre-opt span{color:var(--muted);line-height:1.5}
+.stretch-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:.85rem}
+.stretch-row:last-child{border-bottom:none}
+.stretch-time{background:var(--gold);color:#fff;border-radius:8px;padding:2px 10px;font-size:.75rem;font-weight:700;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -93,6 +138,7 @@
   <button class="tab"     onclick="go('meals',this)">🥗 وجباتي</button>
   <button class="tab"     onclick="go('cal',this)">🍎 سعراتي</button>
   <button class="tab"     onclick="go('prog',this)">📈 تقدمي</button>
+  <button class="tab"     onclick="go('guide',this)">📖 دليلي</button>
 </div>
 
 <div class="wrap">
@@ -119,7 +165,13 @@
   <div class="page" id="p-cal">
     <h2 class="page-h">سعراتي اليوم</h2>
     <p class="page-sub">أضيفي وجباتك لمتابعة السعرات والبروتين</p>
-    <div class="card">
+    <!-- تبديل بين الإدخال اليدوي وإجمالي MFP -->
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <button class="btn" id="calTab1" onclick="switchCalTab(1)" style="flex:1">✏️ إدخال يدوي</button>
+      <button class="btn ghost" id="calTab2" onclick="switchCalTab(2)" style="flex:1">📱 من MyFitnessPal</button>
+    </div>
+    <!-- إدخال يدوي -->
+    <div id="calManual" class="card">
       <div class="row">
         <div class="field" style="flex:2"><label>الوجبة</label><input class="input" id="cMeal" placeholder="مثلاً: دجاج وأرز"></div>
         <div class="field"><label>سعرات</label><input class="input" id="cKcal" type="number" inputmode="numeric"></div>
@@ -131,6 +183,29 @@
       </div>
       <button class="btn full" onclick="addCalorie()">+ إضافة وجبة</button>
     </div>
+    <!-- إجمالي MFP -->
+    <div id="calMfp" style="display:none">
+      <div class="mfp-guide">
+        <b>📱 كيف تستخدمين MyFitnessPal بسرعة:</b>
+        ١. افتحي التطبيق واضغطي على "Diary" في الأسفل<br>
+        ٢. سجّلي وجباتك يدوياً أو بالباركود<br>
+        ٣. في الأسفل ستجدين "Nutrition" — اضغطيها<br>
+        ٤. اكتبي الأرقام هنا مرة واحدة بدل إدخال كل وجبة
+      </div>
+      <div class="card">
+        <div style="font-weight:800;margin-bottom:12px">🔢 إجمالي يومك من MFP</div>
+        <div class="quick-entry-row">
+          <div class="field"><label>إجمالي السعرات</label><input class="input" id="mKcal" type="number" inputmode="numeric" placeholder="مثلاً: 1650"></div>
+          <div class="field"><label>بروتين (g)</label><input class="input" id="mProt" type="number" inputmode="numeric" placeholder="مثلاً: 130"></div>
+        </div>
+        <div class="quick-entry-row">
+          <div class="field"><label>كارب (g)</label><input class="input" id="mCarb" type="number" inputmode="numeric" placeholder="مثلاً: 160"></div>
+          <div class="field"><label>دهون (g)</label><input class="input" id="mFat" type="number" inputmode="numeric" placeholder="مثلاً: 55"></div>
+        </div>
+        <button class="btn full" onclick="submitMfp()">✓ سجّلي إجمالي اليوم</button>
+        <div class="muted" style="font-size:.75rem;margin-top:8px;text-align:center">يُسجَّل كسجل واحد بعنوان "إجمالي MFP"</div>
+      </div>
+    </div>
     <div id="calSummary" style="margin-top:16px"></div>
     <div id="calList"></div>
   </div>
@@ -140,6 +215,13 @@
     <h2 class="page-h">تقدمي</h2>
     <p class="page-sub">آخر 14 يوم</p>
     <div id="progBody"><div class="empty">جاري التحميل...</div></div>
+  </div>
+
+  <!-- دليلي -->
+  <div class="page" id="p-guide">
+    <h2 class="page-h">📖 دليلي في النادي</h2>
+    <p class="page-sub">من دخول النادي حتى الخروج — كل خطوة موضحة</p>
+    <div id="guideBody"></div>
   </div>
 </div>
 
@@ -169,6 +251,22 @@ async function go(p, el) {
   if (p === 'meals') renderMeals();
   if (p === 'cal')   loadCalories();
   if (p === 'prog')  loadProgress();
+  if (p === 'guide') renderGuide();
+}
+
+function goToDay(dayId) {
+  document.querySelectorAll('.tab')[1].click();
+  setTimeout(() => {
+    const el = document.getElementById('day-' + dayId);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 300);
+}
+
+function switchCalTab(n) {
+  document.getElementById('calManual').style.display = n === 1 ? '' : 'none';
+  document.getElementById('calMfp').style.display    = n === 2 ? '' : 'none';
+  document.getElementById('calTab1').className = n===1 ? 'btn' : 'btn ghost';
+  document.getElementById('calTab2').className = n===2 ? 'btn' : 'btn ghost';
 }
 
 // ===== الصفحة الرئيسية =====
@@ -177,14 +275,30 @@ async function loadHome() {
   if (!d) return;
   HOME = d;
   const calPct = d.calorieGoal ? Math.min(100, Math.round(d.caloriesToday / d.calorieGoal * 100)) : 0;
+  const chips = (d.planDays || []).map(day => `
+    <button class="day-chip ${day.doneToday ? 'done' : ''}" onclick="goToDay(${day.id})">
+      <div class="chip-icon">${day.doneToday ? '✓' : day.day_index}</div>
+      <div style="flex:1;text-align:right;min-width:0">
+        <div style="font-size:.82rem;font-weight:700">${esc(day.title)}</div>
+        ${day.doneToday ? '<div class="chip-title">مكتمل اليوم ✓</div>' : ''}
+      </div>
+    </button>`).join('');
   document.getElementById('homeBody').innerHTML = `
     ${d.coachNote ? `<div class="coach-note"><div class="from">📌 رسالة من مدربتك</div><div class="msg">${esc(d.coachNote)}</div></div>` : ''}
-    <div class="card" style="background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;border:none">
-      <div style="font-size:.9rem;opacity:.9">أهلاً ${esc(d.name)} 👋</div>
-      <div style="font-size:2.4rem;font-weight:900;margin-top:6px">${d.daysLeft} <span style="font-size:1rem;font-weight:600">يوم متبقي</span></div>
-      <div style="font-size:.78rem;opacity:.85">ينتهي اشتراكك في ${d.endDate}</div>
+    <div class="home-top">
+      <div class="days-left-card">
+        <div class="days-num">${d.daysLeft}</div>
+        <div class="days-lbl">يوم متبقي</div>
+        <div class="days-end">ينتهي ${d.endDate}</div>
+      </div>
+      <div class="plan-days-card">
+        <h4>💪 أيام التمرين</h4>
+        <div class="day-chips">
+          ${chips || '<div class="muted" style="font-size:.8rem">لا يوجد جدول بعد</div>'}
+        </div>
+      </div>
     </div>
-    <div class="stats" style="margin-top:14px">
+    <div class="stats" style="margin-bottom:14px">
       <div class="stat"><div class="n">${d.setsToday}</div><div class="l">ست مسجّل اليوم</div></div>
       <div class="stat"><div class="n">${d.caloriesToday}</div><div class="l">سعرة اليوم</div></div>
       <div class="stat"><div class="n">${d.proteinToday}g</div><div class="l">بروتين اليوم</div></div>
@@ -252,6 +366,31 @@ function renderDay(d) {
     <button class="complete-day-btn ${complete ? 'visible' : ''}" id="done-btn-${d.id}" onclick="completeDay(${d.id})">
       🎉 أنهيت تمرين اليوم — سجّلي إتمامه!
     </button>
+    <div class="cardio-card">
+      <h4>🏃 كارديو بعد التمرين</h4>
+      <div class="cardio-note">
+        الكارديو بعد الأوزان مباشرة يحرق دهوناً أكثر — الجليكوجين يكون منخفضاً فيلجأ الجسم للدهون. المدة المثالية 15-20 دقيقة بنبض 120-140 ضربة/دقيقة.
+      </div>
+      <div class="cardio-row">
+        <div class="field">
+          <label>الجهاز</label>
+          <select class="input" id="cardio-machine-${d.id}">
+            <option value="">اختاري الجهاز</option>
+            <option>تريدميل</option>
+            <option>دراجة ثابتة</option>
+            <option>إليبتيكال</option>
+            <option>رووينج</option>
+            <option>ستير ماستر</option>
+            <option>مشي سريع</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>المدة (دقيقة)</label>
+          <input class="input" type="number" inputmode="numeric" id="cardio-dur-${d.id}" placeholder="15">
+        </div>
+        <button class="btn" style="align-self:flex-end;white-space:nowrap" onclick="logCardio(${d.id})">✓ سجّلي</button>
+      </div>
+    </div>
   </div>`;
 }
 
@@ -286,6 +425,7 @@ function renderSetRow(ex, setNum, log) {
       <span class="set-num">ست ${setNum}</span>
       <span class="set-done-info">${log.weight > 0 ? log.weight + ' كجم × ' : ''}${log.reps} تكرار</span>
       <span class="set-check-icon">✓</span>
+      <button class="edit-set-btn" onclick="editSet(${ex.id},${setNum},${log.id||0})">✏️</button>
     </div>`;
   }
   return `<div class="set-row" id="set-${ex.id}-${setNum}">
@@ -310,16 +450,18 @@ async function logSet(peId, exId, setNum, totalSets) {
   const w = wEl ? wEl.value : '0';
   const r = rEl ? rEl.value : '';
   if (!r) { toast('أدخلي عدد التكرارات', true); return; }
-  await api('/api/trainee/log', {method:'POST', body:{plan_exercise_id:peId, exercise_id:exId, set_number:setNum, weight:w||0, reps:r}});
+  const res = await api('/api/trainee/log', {method:'POST', body:{plan_exercise_id:peId, exercise_id:exId, set_number:setNum, weight:w||0, reps:r}});
   if (!PLAN_LOGS[peId]) PLAN_LOGS[peId] = [];
-  PLAN_LOGS[peId].push({weight:parseFloat(w)||0, reps:parseInt(r)});
+  PLAN_LOGS[peId].push({id: res && res.id ? res.id : 0, weight:parseFloat(w)||0, reps:parseInt(r)});
   // تحديث سطر الست بصرياً
   const row = document.getElementById('set-' + peId + '-' + setNum);
+  const logId = res && res.id ? res.id : 0;
   if (row) {
     row.className = 'set-row done';
     row.innerHTML = `<span class="set-num">ست ${setNum}</span>
       <span class="set-done-info">${parseFloat(w)>0 ? w+' كجم × ' : ''}${r} تكرار</span>
-      <span class="set-check-icon">✓</span>`;
+      <span class="set-check-icon">✓</span>
+      <button class="edit-set-btn" onclick="editSet(${peId},${setNum},${logId})">✏️</button>`;
   }
   const doneCount = PLAN_LOGS[peId].length;
   const card = document.getElementById('ex-' + peId);
@@ -377,6 +519,150 @@ function startRestTimer(sec) {
 }
 function skipRest() { clearInterval(restInterval); document.getElementById('rest-bar').classList.add('hidden'); }
 function fmt(s) { return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
+
+async function editSet(peId, setNum, logId) {
+  if (logId && logId > 0) {
+    await api('/api/trainee/log/' + logId, { method: 'DELETE' });
+  }
+  if (PLAN_LOGS[peId]) {
+    PLAN_LOGS[peId] = PLAN_LOGS[peId].filter((_, i) => i !== setNum - 1);
+  }
+  const row = document.getElementById('set-' + peId + '-' + setNum);
+  if (row) {
+    const ex = PLAN_DATA && PLAN_DATA.flatMap(d => d.exercises).find(e => e.id === peId);
+    if (!ex) return;
+    row.className = 'set-row';
+    row.innerHTML = `<span class="set-num">ست ${setNum}</span>
+      <input class="input mini" type="number" inputmode="decimal" placeholder="كجم" id="w-${peId}-${setNum}">
+      <input class="input mini" type="number" inputmode="numeric" placeholder="تكرار" id="r-${peId}-${setNum}"
+        onkeydown="if(event.key==='Enter')logSet(${peId},${ex.exercise_id},${setNum},${ex.sets||3})">
+      <button class="check-btn" onclick="logSet(${peId},${ex.exercise_id},${setNum},${ex.sets||3})">✓</button>`;
+    const card = document.getElementById('ex-' + peId);
+    if (card) card.classList.remove('ex-done');
+    const st = document.getElementById('ex-st-' + peId);
+    if (st) st.textContent = (PLAN_LOGS[peId]||[]).length + '/' + (ex.sets||3);
+  }
+  updateDayProgress();
+  toast('جاهزة للتعديل ✏️');
+}
+
+async function logCardio(dayId) {
+  const machine = document.getElementById('cardio-machine-' + dayId).value;
+  const dur = document.getElementById('cardio-dur-' + dayId).value;
+  if (!machine) { toast('اختاري الجهاز أولاً', true); return; }
+  if (!dur || parseInt(dur) < 1) { toast('أدخلي مدة الكارديو', true); return; }
+  await api('/api/trainee/log-cardio', { method: 'POST', body: { machine, duration_min: dur } });
+  toast('🏃 تم تسجيل الكارديو: ' + machine + ' ' + dur + ' دقيقة ✓');
+  document.getElementById('cardio-machine-' + dayId).value = '';
+  document.getElementById('cardio-dur-' + dayId).value = '';
+}
+
+async function submitMfp() {
+  const kcal = document.getElementById('mKcal').value;
+  const prot = document.getElementById('mProt').value;
+  const carb = document.getElementById('mCarb').value;
+  const fat  = document.getElementById('mFat').value;
+  if (!kcal) { toast('أدخلي إجمالي السعرات', true); return; }
+  await api('/api/trainee/calories', {method:'POST', body:{
+    meal_name:'إجمالي MFP', calories:kcal,
+    protein:prot||0, carbs:carb||0, fat:fat||0}});
+  ['mKcal','mProt','mCarb','mFat'].forEach(id => document.getElementById(id).value = '');
+  toast('تم تسجيل إجمالي MyFitnessPal ✓');
+  switchCalTab(1);
+  loadCalories();
+}
+
+function renderGuide() {
+  const box = document.getElementById('guideBody');
+  if (box.dataset.rendered) return;
+  box.dataset.rendered = '1';
+  box.innerHTML = `
+    <div class="guide-hero">
+      <h3>🌟 روتين النادي الكامل</h3>
+      <p>من دخول النادي حتى الخروج — اتبعي هذه الخطوات في كل تمرين</p>
+    </div>
+
+    <div class="guide-sec-title">☕ قبل التمرين — الوجبة المثالية</div>
+    <div class="pre-opt"><b>الخيار الخفيف (30 دقيقة قبل)</b><span>قهوة سوداء بدون سكر + 2-3 حبات تمر — طاقة سريعة وخفيفة على المعدة</span></div>
+    <div class="pre-opt"><b>الخيار المتوسط (45-60 دقيقة قبل)</b><span>موزة كاملة + ملعقة زبدة فول سوداني — كارب + بروتين + دهون صحية</span></div>
+    <div class="pre-opt"><b>الخيار الكامل (60-90 دقيقة قبل)</b><span>شوفان مطبوخ + موزة + عسل — أو: بيضتان + قطعة خبز أسمر</span></div>
+
+    <div class="guide-sec-title">🏃 خطوات النادي — من الدخول للخروج</div>
+    <div class="guide-step"><div class="step-num">1</div><div class="step-body"><h4>الوصول والتحضير</h4><p>بدّلي ملابس التمرين، اشربي ماء (250-300 مل)، ضعي السماعات وجهّزي الموسيقى المحفزة</p></div></div>
+    <div class="guide-step"><div class="step-num">2</div><div class="step-body"><h4>الإحماء الديناميكي — 8-10 دقائق</h4><p>دوران الكتفين (10×)، رفع الركبتين (20×)، قرفصاء بدون وزن (15×)، Hip Circle (10×)، Leg Swing (10×). لا تتجاهلي هذه الخطوة أبداً</p></div></div>
+    <div class="guide-step"><div class="step-num">3</div><div class="step-body"><h4>التمارين الرئيسية — 40-55 دقيقة</h4><p>ابدئي بالتمارين المركبة (الثقيلة) ثم انتقلي للعزل. اتبعي الجدول بالترتيب المذكور تماماً</p></div></div>
+    <div class="guide-step"><div class="step-num">4</div><div class="step-body"><h4>الكارديو — 15-20 دقيقة بعد الأوزان</h4><p>تريدميل منحدر (8-12%) سرعة 5-6، دراجة هوائية، أو إليبتيكال. الهدف: 120-140 ضربة قلب/دقيقة. سجّليه هنا في التطبيق</p></div></div>
+    <div class="guide-step"><div class="step-num">5</div><div class="step-body"><h4>التمدد والإطالة — 8-10 دقائق</h4><p>تمدد ستاتيكي (ثابت) بعد التمرين فقط — العضلات تكون دافئة فيُعطي نتائج أفضل</p></div></div>
+    <div class="guide-step"><div class="step-num">6</div><div class="step-body"><h4>بعد التمرين مباشرة</h4><p>اشربي ماء (500-700 مل)، أكلي وجبتك البروتينية خلال 30-60 دقيقة — هذه أهم وجبة في اليوم</p></div></div>
+
+    <div class="guide-sec-title">📐 مبادئ البرنامج — لا تتجاهليها</div>
+    <div class="guide-grid">
+      <div class="guide-card"><div class="gc-title">1️⃣ ابدئي بالمركبة دائماً</div><div class="gc-body">كل يوم يبدأ بـ 3 تمارين مركبة تستهدف مجموعات عضلية كبيرة قبل العزل</div></div>
+      <div class="guide-card"><div class="gc-title">2️⃣ Progressive Overload</div><div class="gc-body">زيدي الوزن 1-2.5 كيلو كل أسبوعين حين تصبح التمارين سهلة — هذا سر النمو</div></div>
+      <div class="guide-card"><div class="gc-title">3️⃣ الراحة بين الستات</div><div class="gc-body">المركبة: 90 ثانية — العزل: 60 ثانية. لا تتجاوزي هذه الأوقات</div></div>
+      <div class="guide-card"><div class="gc-title">4️⃣ التركيز العضلي</div><div class="gc-body">اشعري بالعضلة المستهدفة في كل تكرار — ركّزي على الإحساس لا على إكمال الأرقام</div></div>
+    </div>
+
+    <div class="guide-sec-title">🧘 التمدد بعد التمرين</div>
+    <div class="card">
+      ${[
+        {name:'تمدد الغلوتس والورك',en:'Pigeon Pose / Figure 4',time:'30-45ث كل جهة'},
+        {name:'تمدد الفخذ الأمامي',en:'Standing Quad Stretch',time:'30ث كل رجل'},
+        {name:'تمدد الكتف والصدر',en:'Cross-Body Shoulder Stretch',time:'30ث كل جهة'},
+        {name:'تمدد عضلات الظهر',en:'Cat-Cow + Child\'s Pose',time:'60ث'},
+        {name:'تمدد الهامسترينج',en:'Standing Forward Fold',time:'30-45ث'},
+        {name:'تمدد الكتف الخلفي',en:'Rear Delt Stretch',time:'30ث كل جهة'},
+      ].map(s=>`<div class="stretch-row">
+        <div><div style="font-weight:700;font-size:.85rem">${s.name}</div><div class="muted" style="font-size:.75rem">${s.en}</div></div>
+        <div class="stretch-time">${s.time}</div>
+      </div>`).join('')}
+    </div>
+
+    <div class="guide-sec-title">🍽️ وجبة ما بعد التمرين</div>
+    <div class="guide-grid">
+      <div class="guide-card"><div class="gc-title">خيار 1 — بروتين كامل</div><div class="gc-body">صدر دجاج مشوي 150-200غ + أرز بني نصف كوب أو بطاطا حلوة + خضروات مشوية</div></div>
+      <div class="guide-card"><div class="gc-title">خيار 2 — بيض وبروتين</div><div class="gc-body">3-4 بيضات + قطعتا خبز أسمر + أفوكادو نصف حبة + طماطم وخيار</div></div>
+      <div class="guide-card"><div class="gc-title">خيار 3 — تونة وسلطة</div><div class="gc-body">علبة تونة في الماء + أرز أو بطاطا + خضروات طازجة + ملعقة زيت زيتون</div></div>
+      <div class="guide-card"><div class="gc-title">💡 البروتين اليومي</div><div class="gc-body">1.6-2 غرام لكل كيلو من وزنك. مثال: 60كجم = 96-120غ يومياً</div></div>
+    </div>
+
+    <div class="guide-sec-title">🩸 إرشادات مقاومة الأنسولين</div>
+    <div class="card">
+      <div class="guide-card" style="background:#fff3e0;border:1.5px solid #e68a00;border-radius:12px;padding:14px;margin-bottom:10px">
+        <div class="gc-title" style="color:#e68a00">🔑 قاعدة المقاومة</div>
+        <div class="gc-body">مقاومة الأنسولين تعني أن الجسم يحتاج كميات أكبر من الأنسولين لإدخال السكر للخلايا. التمرين يُحسّن الحساسية بشكل طبيعي</div>
+      </div>
+      ${[
+        {t:'🏋️ الأوزان أولاً',b:'التمرين بالأوزان يُفرغ الجليكوجين من العضلات مما يفتح "مستودعات" لاستقبال الكارب — يُقلل ارتفاع السكر بعد الوجبة'},
+        {t:'🚶 المشي بعد الأكل',b:'10-15 دقيقة مشي بعد كل وجبة تُخفض نسبة السكر في الدم حتى 25% — الأسهل والأفضل'},
+        {t:'🥦 الكارب في آخر الوجبة',b:'ابدئي بالبروتين والخضار ثم الكارب — يُبطئ امتصاص السكر ويُقلل الذروة'},
+        {t:'⏰ صيام متقطع خفيف',b:'نافذة أكل 10-8 ساعات تُحسّن حساسية الأنسولين — استشيري الطبيبة قبل البدء'},
+        {t:'🚫 تجنبي الكارب المنفرد',b:'لا تأكلي الكارب وحده أبداً — دائماً مع بروتين أو دهون أو ألياف لتجنب ارتفاع السكر'},
+        {t:'💊 الكروم والمغنيسيوم',b:'يساعدان على تحسين حساسية الأنسولين — الأفضل من المصادر الطبيعية (مكسرات، بذور، خضار ورقية)'},
+      ].map(i=>`<div class="guide-step" style="margin-bottom:6px"><div class="step-body"><h4>${i.t}</h4><p>${i.b}</p></div></div>`).join('')}
+    </div>
+
+    <div class="guide-sec-title">💛 إرشادات ارتفاع الكوليسترول</div>
+    <div class="card">
+      <div class="guide-card" style="background:#e3f2fd;border:1.5px solid #1565c0;border-radius:12px;padding:14px;margin-bottom:10px">
+        <div class="gc-title" style="color:#1565c0">💡 الكوليسترول والتمرين</div>
+        <div class="gc-body">التمرين المنتظم يرفع HDL (الجيد) ويخفض LDL (السيء) والدهون الثلاثية — أفضل دواء طبيعي</div>
+      </div>
+      ${[
+        {t:'❤️ الكارديو المفيد للقلب',b:'30 دقيقة كارديو متوسط الشدة (120-140 ضربة) 4-5 أيام أسبوعياً — يرفع HDL حتى 5-10%'},
+        {t:'🫒 الدهون الصحية',b:'زيت الزيتون، الأفوكادو، المكسرات، السالمون — تُقلل LDL وترفع HDL. تجنبي الزيوت المهدرجة والمقلي'},
+        {t:'🌾 الألياف القابلة للذوبان',b:'الشوفان، الفاصولياء، الشعير، التفاح — ترتبط بالكوليسترول في الأمعاء وتُخرجه. هدف: 25-30غ ألياف يومياً'},
+        {t:'🚫 ما تتجنبينه',b:'اللحوم المصنعة (السجق، اللانشون)، الزيوت المهدرجة، المقليات، الكارب المكرر الزائد'},
+        {t:'🐟 أوميغا 3',b:'سمك سالمون مرتين أسبوعياً أو كبسولات أوميغا 3 — يُخفض الدهون الثلاثية بشكل ملحوظ'},
+        {t:'🫘 بروتين نباتي',b:'استبدلي جزءاً من البروتين الحيواني ببقوليات (عدس، حمص) — تُساعد على خفض LDL'},
+      ].map(i=>`<div class="guide-step" style="margin-bottom:6px"><div class="step-body"><h4>${i.t}</h4><p>${i.b}</p></div></div>`).join('')}
+    </div>
+
+    <div class="card" style="background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;border:none;text-align:center;margin-top:4px">
+      <div style="font-size:1rem;font-weight:900;margin-bottom:6px">💪 النتائج تأتي مع الاتساق لا الكمال</div>
+      <div style="font-size:.82rem;opacity:.9">التزمي بالبرنامج 8 أسابيع وثقي بالعملية — الجسم ينمو أثناء الراحة وليس أثناء التمرين</div>
+    </div>`;
+}
 
 function mediaTag(url) {
   if (!url) return '';

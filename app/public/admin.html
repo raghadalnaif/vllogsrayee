@@ -104,6 +104,25 @@
           <input class="input" id="tBodyFat" type="number" inputmode="decimal" placeholder="مثلاً: 25" oninput="calcCalories()">
         </div>
       </div>
+      <div class="row">
+        <div class="field">
+          <label>الهدف</label>
+          <select class="input" id="tGoalType" onchange="applyGoalPreset()">
+            <option value="recomp">إعادة تشكيل — Recomp (0%)</option>
+            <option value="cut">تنشيف — خسارة دهون</option>
+            <option value="bulk">تضخيم — زيادة كتلة</option>
+          </select>
+        </div>
+        <div class="field" id="goalPctField" style="display:none">
+          <label id="goalPctLabel">نسبة العجز %</label>
+          <select class="input" id="tGoalPct" onchange="calcCalories()">
+            <option value="10">10% — خفيف</option>
+            <option value="15">15% — معتدل</option>
+            <option value="20" selected>20% — متوسط</option>
+            <option value="25">25% — قوي</option>
+          </select>
+        </div>
+      </div>
       <div class="muted" id="calcInfo" style="margin:6px 0;min-height:18px"></div>
     </div>
     <div class="field"><label>هدف السعرات اليومي (تُحسب تلقائياً أو عدّليها يدوياً)</label><input class="input" id="tCal" type="number" value="2000" oninput="updateMacros()"></div>
@@ -159,7 +178,10 @@ function closeM(id){document.getElementById(id).classList.remove('open');}
 
 // ===== اللوحة =====
 async function loadDash(){
-  const d=await api('/api/admin/stats');if(!d)return;
+  const [d, n] = await Promise.all([api('/api/admin/stats'), api('/api/admin/notifications')]);
+  if(!d) return;
+  const completions = n && n.completions ? n.completions : [];
+  const inactive    = n && n.inactive    ? n.inactive    : [];
   document.getElementById('dashBody').innerHTML=`
     <h2 class="page-h">نظرة عامة</h2><p class="page-sub">ملخص نشاط المشتركات</p>
     <div class="stats">
@@ -168,6 +190,23 @@ async function loadDash(){
       <div class="stat"><div class="n">${d.expired}</div><div class="l">منتهيات</div></div>
       <div class="stat"><div class="n">${d.trainedToday}</div><div class="l">تدرّبن اليوم</div></div>
     </div>
+    ${completions.length ? `
+    <div class="card" style="border-color:#4A7C59">
+      <b style="color:#4A7C59">✅ أنهين تمرين اليوم (${completions.length})</b>
+      ${completions.map(c=>`<div class="list-item" style="margin-top:8px">
+        <div class="info"><div class="nm">${esc(c.name)}</div>
+        <div class="meta">${esc(c.day_title||'تمرين')} • ${c.duration_min} دقيقة</div></div>
+        <span class="muted">${new Date(c.completed_at).toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'})}</span>
+      </div>`).join('')}
+    </div>` : ''}
+    ${inactive.length ? `
+    <div class="card" style="border-color:#e57373">
+      <b style="color:#c62828">⚠️ لم يتدرّبن منذ 3 أيام أو أكثر (${inactive.length})</b>
+      ${inactive.map(i=>`<div class="list-item" style="margin-top:8px">
+        <div class="info"><div class="nm">${esc(i.name)}</div>
+        <div class="meta">آخر تمرين: ${i.last_workout || 'لم تتدرب بعد'}</div></div>
+      </div>`).join('')}
+    </div>` : ''}
     <div class="card">
       <b>آخر النشاطات</b>
       ${d.recent.length? d.recent.map(r=>`<div class="list-item" style="margin-top:8px">
@@ -207,23 +246,47 @@ async function loadTrainees(){
     </div>`).join('') : '<div class="empty">لا مشتركات بعد — أضيفي أول مشتركة</div>';
 }
 
+function applyGoalPreset(){
+  const goal=document.getElementById('tGoalType').value;
+  const pctField=document.getElementById('goalPctField');
+  const pctLabel=document.getElementById('goalPctLabel');
+  const pctSel=document.getElementById('tGoalPct');
+  if(goal==='recomp'){
+    pctField.style.display='none';
+    document.getElementById('tDeficit').value='0';
+  } else if(goal==='cut'){
+    pctField.style.display='';
+    pctLabel.textContent='نسبة العجز %';
+    pctSel.innerHTML='<option value="10">10% — خفيف</option><option value="15">15% — معتدل</option><option value="20" selected>20% — متوسط</option><option value="25">25% — قوي</option>';
+    document.getElementById('tDeficit').value=pctSel.value;
+  } else if(goal==='bulk'){
+    pctField.style.display='';
+    pctLabel.textContent='نسبة الزيادة %';
+    pctSel.innerHTML='<option value="-5">5% — خفيف</option><option value="-10" selected>10% — معتدل</option><option value="-15">15% — قوي</option>';
+    document.getElementById('tDeficit').value=pctSel.value;
+  }
+  calcCalories();
+}
 function calcCalories(){
   const w=parseFloat(document.getElementById('tWeight').value);
   const h=parseFloat(document.getElementById('tHeight').value);
   const a=parseFloat(document.getElementById('tAge').value);
   const g=document.getElementById('tGender').value;
   const act=document.getElementById('tActivity').value;
+  const goalType=document.getElementById('tGoalType')?.value||'recomp';
+  const pctField=document.getElementById('goalPctField');
+  if(pctField && pctField.style.display!=='none'){
+    document.getElementById('tDeficit').value=document.getElementById('tGoalPct').value;
+  }
   const def=parseFloat(document.getElementById('tDeficit').value)||0;
   const bf=parseFloat(document.getElementById('tBodyFat').value);
   const info=document.getElementById('calcInfo');
   let bmr, method;
   if(w && !isNaN(bf) && bf>0){
-    // Katch-McArdle: أدق لما نعرف نسبة الدهون
     const lbm=w*(1-bf/100);
     bmr=370+(21.6*lbm);
     method=`كتلة العضل: ${lbm.toFixed(1)}كجم (Katch-McArdle)`;
   } else if(w&&h&&a){
-    // Mifflin-St Jeor: المعادلة العادية
     bmr=g==='male'? (10*w+6.25*h-5*a+5) : (10*w+6.25*h-5*a-161);
     method='Mifflin-St Jeor';
   } else {
@@ -231,9 +294,11 @@ function calcCalories(){
     return;
   }
   const tdee=bmr*(ACTIVITY_FACTORS[act]||1.55);
-  const target=Math.max(800,Math.round(tdee*(1-def/100)));
+  const factor = def < 0 ? (1 + Math.abs(def)/100) : (1 - def/100);
+  const target=Math.max(800,Math.round(tdee*factor));
+  const goalLabel = goalType==='cut'?'تنشيف' : goalType==='bulk'?'تضخيم' : 'Recomp';
   document.getElementById('tCal').value=target;
-  info.textContent=`${method} • معدل الأيض: ${Math.round(bmr)} • TDEE: ${Math.round(tdee)} • المستهدف: ${target} سعرة`;
+  info.textContent=`${method} • TDEE: ${Math.round(tdee)} • الهدف: ${goalLabel} • المستهدف: ${target} سعرة`;
   updateMacros();
 }
 function updateMacros(){
