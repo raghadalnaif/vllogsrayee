@@ -153,6 +153,7 @@
   <button class="tab"     onclick="go('cal',this)">🍎 سعراتي</button>
   <button class="tab"     onclick="go('prog',this)">📈 تقدمي</button>
   <button class="tab"     onclick="go('guide',this)">📖 دليلي</button>
+  <button class="tab"     onclick="go('codes',this)">🎁 أكواد</button>
 </div>
 
 <div class="wrap">
@@ -231,6 +232,75 @@
     <div id="progBody"><div class="empty">جاري التحميل...</div></div>
   </div>
 
+  <!-- أكواد الخصم -->
+  <div class="page" id="p-codes">
+    <h2 class="page-h">🎁 أكواد الخصم</h2>
+    <p class="page-sub">أكواد حصرية لك — استخدميها ووفري فلوس</p>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px">
+
+      <div class="card" style="border-right:4px solid #c8860a">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <div style="font-weight:900;font-size:.98rem">عسل أبو نايف 🍯</div>
+          <span style="background:#fff3cd;color:#856404;border:1px solid #c8860a;border-radius:20px;padding:3px 10px;font-size:.72rem;font-weight:800">خصم خاص ١٠٪</span>
+        </div>
+        <div style="font-size:.8rem;color:var(--muted);margin-bottom:12px">عسل طبيعي محلي أصيل — اطلبيه باستخدام كودي</div>
+        <div style="background:var(--bg1);border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="font-size:.68rem;color:var(--muted);margin-bottom:2px">كود الخصم</div>
+            <div id="code-rv1" style="font-family:monospace;font-size:1.4rem;font-weight:900;letter-spacing:3px;color:var(--white)">RV1</div>
+          </div>
+          <button class="btn sm" onclick="copyTraineeCode('RV1','code-rv1',this)">📋 نسخ</button>
+        </div>
+      </div>
+
+      <div class="card" style="border-right:4px solid #4A7C59">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <div style="font-weight:900;font-size:.98rem">ماركت كالو 🛒</div>
+          <span style="background:#e8f5ec;color:#2d5a3d;border:1px solid #4A7C59;border-radius:20px;padding:3px 10px;font-size:.72rem;font-weight:800">خصم ٥٠٪</span>
+        </div>
+        <div style="font-size:.8rem;color:var(--muted);margin-bottom:12px">منتجات صحية وسبلمنتس لكل متدربة — سبلمنتس وأكل صحي بسعر أحسن</div>
+        <div style="background:var(--bg1);border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="font-size:.68rem;color:var(--muted);margin-bottom:2px">كود الخصم</div>
+            <div id="code-mk4k" style="font-family:monospace;font-size:1.4rem;font-weight:900;letter-spacing:3px;color:var(--white)">MK4K</div>
+          </div>
+          <button class="btn sm" onclick="copyTraineeCode('MK4K','code-mk4k',this)">📋 نسخ</button>
+        </div>
+      </div>
+
+      <div class="card" style="border-right:4px solid #4A7C59">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <div style="font-weight:900;font-size:.98rem">كالو 🥗</div>
+          <span style="background:#e8f5ec;color:#2d5a3d;border:1px solid #4A7C59;border-radius:20px;padding:3px 10px;font-size:.72rem;font-weight:800">خصم ١٠٪</span>
+        </div>
+        <div style="font-size:.8rem;color:var(--muted);margin-bottom:12px">وجبات صحية جاهزة مخصصة يومياً — أكل صحي يوصل لباب البيت</div>
+        <div style="background:var(--bg1);border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="font-size:.68rem;color:var(--muted);margin-bottom:2px">كود الخصم</div>
+            <div id="code-r10agd" style="font-family:monospace;font-size:1.4rem;font-weight:900;letter-spacing:3px;color:var(--white)">R10AGD</div>
+          </div>
+          <button class="btn sm" onclick="copyTraineeCode('R10AGD','code-r10agd',this)">📋 نسخ</button>
+        </div>
+      </div>
+
+      <div class="card" style="border-right:4px solid #e91e8c">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <div style="font-weight:900;font-size:.98rem">نايس ون 🛍️</div>
+          <span style="background:#fce4ec;color:#c62878;border:1px solid #e91e8c;border-radius:20px;padding:3px 10px;font-size:.72rem;font-weight:800">خصم خاص</span>
+        </div>
+        <div style="font-size:.8rem;color:var(--muted);margin-bottom:12px">منتجات تجميل وعناية متنوعة وأصلية — بسعر أحسن</div>
+        <div style="background:var(--bg1);border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="font-size:.68rem;color:var(--muted);margin-bottom:2px">كود الخصم</div>
+            <div id="code-gj488" style="font-family:monospace;font-size:1.4rem;font-weight:900;letter-spacing:3px;color:var(--white)">GJ488</div>
+          </div>
+          <button class="btn sm" onclick="copyTraineeCode('GJ488','code-gj488',this)">📋 نسخ</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- دليلي -->
   <div class="page" id="p-guide">
     <h2 class="page-h">📖 دليلي في النادي</h2>
@@ -266,6 +336,14 @@ async function go(p, el) {
   if (p === 'cal')   loadCalories();
   if (p === 'prog')  loadProgress();
   if (p === 'guide') renderGuide();
+}
+
+function copyTraineeCode(code, elId, btn) {
+  navigator.clipboard.writeText(code).then(() => {
+    const t = btn.textContent;
+    btn.textContent = '✓ تم النسخ';
+    setTimeout(() => btn.textContent = t, 2000);
+  });
 }
 
 function goToDay(dayId) {

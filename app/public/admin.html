@@ -15,6 +15,7 @@
   <button class="tab on" onclick="go('dash',this)">📊 اللوحة</button>
   <button class="tab" onclick="go('trn',this)">👩 المشتركات</button>
   <button class="tab" onclick="go('lib',this)">🏋️ مكتبة التمارين</button>
+  <button class="tab" onclick="go('codes',this)">🎁 أكواد الخصم</button>
   <button class="tab" onclick="go('set',this)">⚙️ الإعدادات</button>
 </div>
 
@@ -44,6 +45,87 @@
       <button class="btn full" onclick="addExercise()" id="exBtn">+ إضافة للمكتبة</button>
     </div>
     <div id="libList" style="margin-top:16px"></div>
+  </div>
+
+  <!-- أكواد الخصم -->
+  <div class="page" id="p-codes">
+    <h2 class="page-h">🎁 أكواد الخصم</h2>
+    <p class="page-sub">أكواد خصم حصرية لمتابعاتك — انسخي الكود وشاركيه</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px">
+
+      <div class="card" style="border-top:4px solid #c8860a">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+          <div>
+            <div style="font-weight:900;font-size:1rem">عسل أبو نايف 🍯</div>
+            <div class="muted" style="font-size:.78rem;margin-top:2px">عسل طبيعي ١٠٪ — جودة عالية وذوق أصيل</div>
+          </div>
+          <span class="badge" style="background:#fff3cd;color:#856404;border:1px solid #c8860a">خصم خاص</span>
+        </div>
+        <div style="font-size:.82rem;color:var(--muted);margin-bottom:12px">اطلبي عسل أبو نايف الطبيعي باستخدام كودي — منتج محلي أصيل وموثوق.</div>
+        <div style="background:var(--bg1);border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div class="muted" style="font-size:.7rem;margin-bottom:2px">كود الخصم</div>
+            <div style="font-family:monospace;font-size:1.3rem;font-weight:900;letter-spacing:2px;color:var(--white)">RV1</div>
+          </div>
+          <button class="btn sm" onclick="copyCode('RV1',this)">📋 نسخ</button>
+        </div>
+      </div>
+
+      <div class="card" style="border-top:4px solid #4A7C59">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+          <div>
+            <div style="font-weight:900;font-size:1rem">ماركت كالو 🛒</div>
+            <div class="muted" style="font-size:.78rem;margin-top:2px">منتجات صحية وسبلمنتس لكل متدرب</div>
+          </div>
+          <span class="badge green">خصم ٥٠٪</span>
+        </div>
+        <div style="font-size:.82rem;color:var(--muted);margin-bottom:12px">تسوّقي منتجاتك الصحية من ماركت كالو — سبلمنتس وأكل صحي بسعر أحسن.</div>
+        <div style="background:var(--bg1);border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div class="muted" style="font-size:.7rem;margin-bottom:2px">كود الخصم</div>
+            <div style="font-family:monospace;font-size:1.3rem;font-weight:900;letter-spacing:2px;color:var(--white)">MK4K</div>
+          </div>
+          <button class="btn sm" onclick="copyCode('MK4K',this)">📋 نسخ</button>
+        </div>
+      </div>
+
+      <div class="card" style="border-top:4px solid #4A7C59">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+          <div>
+            <div style="font-weight:900;font-size:1rem">كالو 🥗</div>
+            <div class="muted" style="font-size:.78rem;margin-top:2px">وجبات صحية جاهزة مخصصة يومياً</div>
+          </div>
+          <span class="badge green">خصم ١٠٪</span>
+        </div>
+        <div style="font-size:.82rem;color:var(--muted);margin-bottom:12px">اطلبي وجباتك الصحية من كالو — أكل صحي ومرشّح يوصل لباب البيت.</div>
+        <div style="background:var(--bg1);border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div class="muted" style="font-size:.7rem;margin-bottom:2px">كود الخصم</div>
+            <div style="font-family:monospace;font-size:1.3rem;font-weight:900;letter-spacing:2px;color:var(--white)">R10AGD</div>
+          </div>
+          <button class="btn sm" onclick="copyCode('R10AGD',this)">📋 نسخ</button>
+        </div>
+      </div>
+
+      <div class="card" style="border-top:4px solid #e91e8c">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+          <div>
+            <div style="font-weight:900;font-size:1rem">نايس ون 🛍️</div>
+            <div class="muted" style="font-size:.78rem;margin-top:2px">منتجات تجميل وعناية متنوعة وأصلية</div>
+          </div>
+          <span class="badge" style="background:#fce4ec;color:#c62878;border:1px solid #e91e8c">خصم خاص</span>
+        </div>
+        <div style="font-size:.82rem;color:var(--muted);margin-bottom:12px">تسوّقي من نايس ون — منتجات تجميل وعناية أصلية بسعر أحسن.</div>
+        <div style="background:var(--bg1);border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div class="muted" style="font-size:.7rem;margin-bottom:2px">كود الخصم</div>
+            <div style="font-family:monospace;font-size:1.3rem;font-weight:900;letter-spacing:2px;color:var(--white)">GJ488</div>
+          </div>
+          <button class="btn sm" onclick="copyCode('GJ488',this)">📋 نسخ</button>
+        </div>
+      </div>
+
+    </div>
   </div>
 
   <!-- الإعدادات -->
@@ -175,6 +257,7 @@ function go(p,el){
   if(p==='dash')loadDash();if(p==='trn')loadTrainees();if(p==='lib')loadLib();
 }
 function closeM(id){document.getElementById(id).classList.remove('open');}
+function copyCode(code,btn){navigator.clipboard.writeText(code).then(()=>{const t=btn.textContent;btn.textContent='✓ تم النسخ';setTimeout(()=>btn.textContent=t,2000);});}
 
 // ===== اللوحة =====
 async function loadDash(){
