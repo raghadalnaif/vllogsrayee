@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS trainees (
   carb_g INTEGER DEFAULT 0,
   fat_g INTEGER DEFAULT 0,
   password_plain TEXT DEFAULT NULL,
+  coach_note TEXT DEFAULT NULL,
   active INTEGER DEFAULT 1,
   created_at TEXT
 );
@@ -91,8 +92,18 @@ CREATE TABLE IF NOT EXISTS calorie_logs (
   created_at TEXT
 );
 
+CREATE TABLE IF NOT EXISTS workout_sessions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  trainee_id INTEGER NOT NULL,
+  plan_day_id INTEGER,
+  session_date TEXT NOT NULL,
+  completed_at TEXT,
+  duration_min INTEGER DEFAULT 0
+);
+
 CREATE INDEX IF NOT EXISTS idx_wl_trainee_date ON workout_logs(trainee_id, log_date);
 CREATE INDEX IF NOT EXISTS idx_cl_trainee_date ON calorie_logs(trainee_id, log_date);
+CREATE INDEX IF NOT EXISTS idx_ws_trainee_date ON workout_sessions(trainee_id, session_date);
 `);
 
 // ترقية قواعد بيانات قديمة (أُنشئت قبل إضافة أعمدة حاسبة السعرات)
@@ -111,8 +122,8 @@ addColIfMissing('protein_g', 'INTEGER DEFAULT 0');
 addColIfMissing('carb_g', 'INTEGER DEFAULT 0');
 addColIfMissing('fat_g', 'INTEGER DEFAULT 0');
 addColIfMissing('password_plain', 'TEXT DEFAULT NULL');
+addColIfMissing('coach_note', 'TEXT DEFAULT NULL');
 
-// ===== زرع مكتبة تمارين كاملة (مرة واحدة فقط) =====
 const EXERCISE_LIBRARY = [
   // غلوتس
   { name: 'هيب ثرست', target_muscle: 'غلوتس', notes: 'ضعي الكتفين على بنش والقدمين على الأرض، ادفعي الحوض للأعلى حتى الاستقامة الكاملة مع شد الغلوتس في القمة.' },
@@ -170,6 +181,61 @@ if (!seeded) {
   });
   seedAll();
   console.log(`✅ تم زرع مكتبة تمارين جاهزة (${EXERCISE_LIBRARY.length} تمرين) — تقدرين تضيفين GIF/فيديو لأي تمرين من لوحة الإدارة.`);
+}
+
+// ===== إضافة روابط فيديو التكنيك لمكتبة التمارين (مرة واحدة — بعد زرع المكتبة) =====
+const EXERCISE_VIDEOS = [
+  { name: 'هيب ثرست',                      url: 'https://www.youtube.com/results?search_query=hip+thrust+glute+technique+form' },
+  { name: 'دونكي كيك',                      url: 'https://www.youtube.com/results?search_query=donkey+kick+glute+exercise+technique' },
+  { name: 'غلوت بريدج',                     url: 'https://www.youtube.com/results?search_query=glute+bridge+exercise+proper+form' },
+  { name: 'كيك باك بالكيبل',               url: 'https://www.youtube.com/results?search_query=cable+kickback+glute+technique' },
+  { name: 'سكوات سومو',                     url: 'https://www.youtube.com/results?search_query=sumo+squat+technique+form' },
+  { name: 'ديدليفت مستقيم الأرجل',         url: 'https://www.youtube.com/results?search_query=Romanian+deadlift+RDL+technique+form' },
+  { name: 'سكوات خلفي (باربل)',            url: 'https://www.youtube.com/results?search_query=barbell+back+squat+technique+form' },
+  { name: 'فاير هايدرنت',                   url: 'https://www.youtube.com/results?search_query=fire+hydrant+exercise+glute+technique' },
+  { name: 'سكوات',                          url: 'https://www.youtube.com/results?search_query=squat+proper+form+technique' },
+  { name: 'لانجز',                          url: 'https://www.youtube.com/results?search_query=lunges+exercise+proper+form+technique' },
+  { name: 'ليغ بريس',                       url: 'https://www.youtube.com/results?search_query=leg+press+machine+proper+form+technique' },
+  { name: 'ليغ إكستنشن',                    url: 'https://www.youtube.com/results?search_query=leg+extension+machine+technique+form' },
+  { name: 'ليغ كيرل',                       url: 'https://www.youtube.com/results?search_query=leg+curl+machine+technique+hamstring' },
+  { name: 'سبليت سكوات بلغاري',            url: 'https://www.youtube.com/results?search_query=Bulgarian+split+squat+technique+form' },
+  { name: 'رفع الكعبين (كاف ريز)',         url: 'https://www.youtube.com/results?search_query=calf+raise+technique+form' },
+  { name: 'ستيب أب',                        url: 'https://www.youtube.com/results?search_query=step+up+exercise+technique+form' },
+  { name: 'لات بُل داون',                   url: 'https://www.youtube.com/results?search_query=lat+pulldown+technique+proper+form' },
+  { name: 'سحب جالس (سيتد رو)',            url: 'https://www.youtube.com/results?search_query=seated+cable+row+technique+form' },
+  { name: 'تجديف منحني (بنت أوفر رو)',     url: 'https://www.youtube.com/results?search_query=bent+over+row+technique+proper+form' },
+  { name: 'ديدليفت',                        url: 'https://www.youtube.com/results?search_query=deadlift+technique+proper+form' },
+  { name: 'عقلة بمساعدة (بُل أب)',         url: 'https://www.youtube.com/results?search_query=assisted+pull+up+technique+form' },
+  { name: 'سوبرمان',                        url: 'https://www.youtube.com/results?search_query=superman+exercise+lower+back+technique' },
+  { name: 'فيس بُل',                        url: 'https://www.youtube.com/results?search_query=face+pull+cable+technique+form+shoulder' },
+  { name: 'تجديف بدمبل بيد واحدة',         url: 'https://www.youtube.com/results?search_query=single+arm+dumbbell+row+technique+form' },
+  { name: 'بايسبس كيرل',                   url: 'https://www.youtube.com/results?search_query=bicep+curl+dumbbell+technique+form' },
+  { name: 'ترايسبس بُش داون',              url: 'https://www.youtube.com/results?search_query=tricep+pushdown+cable+technique+form' },
+  { name: 'هامر كيرل',                      url: 'https://www.youtube.com/results?search_query=hammer+curl+dumbbell+technique+form' },
+  { name: 'ترايسبس إكستنشن خلف الرأس',    url: 'https://www.youtube.com/results?search_query=overhead+tricep+extension+dumbbell+technique' },
+  { name: 'شولدر بريس',                     url: 'https://www.youtube.com/results?search_query=dumbbell+shoulder+press+technique+form' },
+  { name: 'رفرفة جانبية (لاترال ريز)',     url: 'https://www.youtube.com/results?search_query=lateral+raise+dumbbell+technique+form' },
+  { name: 'بنش بريس بالدمبل',              url: 'https://www.youtube.com/results?search_query=dumbbell+bench+press+technique+form' },
+  { name: 'ضغط (بوش أب)',                  url: 'https://www.youtube.com/results?search_query=push+up+proper+form+technique' },
+  { name: 'بلانك',                          url: 'https://www.youtube.com/results?search_query=plank+proper+form+core+technique' },
+  { name: 'كرنش',                           url: 'https://www.youtube.com/results?search_query=crunch+ab+exercise+proper+form+technique' },
+  { name: 'رفع الأرجل معلق',               url: 'https://www.youtube.com/results?search_query=hanging+leg+raise+technique+form+abs' },
+  { name: 'روسيان تويست',                   url: 'https://www.youtube.com/results?search_query=Russian+twist+exercise+technique+form' },
+  { name: 'ماونتن كلايمر',                  url: 'https://www.youtube.com/results?search_query=mountain+climber+exercise+technique+form' },
+  { name: 'بلانك جانبي',                    url: 'https://www.youtube.com/results?search_query=side+plank+proper+form+technique+core' },
+  { name: 'بايسكل كرنش',                   url: 'https://www.youtube.com/results?search_query=bicycle+crunch+proper+form+technique+abs' },
+  { name: 'ديد باغ',                        url: 'https://www.youtube.com/results?search_query=dead+bug+exercise+core+technique+form' },
+];
+
+const videosSeeded = db.prepare("SELECT value FROM meta WHERE key='exercise_videos_seeded'").get();
+if (!videosSeeded) {
+  const updateVid = db.prepare("UPDATE exercises SET media_url=? WHERE name=? AND (media_url='' OR media_url IS NULL)");
+  const seedVids = db.transaction(() => {
+    EXERCISE_VIDEOS.forEach(e => updateVid.run(e.url, e.name));
+    db.prepare("INSERT INTO meta (key,value) VALUES ('exercise_videos_seeded','1')").run();
+  });
+  seedVids();
+  console.log('✅ تم ربط روابط يوتيوب بجميع التمارين في المكتبة.');
 }
 
 // إنشاء حساب إدارة افتراضي عند أول تشغيل

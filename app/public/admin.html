@@ -184,12 +184,14 @@ async function loadTrainees(){
             ${t.status==='active'?`<span class="badge green">نشطة</span>`:`<span class="badge red">منتهية</span>`}</div>
           <div class="muted">@${esc(t.username)} • 🔑 ${esc(t.password_plain||'—')} • ${t.days_left} يوم متبقي • ينتهي ${t.end_date}</div>
           <div class="muted">${t.daily_calorie_goal||2000} سعرة ${t.protein_g?`• بروتين ${t.protein_g}g • كارب ${t.carb_g}g • دهون ${t.fat_g}g`:''}</div>
+          ${t.coach_note?`<div style="margin-top:6px;padding:6px 10px;background:#e8f5ec;border-radius:8px;font-size:.8rem;border-right:3px solid var(--gold)">📌 ${esc(t.coach_note)}</div>`:''}
         </div>
       </div>
       <div class="row" style="margin-top:12px">
         <button class="btn sm" onclick="openPlan(${t.id},'${esc(t.name)}')">📋 الجدول</button>
         <button class="btn ghost sm" onclick="openReport(${t.id},'${esc(t.name)}')">📈 التقرير</button>
         <button class="btn ghost sm" onclick="openEditTrainee(${t.id})">✏️ تعديل</button>
+        <button class="btn ghost sm" onclick="noteT(${t.id})">📌 رسالة</button>
         <button class="btn ghost sm" onclick="copyCreds(${t.id})">📋 نسخ الدخول</button>
         <button class="btn ghost sm" onclick="extendT(${t.id})">+ تمديد</button>
         ${t.active?`<button class="btn ghost sm" onclick="patchT(${t.id},{action:'stop'})">إيقاف</button>`
@@ -297,6 +299,12 @@ function copyCreds(id){
     .catch(()=>toast('تعذّر النسخ — انسخي يدوياً',true));
 }
 async function patchT(id,body){const r=await api('/api/admin/trainees/'+id,{method:'PATCH',body});if(r){toast('تم ✓');loadTrainees();}}
+async function noteT(id){
+  const t=TRAINEES.find(x=>x.id===id);if(!t)return;
+  const note=prompt('رسالة للمتدربة (تظهر لها في صفحتها الرئيسية):',t.coach_note||'');
+  if(note===null)return;
+  await patchT(id,{action:'coach_note',note});
+}
 function extendT(id){const m=prompt('كم شهر تمديد؟ (1 / 3 / 6 / 12)','1');if(m)patchT(id,{action:'extend',months:m});}
 function resetPass(id){const p=prompt('كلمة المرور الجديدة للمشتركة:');if(p)patchT(id,{action:'password',password:p});}
 async function delT(id,name){if(!confirm('حذف '+name+' وكل بياناتها نهائياً؟'))return;const r=await api('/api/admin/trainees/'+id,{method:'DELETE'});if(r){toast('تم الحذف');loadTrainees();}}
@@ -304,12 +312,22 @@ async function delT(id,name){if(!confirm('حذف '+name+' وكل بياناته�
 // ===== مكتبة التمارين =====
 async function loadLib(){
   EXERCISES=await api('/api/admin/exercises')||[];
-  document.getElementById('libList').innerHTML=EXERCISES.length? EXERCISES.map(e=>`
-    <div class="list-item">
-      ${e.media_url?`<img class="ex-thumb" src="${esc(e.media_url)}" alt="">`:'<div class="ex-thumb"></div>'}
+  document.getElementById('libList').innerHTML=EXERCISES.length? EXERCISES.map(e=>{
+    const isYT=e.media_url&&!(/\.(gif|jpg|jpeg|png|webp|mp4|webm|mov)$/i.test(e.media_url));
+    const isImg=e.media_url&&(/\.(gif|jpg|jpeg|png|webp)$/i.test(e.media_url));
+    const media=isYT
+      ?`<a href="${esc(e.media_url)}" target="_blank" rel="noopener"
+          style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:#ff0000;
+          color:#fff;border-radius:8px;font-size:.72rem;font-weight:700;text-decoration:none">
+          <i class="fab fa-youtube"></i> يوتيوب</a>`
+      :isImg?`<img class="ex-thumb" src="${esc(e.media_url)}" alt="">`
+      :'<div class="ex-thumb"></div>';
+    return `<div class="list-item">
+      ${media}
       <div class="info"><div class="nm">${esc(e.name)}</div><div class="meta">${esc(e.target_muscle||'—')}</div></div>
       <button class="btn danger sm" onclick="delEx(${e.id})">حذف</button>
-    </div>`).join('') : '<div class="empty">المكتبة فاضية — أضيفي أول تمرين</div>';
+    </div>`;
+  }).join('') : '<div class="empty">المكتبة فاضية — أضيفي أول تمرين</div>';
 }
 async function addExercise(){
   const name=document.getElementById('exName').value.trim();

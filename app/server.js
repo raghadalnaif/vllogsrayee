@@ -101,7 +101,7 @@ app.get('/api/admin/stats', requireAuth, requireAdmin, (req, res) => {
 
 // ===== الإدارة: المشتركات =====
 app.get('/api/admin/trainees', requireAuth, requireAdmin, (req, res) => {
-  const rows = db.prepare(`SELECT id,name,username,password_plain,start_date,end_date,daily_calorie_goal,
+  const rows = db.prepare(`SELECT id,name,username,password_plain,coach_note,start_date,end_date,daily_calorie_goal,
     weight_kg,height_cm,age,gender,activity_level,deficit_pct,macro_style,protein_g,carb_g,fat_g,active FROM trainees ORDER BY id DESC`).all();
   const t = today();
   rows.forEach(r => {
@@ -154,6 +154,8 @@ app.patch('/api/admin/trainees/:id', requireAuth, requireAdmin, (req, res) => {
   } else if (action === 'password' && password) {
     db.prepare('UPDATE trainees SET password_hash=?, password_plain=? WHERE id=?')
       .run(bcrypt.hashSync(password, 10), password, id);
+  } else if (action === 'coach_note') {
+    db.prepare('UPDATE trainees SET coach_note=? WHERE id=?').run(req.body.note || null, id);
   } else if (action === 'edit') {
     const { macro_style, protein_g, carb_g, fat_g } = req.body;
     db.prepare(`UPDATE trainees SET
@@ -311,7 +313,8 @@ app.get('/api/trainee/home', requireAuth, requireTrainee, (req, res) => {
     calorieGoal: t.daily_calorie_goal, caloriesToday: cal.c,
     proteinGoal: t.protein_g || 0, carbGoal: t.carb_g || 0, fatGoal: t.fat_g || 0,
     proteinToday: Math.round(cal.p), carbToday: Math.round(cal.cb), fatToday: Math.round(cal.f),
-    setsToday, hasPlan: daysCount > 0
+    setsToday, hasPlan: daysCount > 0,
+    coachNote: t.coach_note || null
   });
 });
 
@@ -351,6 +354,13 @@ app.post('/api/trainee/calories', requireAuth, requireTrainee, (req, res) => {
 app.get('/api/trainee/calories', requireAuth, requireTrainee, (req, res) => {
   const date = req.query.date || today();
   res.json(db.prepare('SELECT * FROM calorie_logs WHERE trainee_id=? AND log_date=? ORDER BY id').all(req.session.uid, date));
+});
+
+app.post('/api/trainee/complete-workout', requireAuth, requireTrainee, (req, res) => {
+  const { plan_day_id, duration_min } = req.body;
+  db.prepare(`INSERT INTO workout_sessions (trainee_id,plan_day_id,session_date,completed_at,duration_min)
+    VALUES (?,?,?,?,?)`).run(req.session.uid, plan_day_id || null, today(), new Date().toISOString(), parseInt(duration_min) || 0);
+  res.json({ ok: true });
 });
 
 app.delete('/api/trainee/calories/:id', requireAuth, requireTrainee, (req, res) => {

@@ -5,17 +5,94 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>متابعتي — vllogsraye</title>
 <link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* ===== بوست‑كامب: بطاقات التمارين ===== */
+.ex-card{border:1.5px solid var(--border);border-radius:16px;margin:10px 0;overflow:hidden;transition:border-color .2s,background .2s}
+.ex-card.ex-done{border-color:#4A7C59;background:#f0faf3}
+.ex-header{display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;user-select:none}
+.ex-status{min-width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:800;background:var(--bg1);color:var(--gold);flex-shrink:0}
+.ex-card.ex-done .ex-status{background:#4A7C59;color:#fff;font-size:1.1rem}
+.ex-main{flex:1;min-width:0}
+.ex-name{font-weight:800;font-size:.98rem}
+.ex-summary{font-size:.78rem;color:var(--muted);margin-top:2px}
+.muscle-chip{display:inline-block;background:var(--gold);color:#fff;border-radius:20px;padding:2px 10px;font-size:.7rem;margin-top:3px}
+.ex-chevron{font-size:.8rem;color:var(--muted);flex-shrink:0;transition:transform .2s}
+.ex-body{padding:0 16px 14px;display:none}
+.ex-body.open{display:block}
+.technique-note{background:#f8f9fa;border-right:3px solid var(--gold);padding:10px 12px;border-radius:8px;font-size:.82rem;color:var(--muted);margin-bottom:10px;line-height:1.6}
+/* ===== سطور الستات ===== */
+.sets-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.set-row{display:flex;align-items:center;gap:8px;background:var(--bg0);border-radius:10px;padding:8px 10px}
+.set-row.done{background:#e8f5ec}
+.set-num{font-weight:700;font-size:.82rem;color:var(--muted);min-width:30px;flex-shrink:0}
+.input.mini{width:64px!important;padding:6px 8px;font-size:.85rem;text-align:center;flex-shrink:0}
+.check-btn{width:38px;height:38px;border-radius:50%;background:var(--gold);color:#fff;border:none;font-size:1.1rem;font-weight:900;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;line-height:1}
+.set-done-info{flex:1;font-size:.85rem;font-weight:700;color:#4A7C59}
+.set-check-icon{color:#4A7C59;font-size:1.2rem;font-weight:900}
+/* ===== شريط الراحة ===== */
+.rest-bar{position:fixed;bottom:0;right:0;left:0;background:var(--gold);color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;z-index:1000;box-shadow:0 -4px 20px rgba(0,0,0,.15)}
+.rest-bar.hidden{display:none}
+.rest-count{font-size:1.6rem;font-weight:900;font-variant-numeric:tabular-nums}
+.rest-skip{background:rgba(255,255,255,.22);border:none;color:#fff;padding:8px 18px;border-radius:10px;font-size:.9rem;cursor:pointer;font-weight:700;font-family:inherit}
+/* ===== تقدم اليوم ===== */
+.day-progress{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:.8rem;color:var(--muted)}
+.day-prog-bar{flex:1;height:5px;background:var(--border);border-radius:4px;overflow:hidden}
+.day-prog-bar i{display:block;height:100%;background:var(--gold);transition:width .4s}
+/* ===== رسالة المدربة ===== */
+.coach-note{background:linear-gradient(135deg,#e8f5ec,#d4edda);border-right:4px solid var(--gold);border-radius:14px;padding:14px 16px;margin-bottom:14px}
+.coach-note .from{font-size:.78rem;color:var(--gold);font-weight:800;margin-bottom:4px}
+.coach-note .msg{font-size:.9rem;line-height:1.7;color:var(--white)}
+/* ===== زر إتمام اليوم ===== */
+.complete-day-btn{display:none;width:100%;padding:14px;background:#4A7C59;color:#fff;border:none;border-radius:14px;font-size:1rem;font-weight:800;font-family:inherit;margin-top:16px;cursor:pointer}
+.complete-day-btn.visible{display:block}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.04)}100%{transform:scale(1)}}
+.pop{animation:pop .35s ease}
+/* ===== قائمة الوجبات ===== */
+.measure-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0 16px}
+.measure-card{background:var(--bg1);border-radius:12px;padding:12px;text-align:center}
+.measure-card .mic{font-size:1.8rem;margin-bottom:4px}
+.measure-card .mam{font-weight:800;font-size:.85rem;color:var(--gold)}
+.measure-card .mde{font-size:.75rem;color:var(--muted);margin-top:2px;line-height:1.4}
+.meal-section{margin-bottom:12px}
+.meal-header{display:flex;align-items:center;gap:10px;padding:13px 16px;background:var(--gold);color:#fff;border-radius:14px;cursor:pointer;transition:border-radius .2s}
+.meal-header.open{border-radius:14px 14px 0 0}
+.meal-header .mh-icon{font-size:1.4rem}
+.meal-header .mh-info{flex:1}
+.meal-header h4{margin:0;font-size:.95rem}
+.meal-header small{opacity:.85;font-size:.78rem}
+.meal-options{border:1.5px solid var(--gold);border-top:none;border-radius:0 0 14px 14px;display:none}
+.meal-options.open{display:block}
+.meal-opt{padding:14px;border-top:1px solid var(--border)}
+.meal-opt:first-child{border-top:none}
+.meal-opt-name{font-weight:800;font-size:.9rem;margin-bottom:8px}
+.macro-chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.macro-chip{padding:3px 10px;border-radius:20px;font-size:.73rem;font-weight:700}
+.chip-p{background:#e8f5ec;color:#4A7C59}
+.chip-c{background:#fff3e0;color:#e68a00}
+.chip-f{background:#fce4ec;color:#c62828}
+.chip-k{background:#e3f2fd;color:#1565c0}
+.meal-ingredients{list-style:none;padding:0;margin:0;font-size:.82rem;color:var(--muted);line-height:1.9}
+.meal-ingredients li{padding-right:14px;position:relative}
+.meal-ingredients li::before{content:'•';position:absolute;right:0;color:var(--gold)}
+.meal-recipe{background:#f8f9fa;border-radius:8px;padding:8px 12px;font-size:.8rem;color:var(--muted);margin-top:6px;line-height:1.6}
+.meal-recipe::before{content:'🍳 '}
+.meal-note-tip{font-size:.78rem;margin-top:6px;padding:6px 10px;background:#f0faf3;border-radius:8px;line-height:1.5}
+.meal-log-btn{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:8px 16px;background:var(--gold);color:#fff;border:none;border-radius:10px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit}
+.tip-card{background:var(--bg1);border-radius:10px;padding:10px 14px;font-size:.82rem;color:var(--muted);line-height:1.6;margin-bottom:8px}
+</style>
 </head>
 <body>
 <div class="topbar">
   <div class="logo">vllogsraye<small>متابعتي</small></div>
   <button class="btn ghost sm" onclick="logout()">خروج</button>
 </div>
-<div class="tabs">
-  <button class="tab on" onclick="go('home',this)">🏠 اليوم</button>
-  <button class="tab" onclick="go('plan',this)">📋 جدولي</button>
-  <button class="tab" onclick="go('cal',this)">🍎 سعراتي</button>
-  <button class="tab" onclick="go('prog',this)">📈 تقدمي</button>
+<div class="tabs" style="overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch">
+  <button class="tab on"  onclick="go('home',this)">🏠 اليوم</button>
+  <button class="tab"     onclick="go('plan',this)">💪 تمريني</button>
+  <button class="tab"     onclick="go('meals',this)">🥗 وجباتي</button>
+  <button class="tab"     onclick="go('cal',this)">🍎 سعراتي</button>
+  <button class="tab"     onclick="go('prog',this)">📈 تقدمي</button>
 </div>
 
 <div class="wrap">
@@ -24,11 +101,18 @@
     <div id="homeBody"><div class="empty">جاري التحميل...</div></div>
   </div>
 
-  <!-- الجدول -->
+  <!-- تمريني -->
   <div class="page" id="p-plan">
     <h2 class="page-h">جدولي التدريبي</h2>
-    <p class="page-sub">سجّلي وزن وعدد تكرارات كل ست — تقريرك يوصل المدربة تلقائياً</p>
+    <p class="page-sub">سجّلي الوزن والتكرارات لكل ست — تقريرك يصل المدربة تلقائياً</p>
     <div id="planBody"><div class="empty">جاري التحميل...</div></div>
+  </div>
+
+  <!-- وجباتي -->
+  <div class="page" id="p-meals">
+    <h2 class="page-h">قائمة وجباتي</h2>
+    <p class="page-sub">وجبات محسوبة السعرات — اضغطي + لتسجيلها مباشرة في السعرات</p>
+    <div id="mealsBody"></div>
   </div>
 
   <!-- السعرات -->
@@ -59,28 +143,42 @@
   </div>
 </div>
 
+<!-- شريط مؤقت الراحة -->
+<div class="rest-bar hidden" id="rest-bar">
+  <div>
+    <div style="font-size:.78rem;opacity:.85;margin-bottom:2px">⏱️ وقت الراحة</div>
+    <div class="rest-count" id="rest-count">01:30</div>
+  </div>
+  <button class="rest-skip" onclick="skipRest()">خلصت ✓</button>
+</div>
+
 <div class="toast" id="toast"></div>
 <script src="/app-common.js"></script>
 <script>
-let HOME=null;
+let HOME = null, PLAN_LOGS = {}, PLAN_DATA = null;
+let restInterval = null, workoutStart = null;
 
-async function go(p,el){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+// ===== التنقل =====
+async function go(p, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
   el.classList.add('on');
-  document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
-  document.getElementById('p-'+p).classList.add('on');
-  if(p==='home') loadHome();
-  if(p==='plan') loadPlan();
-  if(p==='cal') loadCalories();
-  if(p==='prog') loadProgress();
+  document.querySelectorAll('.page').forEach(x => x.classList.remove('on'));
+  document.getElementById('p-' + p).classList.add('on');
+  if (p === 'home')  loadHome();
+  if (p === 'plan')  loadPlan();
+  if (p === 'meals') renderMeals();
+  if (p === 'cal')   loadCalories();
+  if (p === 'prog')  loadProgress();
 }
 
-async function loadHome(){
-  const d=await api('/api/trainee/home');
-  if(!d) return;
-  HOME=d;
-  const calPct=d.calorieGoal? Math.min(100,Math.round(d.caloriesToday/d.calorieGoal*100)):0;
-  document.getElementById('homeBody').innerHTML=`
+// ===== الصفحة الرئيسية =====
+async function loadHome() {
+  const d = await api('/api/trainee/home');
+  if (!d) return;
+  HOME = d;
+  const calPct = d.calorieGoal ? Math.min(100, Math.round(d.caloriesToday / d.calorieGoal * 100)) : 0;
+  document.getElementById('homeBody').innerHTML = `
+    ${d.coachNote ? `<div class="coach-note"><div class="from">📌 رسالة من مدربتك</div><div class="msg">${esc(d.coachNote)}</div></div>` : ''}
     <div class="card" style="background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;border:none">
       <div style="font-size:.9rem;opacity:.9">أهلاً ${esc(d.name)} 👋</div>
       <div style="font-size:2.4rem;font-weight:900;margin-top:6px">${d.daysLeft} <span style="font-size:1rem;font-weight:600">يوم متبقي</span></div>
@@ -95,120 +193,382 @@ async function loadHome(){
       <div style="font-weight:700;margin-bottom:4px">🍎 هدف السعرات اليومي</div>
       <div class="muted">${d.caloriesToday} من ${d.calorieGoal} سعرة</div>
       <div class="bar"><i style="width:${calPct}%"></i></div>
-      ${(d.proteinGoal||d.carbGoal||d.fatGoal)?`
+      ${(d.proteinGoal || d.carbGoal || d.fatGoal) ? `
       <div style="margin-top:14px;font-weight:700;margin-bottom:6px">📊 الماكروز اليوم</div>
       ${[
-        {label:'بروتين',today:d.proteinToday,goal:d.proteinGoal,color:'#4A7C59'},
-        {label:'كارب',today:d.carbToday,goal:d.carbGoal,color:'#7CB87A'},
-        {label:'دهون',today:d.fatToday,goal:d.fatGoal,color:'#B8A44A'},
-      ].map(m=>{
-        const pct=m.goal?Math.min(100,Math.round(m.today/m.goal*100)):0;
+        {label:'بروتين', today:d.proteinToday, goal:d.proteinGoal, color:'#4A7C59'},
+        {label:'كارب',   today:d.carbToday,    goal:d.carbGoal,    color:'#7CB87A'},
+        {label:'دهون',   today:d.fatToday,     goal:d.fatGoal,     color:'#B8A44A'},
+      ].map(m => {
+        const pct = m.goal ? Math.min(100, Math.round(m.today / m.goal * 100)) : 0;
         return `<div style="margin-top:8px">
-          <div style="display:flex;justify-content:space-between" class="muted">
-            <span>${m.label}</span><span>${m.today}g / ${m.goal||'—'}g</span>
-          </div>
+          <div style="display:flex;justify-content:space-between" class="muted"><span>${m.label}</span><span>${m.today}g / ${m.goal||'—'}g</span></div>
           <div class="bar"><i style="width:${pct}%;background:${m.color}"></i></div>
         </div>`;
-      }).join('')}`:''}
+      }).join('')}` : ''}
     </div>
     ${d.hasPlan
-      ? `<button class="btn full" style="margin-top:14px" onclick="document.querySelectorAll('.tab')[1].click()">📋 ابدئي تمرين اليوم</button>`
-      : `<div class="card"><div class="empty">لسه ما تم إسناد جدول لك — راسلي المدربة 💬</div></div>`}
-  `;
+      ? `<button class="btn full" style="margin-top:14px" onclick="document.querySelectorAll('.tab')[1].click()">💪 ابدئي تمرين اليوم</button>`
+      : `<div class="card"><div class="empty">لسه ما تم إسناد جدول لك — راسلي المدربة 💬</div></div>`}`;
 }
 
-async function loadPlan(){
-  const days=await api('/api/trainee/plan');
-  const box=document.getElementById('planBody');
-  if(!days || !days.length){box.innerHTML='<div class="card"><div class="empty">لا يوجد جدول بعد</div></div>';return;}
-  const logs=await api('/api/trainee/logs');
-  const doneCount={};
-  (logs||[]).forEach(l=>{doneCount[l.plan_exercise_id]=(doneCount[l.plan_exercise_id]||0)+1;});
-  box.innerHTML=days.map(d=>`
-    <div class="card">
+// ===== الجدول (بوست‑كامب) =====
+async function loadPlan() {
+  if (!workoutStart) workoutStart = Date.now();
+  const days = await api('/api/trainee/plan');
+  const box = document.getElementById('planBody');
+  if (!days || !days.length) {
+    box.innerHTML = '<div class="card"><div class="empty">لا يوجد جدول بعد</div></div>';
+    return;
+  }
+  const logs = await api('/api/trainee/logs') || [];
+  PLAN_LOGS = {};
+  logs.forEach(l => {
+    if (!PLAN_LOGS[l.plan_exercise_id]) PLAN_LOGS[l.plan_exercise_id] = [];
+    PLAN_LOGS[l.plan_exercise_id].push(l);
+  });
+  PLAN_DATA = days;
+  box.innerHTML = days.map(d => renderDay(d)).join('');
+}
+
+function renderDay(d) {
+  const totalSets = d.exercises.reduce((s, e) => s + (e.sets || 3), 0);
+  const doneSets  = d.exercises.reduce((s, e) => s + Math.min(e.sets || 3, (PLAN_LOGS[e.id] || []).length), 0);
+  const pct = totalSets ? Math.round(doneSets / totalSets * 100) : 0;
+  const complete = doneSets >= totalSets && totalSets > 0;
+  return `<div class="card" id="day-${d.id}" style="${complete ? 'border-color:#4A7C59' : ''}">
+    <div style="display:flex;justify-content:space-between;align-items:center">
       <div style="font-weight:800;font-size:1.05rem">اليوم ${d.day_index}: ${esc(d.title)}</div>
-      ${d.goal?`<div class="muted" style="margin-bottom:8px">${esc(d.goal)}</div>`:''}
-      ${d.exercises.length? d.exercises.map(ex=>exerciseCard(ex,doneCount[ex.id]||0)).join('') : '<div class="muted">لا تمارين في هذا اليوم</div>'}
-    </div>`).join('');
-}
-
-function exerciseCard(ex,done){
-  const sets=ex.sets||3;
-  return `<div style="border:1px solid var(--border);border-radius:14px;padding:14px;margin-top:12px">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-      <div style="font-weight:700">${esc(ex.name)}</div>
-      ${done>=sets?'<span class="badge green">✓ مكتمل</span>':`<span class="badge gold">${done}/${sets} ست</span>`}
+      ${complete ? '<span class="badge green">✓ مكتمل</span>' : `<span class="badge gold">${pct}%</span>`}
     </div>
-    ${ex.target_muscle?`<div class="muted">🎯 ${esc(ex.target_muscle)}</div>`:''}
-    <div class="muted">${sets} مجموعات × ${esc(ex.reps||'')} تكرار ${ex.target_weight?'• وزن مقترح: '+esc(ex.target_weight):''}</div>
-    ${ex.media_url? mediaTag(ex.media_url):''}
-    <div class="row" style="margin-top:10px">
-      <div class="field" style="margin:0"><label>الوزن (كجم)</label><input class="input" type="number" inputmode="decimal" id="w-${ex.id}"></div>
-      <div class="field" style="margin:0"><label>التكرارات</label><input class="input" type="number" inputmode="numeric" id="r-${ex.id}"></div>
+    ${d.goal ? `<div class="muted" style="margin-bottom:4px">${esc(d.goal)}</div>` : ''}
+    <div class="day-progress">
+      <span id="dp-text-${d.id}">${doneSets}/${totalSets} ست</span>
+      <div class="day-prog-bar"><i id="dp-bar-${d.id}" style="width:${pct}%"></i></div>
     </div>
-    <button class="btn sm full" style="margin-top:8px" onclick="logSet(${ex.id},${ex.exercise_id},${sets})">+ سجّلي ست</button>
+    <div style="margin-top:12px">
+      ${d.exercises.length ? d.exercises.map(ex => renderExercise(ex)).join('') : '<div class="muted">لا تمارين في هذا اليوم</div>'}
+    </div>
+    <button class="complete-day-btn ${complete ? 'visible' : ''}" id="done-btn-${d.id}" onclick="completeDay(${d.id})">
+      🎉 أنهيت تمرين اليوم — سجّلي إتمامه!
+    </button>
   </div>`;
 }
 
-function mediaTag(url){
-  if(/\.(mp4|webm|mov)$/i.test(url)) return `<video class="ex-media" src="${esc(url)}" controls muted playsinline></video>`;
-  return `<img class="ex-media" src="${esc(url)}" alt="تمرين" loading="lazy">`;
+function renderExercise(ex) {
+  const sets = ex.sets || 3;
+  const logs = PLAN_LOGS[ex.id] || [];
+  const done = logs.length >= sets;
+  const autoOpen = logs.length > 0 && !done;
+  return `<div class="ex-card ${done ? 'ex-done' : ''}" id="ex-${ex.id}">
+    <div class="ex-header" onclick="toggleEx(${ex.id})">
+      <div class="ex-status" id="ex-st-${ex.id}">${done ? '✓' : (logs.length + '/' + sets)}</div>
+      <div class="ex-main">
+        <div class="ex-name">${esc(ex.name)}</div>
+        <div class="ex-summary">${sets} مجموعات × ${esc(ex.reps || '')} تكرار${ex.target_weight ? ' • وزن مقترح: ' + esc(ex.target_weight) : ''}</div>
+        ${ex.target_muscle ? `<span class="muscle-chip">${esc(ex.target_muscle)}</span>` : ''}
+      </div>
+      <span class="ex-chevron" id="ex-chev-${ex.id}">${done ? '' : '▼'}</span>
+    </div>
+    <div class="ex-body ${autoOpen ? 'open' : ''}" id="ex-body-${ex.id}">
+      ${ex.notes ? `<div class="technique-note">📝 ${esc(ex.notes)}</div>` : ''}
+      ${ex.media_url ? mediaTag(ex.media_url) : ''}
+      <div class="sets-list">
+        ${Array.from({length: sets}, (_, i) => renderSetRow(ex, i + 1, logs[i])).join('')}
+      </div>
+    </div>
+  </div>`;
 }
 
-async function logSet(peId,exId,totalSets){
-  const w=document.getElementById('w-'+peId).value;
-  const r=document.getElementById('r-'+peId).value;
-  if(!w||!r){toast('أدخلي الوزن والتكرارات',true);return;}
-  const logs=await api('/api/trainee/logs');
-  const setNo=(logs||[]).filter(l=>l.plan_exercise_id===peId).length+1;
-  await api('/api/trainee/log',{method:'POST',body:{plan_exercise_id:peId,exercise_id:exId,set_number:setNo,weight:w,reps:r}});
-  toast('تم تسجيل الست ✓');
-  loadPlan();
+function renderSetRow(ex, setNum, log) {
+  if (log) {
+    return `<div class="set-row done" id="set-${ex.id}-${setNum}">
+      <span class="set-num">ست ${setNum}</span>
+      <span class="set-done-info">${log.weight > 0 ? log.weight + ' كجم × ' : ''}${log.reps} تكرار</span>
+      <span class="set-check-icon">✓</span>
+    </div>`;
+  }
+  return `<div class="set-row" id="set-${ex.id}-${setNum}">
+    <span class="set-num">ست ${setNum}</span>
+    <input class="input mini" type="number" inputmode="decimal" placeholder="كجم" id="w-${ex.id}-${setNum}">
+    <input class="input mini" type="number" inputmode="numeric" placeholder="تكرار" id="r-${ex.id}-${setNum}"
+      onkeydown="if(event.key==='Enter')logSet(${ex.id},${ex.exercise_id},${setNum},${ex.sets||3})">
+    <button class="check-btn" onclick="logSet(${ex.id},${ex.exercise_id},${setNum},${ex.sets||3})">✓</button>
+  </div>`;
 }
 
-async function loadCalories(){
-  const rows=await api('/api/trainee/calories');
-  const goal=HOME?HOME.calorieGoal:2000;
-  let kcal=0,prot=0,carb=0,fat=0;
+function toggleEx(exId) {
+  const body = document.getElementById('ex-body-' + exId);
+  const chev = document.getElementById('ex-chev-' + exId);
+  body.classList.toggle('open');
+  if (chev) chev.textContent = body.classList.contains('open') ? '▲' : '▼';
+}
+
+async function logSet(peId, exId, setNum, totalSets) {
+  const wEl = document.getElementById('w-' + peId + '-' + setNum);
+  const rEl = document.getElementById('r-' + peId + '-' + setNum);
+  const w = wEl ? wEl.value : '0';
+  const r = rEl ? rEl.value : '';
+  if (!r) { toast('أدخلي عدد التكرارات', true); return; }
+  await api('/api/trainee/log', {method:'POST', body:{plan_exercise_id:peId, exercise_id:exId, set_number:setNum, weight:w||0, reps:r}});
+  if (!PLAN_LOGS[peId]) PLAN_LOGS[peId] = [];
+  PLAN_LOGS[peId].push({weight:parseFloat(w)||0, reps:parseInt(r)});
+  // تحديث سطر الست بصرياً
+  const row = document.getElementById('set-' + peId + '-' + setNum);
+  if (row) {
+    row.className = 'set-row done';
+    row.innerHTML = `<span class="set-num">ست ${setNum}</span>
+      <span class="set-done-info">${parseFloat(w)>0 ? w+' كجم × ' : ''}${r} تكرار</span>
+      <span class="set-check-icon">✓</span>`;
+  }
+  const doneCount = PLAN_LOGS[peId].length;
+  const card = document.getElementById('ex-' + peId);
+  const status = document.getElementById('ex-st-' + peId);
+  if (doneCount >= totalSets) {
+    if (card) { card.classList.add('ex-done', 'pop'); setTimeout(()=>card.classList.remove('pop'),400); }
+    if (status) status.textContent = '✓';
+    const chev = document.getElementById('ex-chev-' + peId);
+    if (chev) chev.textContent = '';
+    toast('أحسنتِ! أكملتِ التمرين ✓');
+  } else {
+    if (status) status.textContent = doneCount + '/' + totalSets;
+  }
+  updateDayProgress();
+  startRestTimer(90);
+  if (HOME) HOME.setsToday = (HOME.setsToday || 0) + 1;
+}
+
+function updateDayProgress() {
+  if (!PLAN_DATA) return;
+  PLAN_DATA.forEach(d => {
+    const total = d.exercises.reduce((s,e)=>s+(e.sets||3),0);
+    const done  = d.exercises.reduce((s,e)=>s+Math.min(e.sets||3,(PLAN_LOGS[e.id]||[]).length),0);
+    const pct   = total ? Math.round(done/total*100) : 0;
+    const complete = done>=total && total>0;
+    const badge = document.querySelector('#day-'+d.id+' .badge');
+    if (badge) { badge.textContent = complete ? '✓ مكتمل' : pct+'%'; badge.className='badge '+(complete?'green':'gold'); }
+    const bar = document.getElementById('dp-bar-'+d.id);
+    if (bar) bar.style.width = pct+'%';
+    const txt = document.getElementById('dp-text-'+d.id);
+    if (txt) txt.textContent = done+'/'+total+' ست';
+    const btn = document.getElementById('done-btn-'+d.id);
+    if (btn) btn.classList.toggle('visible', complete);
+    const card = document.getElementById('day-'+d.id);
+    if (card) card.style.borderColor = complete ? '#4A7C59' : '';
+  });
+}
+
+async function completeDay(dayId) {
+  const dur = workoutStart ? Math.round((Date.now()-workoutStart)/60000) : 0;
+  await api('/api/trainee/complete-workout', {method:'POST', body:{plan_day_id:dayId, duration_min:dur}});
+  toast('🎉 أحسنتِ! سُجّل إتمام تمرين اليوم');
+  workoutStart = null;
+}
+
+// ===== مؤقت الراحة =====
+function startRestTimer(sec) {
+  clearInterval(restInterval);
+  const bar = document.getElementById('rest-bar');
+  const cnt = document.getElementById('rest-count');
+  bar.classList.remove('hidden');
+  let s = sec;
+  cnt.textContent = fmt(s);
+  restInterval = setInterval(()=>{ s--; cnt.textContent=fmt(s); if(s<=0) skipRest(); },1000);
+}
+function skipRest() { clearInterval(restInterval); document.getElementById('rest-bar').classList.add('hidden'); }
+function fmt(s) { return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
+
+function mediaTag(url) {
+  if (!url) return '';
+  if (/\.(mp4|webm|mov)$/i.test(url)) return `<video class="ex-media" src="${esc(url)}" controls muted playsinline></video>`;
+  if (/\.(gif|jpg|jpeg|png|webp)$/i.test(url)) return `<img class="ex-media" src="${esc(url)}" alt="تمرين" loading="lazy">`;
+  return `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer"
+    style="display:inline-flex;align-items:center;gap:7px;margin-top:10px;padding:9px 16px;
+    background:#ff0000;color:#fff;border-radius:11px;font-size:.82rem;font-weight:800;
+    text-decoration:none;font-family:inherit">
+    <i class="fab fa-youtube"></i> شاهدي تكنيك التمرين على يوتيوب</a>`;
+}
+
+// ===== قائمة الوجبات (من الحمية التفصيلية) =====
+const MEAL_PLAN = {
+  guide: [
+    {ic:'🤚',name:'راحة اليد',  am:'≈١٢٠–١٣٠غ', de:'بروتين مطبوخ\n(دجاج / لحم / سمك)'},
+    {ic:'🥤',name:'كوب',         am:'≈١٦٠غ',       de:'أرز أو برغل مطبوخ\nأو ١٥٠غ يوغرت'},
+    {ic:'🥄',name:'ملعقة صغيرة',am:'≈٥غ',          de:'زيت / زبدة\nطحينة / مكسرات مطحونة'},
+    {ic:'✊',name:'حفنة',        am:'≈٢٠–٣٠غ',     de:'مكسرات / بذور\n(لوز / جوز / كاجو)'},
+  ],
+  meals:[
+    {id:'b',ic:'🌅',title:'وجبة الإفطار',time:'الفترة الصباحية',range:'٣٣٠–٣٧٠ سعرة',
+     options:[
+      {name:'بيض + جبن قريش',p:30,c:14,f:18,k:335,
+       items:['٣ بيضات مسلوقة أو مقلية بملعقة صغيرة زيت زيتون','ربع كوب جبن قريش (كوتج شيز)','١ قطعة توست قمح + خيار وطماطم حرة'],
+       note:'✅ خيار ثابت ومشبع — البيض مصدر حديد جيد. أضيفي عصير ليمون على السلطة.'},
+      {name:'شوفان هناء بروتيني',p:26,c:40,f:11,k:365,
+       items:['٥٠غ شوفان هناء حبة كاملة (١ كوب جاف)','٣/٤ كوب يوغرت يوناني سادة ≈١٥٠غ','بيضة مسلوقة واحدة'],
+       recipe:'سخّني الشوفان بكوب ماء على النار حتى يتغلظ، شيليه وضيفي اليوغرت فوقه. زيّني بقرفة وبودرة كاكاو بدون سكر.',
+       note:'⭐ الأمثل قبل التمرين — كارب بطيء يعطيك طاقة للجيم.'},
+      {name:'لحم + خبز بر',p:28,c:21,f:14,k:322,
+       items:['راحة يد صغيرة لحم مفروم ٩٥٪ مطبوخ بملعقة صغيرة زيت','١ قطعة خبز بر أو ٢ قطعة توست قمح','طماطم + فلفل حلو أو شرائح خيار + عصير ليمون'],
+       note:'🩸 استخدمي هذا الخيار مرتين أسبوعياً لمعالجة نقص الحديد.'},
+     ]},
+    {id:'l',ic:'☀️',title:'وجبة الغداء',time:'منتصف النهار',range:'٤٦٠–٤٩٠ سعرة',
+     options:[
+      {name:'دجاج + أرز',p:38,c:42,f:12,k:474,
+       items:['راحة يد كبيرة صدر دجاج مشوي أو مسلوق (≈١٥٠غ)','كوب وربع أرز مطبوخ (أبيض أو بني)','ملعقة صغيرة زيت زيتون + سلطة خضراء حرة'],
+       note:'💜 أضيفي خل التفاح أو عصير ليمون على السلطة — يخفف ارتفاع السكر بعد الأرز.'},
+      {name:'سمك سالمون + بطاطس حلوة',p:36,c:39,f:18,k:468,
+       items:['راحة يد كبيرة سمك سالمون مشوي (≈١٥٠غ)','بطاطس حلوة وسط مسلوقة أو مشوية (≈٢٠٠غ)','سلطة خضراء مع عصير ليمون'],
+       note:'✅ السالمون غني بالأوميغا ٣ — ممتاز للالتهابات ومقاومة الأنسولين.'},
+      {name:'لحم مفروم + برغل',p:38,c:40,f:12,k:469,
+       items:['راحة يد كبيرة لحم مفروم ٩٥٪ مطبوخ (≈١٥٠غ)','كوب وربع برغل مطبوخ','ملعقة صغيرة زيت زيتون + طماطم مكعبات + بقدونس'],
+       note:'🩸 استخدمي هذا الخيار مرتين أسبوعياً — اللحم الأحمر أفضل مصدر حديد هيم.'},
+     ]},
+    {id:'s',ic:'🍎',title:'وجبة خفيفة',time:'بعد الظهر',range:'١٨٠–٢٠٠ سعرة',
+     options:[
+      {name:'يوغرت يوناني + فاكهة',p:14,c:22,f:4,k:180,
+       items:['كوب يوغرت يوناني سادة (≈١٥٠غ)','تفاحة صغيرة أو ٥ حبات فراولة']},
+      {name:'ارلا بروتين ٢٥٠مل',p:20,c:16,f:3,k:183,
+       items:['علبة ارلا بروتين ٢٥٠ مل (بنكهتك المفضلة)'],
+       note:'⭐ ممتاز لو كان السناك قريب من التمرين — بروتين عالي وكارب متوسط.'},
+      {name:'تمر + مكسرات',p:4,c:25,f:9,k:186,
+       items:['٢ تمرة مجدول أو سكري','حفنة لوز أو جوز (≈١٥غ)'],
+       note:'⚠️ مع مقاومة الأنسولين: دايمًا مع المكسرات — تقلل ارتفاع السكر.'},
+     ]},
+    {id:'d',ic:'🌙',title:'وجبة العشاء',time:'المساء',range:'٤٦٠–٥١٠ سعرة',
+     options:[
+      {name:'لحم مفروم + بطاطس حلوة + مكسرات',p:40,c:40,f:21,k:501,
+       items:['راحة يد كبيرة لحم مفروم ٩٥٪ مطبوخ (≈١٥٠غ) — مشوي أو هواء ساخن','بطاطس حلوة وسط مسلوقة أو مشوية (≈٢٠٠غ)','حفنة مكسرات مشكّلة (لوز + جوز) + سلطة حرة'],
+       note:'✅ الأكمل غذائياً — حديد + ماغنيسيوم + بطاطس حلوة للتعافي بعد الجيم.'},
+      {name:'دجاج + برغل + مكسرات',p:42,c:37,f:19,k:483,
+       items:['راحة يد كبيرة دجاج مشوي أو مسلوق (≈١٥٠غ)','كوب وربع برغل مطبوخ','حفنة مكسرات + ملعقة صغيرة زيت زيتون + سلطة']},
+      {name:'تونه + خبز + جبن قريش',p:42,c:30,f:15,k:431,
+       items:['علبة تونه في الماء ١٨٥غ (كاملة) أو راحة يد سمك مشوي','٢ قطعة توست قمح','ربع كوب جبن قريش + حفنة لوز'],
+       note:'✅ خفيف وسريع — مناسب لو ما عندك وقت للطبخ بالليل.'},
+     ]},
+  ],
+  tips:[
+    '🏋️ أيام الجيم: كلي الكارب (أرز أو شوفان أو بطاطس) في الوجبة قبل التمرين مباشرة — تعطيك طاقة وتقلل ارتفاع السكر.',
+    '🌙 ما بعد العشاء: اشربي ماء أو شاي كامومايل أو أخضر — تجنّبي أي أكل بعد العشاء.',
+    '🔁 التبديل: الخيارات الثلاثة في كل وجبة متساوية تقريبًا بالسعرات — غيّري بينها حسب ذوقك.',
+    '☕ القهوة: سادة أو شاي بدون سكر بأي وقت. تجنّبي القهوة مع وجبات الحديد.',
+    '🩸 الحديد: كلي لحم أحمر مرتين أسبوعياً + أضيفي فيتامين C (عصير ليمون) مع كل وجبة حديد.',
+  ]
+};
+
+function renderMeals() {
+  const box = document.getElementById('mealsBody');
+  if (box.dataset.rendered) return;
+  box.dataset.rendered = '1';
+  const guide = MEAL_PLAN.guide.map(g => `
+    <div class="measure-card">
+      <div class="mic">${g.ic}</div>
+      <div class="mam">${g.am}</div>
+      <div style="font-weight:700;font-size:.8rem;margin:2px 0">${g.name}</div>
+      <div class="mde">${g.de.replace('\n','<br>')}</div>
+    </div>`).join('');
+
+  const meals = MEAL_PLAN.meals.map(m => `
+    <div class="meal-section">
+      <div class="meal-header" id="mh-${m.id}" onclick="toggleMeal('${m.id}')">
+        <span class="mh-icon">${m.ic}</span>
+        <div class="mh-info"><h4>${m.title}</h4><small>${m.time} • ${m.range}</small></div>
+        <span id="mhev-${m.id}">▼</span>
+      </div>
+      <div class="meal-options" id="mo-${m.id}">
+        ${m.options.map((o,i)=>`
+          <div class="meal-opt">
+            <div class="meal-opt-name">${i+1}. ${o.name}</div>
+            <div class="macro-chips">
+              <span class="macro-chip chip-p">ب ${o.p}غ</span>
+              <span class="macro-chip chip-c">ك ${o.c}غ</span>
+              <span class="macro-chip chip-f">د ${o.f}غ</span>
+              <span class="macro-chip chip-k">${o.k} سعرة</span>
+            </div>
+            <ul class="meal-ingredients">${o.items.map(it=>`<li>${it}</li>`).join('')}</ul>
+            ${o.recipe?`<div class="meal-recipe">${o.recipe}</div>`:''}
+            ${o.note?`<div class="meal-note-tip">${o.note}</div>`:''}
+            <button class="meal-log-btn" onclick="logMeal('${o.name.replace(/'/g,"\\'")}',${o.k},${o.p},${o.c},${o.f})">
+              + سجّلي هذه الوجبة في السعرات
+            </button>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+
+  const tips = MEAL_PLAN.tips.map(t=>`<div class="tip-card">${t}</div>`).join('');
+
+  box.innerHTML = `
+    <div class="card">
+      <b style="font-size:.9rem">🖐️ دليل المقاييس — بدون ميزان</b>
+      <p class="muted" style="margin:4px 0 12px">استخدمي يدك لتقدير الكميات بسهولة</p>
+      <div class="measure-grid">${guide}</div>
+    </div>
+    ${meals}
+    <div class="card" style="margin-top:8px">
+      <b>💡 ملاحظات مهمة</b>
+      <div style="margin-top:10px">${tips}</div>
+    </div>`;
+}
+
+function toggleMeal(id) {
+  const opts = document.getElementById('mo-' + id);
+  const hdr  = document.getElementById('mh-' + id);
+  const chev = document.getElementById('mhev-' + id);
+  const open = opts.classList.toggle('open');
+  hdr.classList.toggle('open', open);
+  chev.textContent = open ? '▲' : '▼';
+}
+
+async function logMeal(name, kcal, prot, carbs, fat) {
+  await api('/api/trainee/calories', {method:'POST', body:{meal_name:name, calories:kcal, protein:prot, carbs, fat}});
+  toast('تم تسجيل ' + name + ' ✓');
+}
+
+// ===== السعرات =====
+async function loadCalories() {
+  const rows = await api('/api/trainee/calories');
+  const goal = HOME ? HOME.calorieGoal : 2000;
+  let kcal=0, prot=0, carb=0, fat=0;
   (rows||[]).forEach(r=>{kcal+=r.calories;prot+=r.protein;carb+=r.carbs;fat+=r.fat;});
-  const pct=goal?Math.min(100,Math.round(kcal/goal*100)):0;
-  document.getElementById('calSummary').innerHTML=`
+  const pct = goal ? Math.min(100,Math.round(kcal/goal*100)) : 0;
+  document.getElementById('calSummary').innerHTML = `
     <div class="card">
       <div style="display:flex;justify-content:space-between"><b>المجموع اليوم</b><b style="color:var(--gold)">${kcal} سعرة</b></div>
       <div class="bar"><i style="width:${pct}%"></i></div>
       <div class="muted" style="margin-top:6px">الهدف ${goal} سعرة • بروتين ${Math.round(prot)}g • كارب ${Math.round(carb)}g • دهون ${Math.round(fat)}g</div>
     </div>`;
-  document.getElementById('calList').innerHTML=(rows&&rows.length)? rows.map(r=>`
-    <div class="list-item">
-      <div class="info"><div class="nm">${esc(r.meal_name)}</div>
-      <div class="meta">${r.calories} سعرة • ب${Math.round(r.protein)} ك${Math.round(r.carbs)} د${Math.round(r.fat)}</div></div>
-      <button class="btn danger sm" onclick="delCal(${r.id})">حذف</button>
-    </div>`).join('') : '<div class="empty">ما أضفتي وجبات اليوم</div>';
+  document.getElementById('calList').innerHTML = (rows&&rows.length)
+    ? rows.map(r=>`<div class="list-item">
+        <div class="info"><div class="nm">${esc(r.meal_name)}</div>
+        <div class="meta">${r.calories} سعرة • ب${Math.round(r.protein)} ك${Math.round(r.carbs)} د${Math.round(r.fat)}</div></div>
+        <button class="btn danger sm" onclick="delCal(${r.id})">حذف</button>
+      </div>`).join('')
+    : '<div class="empty">ما أضفتي وجبات اليوم</div>';
 }
 
-async function addCalorie(){
-  const meal=document.getElementById('cMeal').value.trim();
-  const kcal=document.getElementById('cKcal').value;
-  if(!meal||!kcal){toast('اكتبي اسم الوجبة والسعرات',true);return;}
+async function addCalorie() {
+  const meal = document.getElementById('cMeal').value.trim();
+  const kcal = document.getElementById('cKcal').value;
+  if (!meal||!kcal){toast('اكتبي اسم الوجبة والسعرات',true);return;}
   await api('/api/trainee/calories',{method:'POST',body:{
     meal_name:meal,calories:kcal,
     protein:document.getElementById('cProt').value||0,
     carbs:document.getElementById('cCarb').value||0,
     fat:document.getElementById('cFat').value||0}});
   ['cMeal','cKcal','cProt','cCarb','cFat'].forEach(id=>document.getElementById(id).value='');
-  toast('تمت الإضافة ✓');loadCalories();
+  toast('تمت الإضافة ✓'); loadCalories();
 }
 async function delCal(id){await api('/api/trainee/calories/'+id,{method:'DELETE'});loadCalories();}
 
-async function loadProgress(){
-  const d=await api('/api/trainee/progress');
-  const box=document.getElementById('progBody');
-  if(!d){return;}
-  const maxSets=Math.max(1,...d.days.map(x=>x.sets));
-  box.innerHTML=`
+// ===== التقدم =====
+async function loadProgress() {
+  const d = await api('/api/trainee/progress');
+  const box = document.getElementById('progBody');
+  if (!d) return;
+  const maxSets = Math.max(1,...d.days.map(x=>x.sets));
+  box.innerHTML = `
     <div class="card">
       <b>أيام التمرين (الستات المسجّلة)</b>
-      ${d.days.length? d.days.map(x=>`
+      ${d.days.length ? d.days.map(x=>`
         <div style="margin-top:10px">
           <div style="display:flex;justify-content:space-between" class="muted"><span>${x.log_date}</span><span>${x.sets} ست</span></div>
           <div class="bar"><i style="width:${Math.round(x.sets/maxSets*100)}%"></i></div>
@@ -216,7 +576,7 @@ async function loadProgress(){
     </div>
     <div class="card">
       <b>السعرات اليومية</b>
-      ${d.cals.length? d.cals.map(x=>`<div class="list-item" style="margin-top:8px"><div class="info"><div class="nm">${x.log_date}</div></div><b style="color:var(--gold)">${x.calories} سعرة</b></div>`).join('') : '<div class="empty">لا سعرات مسجّلة</div>'}
+      ${d.cals.length ? d.cals.map(x=>`<div class="list-item" style="margin-top:8px"><div class="info"><div class="nm">${x.log_date}</div></div><b style="color:var(--gold)">${x.calories} سعرة</b></div>`).join('') : '<div class="empty">لا سعرات مسجّلة</div>'}
     </div>`;
 }
 
