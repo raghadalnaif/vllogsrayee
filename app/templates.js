@@ -156,6 +156,45 @@ const TEMPLATES = {
       ]},
     ]
   },
+  gym_4_v2: {
+    label: 'نادي 4 أيام — Legs / Push / Pull / Legs+Core',
+    days: [
+      { title: 'اليوم 1 — أرجل وغلوتس (Legs day)', goal: 'تضخيم الغلوتس والأرجل الخلفية', exercises: [
+        { name: 'هيب ثرست',         sets: 4, reps: '8-12' },
+        { name: 'ديدليفت',           sets: 4, reps: '8-10' },
+        { name: 'كيك باك بالكيبل',   sets: 4, reps: '10-15' },
+        { name: 'سكوات سومو',        sets: 4, reps: '8-12' },
+        { name: 'ماكينة أبداكتور',   sets: 4, reps: '8-12' },
+        { name: 'ليغ كيرل',         sets: 4, reps: '8-12' },
+      ]},
+      { title: 'اليوم 2 — دفع (Push day)', goal: 'صدر وأكتاف وترايسبس وكور', exercises: [
+        { name: 'شولدر بريس',                    sets: 4, reps: '8-12' },
+        { name: 'ضغط صدر بالمكينة',              sets: 4, reps: '8-12' },
+        { name: 'بنش بريس مائل',                 sets: 4, reps: '8-12' },
+        { name: 'رفرفة جانبية (لاترال ريز)',      sets: 4, reps: '8-12' },
+        { name: 'ترايسبس بُش داون',              sets: 4, reps: '8-12' },
+        { name: 'كرنش',                          sets: 4, reps: '10-15' },
+      ]},
+      { title: 'اليوم 3 — سحب (Pull day)', goal: 'ظهر وبايسبس وكور', exercises: [
+        { name: 'لات بُل داون',              sets: 4, reps: '8-12' },
+        { name: 'سحب جالس (سيتد رو)',        sets: 4, reps: '8-12' },
+        { name: 'رفع أمامي (أبرايت رو)',     sets: 3, reps: '8-12' },
+        { name: 'فيس بُل',                   sets: 3, reps: '8-12' },
+        { name: 'هامر كيرل',                 sets: 3, reps: '8-12' },
+        { name: 'بايسبس كيرل',               sets: 3, reps: '8-12' },
+        { name: 'ديد باغ',                   sets: 3, reps: '12' },
+      ]},
+      { title: 'اليوم 4 — أرجل وكور', goal: 'أرجل أمامية وكور', exercises: [
+        { name: 'ليغ بريس',                  sets: 4, reps: '8-12' },
+        { name: 'سكوات',                     sets: 4, reps: '8-12' },
+        { name: 'ديدليفت مستقيم الأرجل',    sets: 4, reps: '8-12' },
+        { name: 'ليغ إكستنشن',               sets: 3, reps: '8-12' },
+        { name: 'ماكينة أداكتور',            sets: 3, reps: '8-12' },
+        { name: 'بلانك',                     sets: 3, reps: '60 ثانية' },
+        { name: 'كرنش عكسي',                sets: 3, reps: '10-15' },
+      ]},
+    ]
+  },
   gym_5: {
     label: 'نادي — 5 أيام',
     days: [

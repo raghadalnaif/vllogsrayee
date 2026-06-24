@@ -123,6 +123,7 @@ addColIfMissing('carb_g', 'INTEGER DEFAULT 0');
 addColIfMissing('fat_g', 'INTEGER DEFAULT 0');
 addColIfMissing('password_plain', 'TEXT DEFAULT NULL');
 addColIfMissing('coach_note', 'TEXT DEFAULT NULL');
+addColIfMissing('body_fat_pct', 'REAL DEFAULT NULL');
 
 const EXERCISE_LIBRARY = [
   // غلوتس
@@ -170,6 +171,13 @@ const EXERCISE_LIBRARY = [
   { name: 'بلانك جانبي', target_muscle: 'الخصر الجانبي', notes: 'استلقي على جانب واحد وارفعي الحوض بثبات الساعد.' },
   { name: 'بايسكل كرنش', target_muscle: 'بطن وخصر', notes: 'لفّي المرفق نحو الركبة المعاكسة بحركة دواسة الدراجة.' },
   { name: 'ديد باغ', target_muscle: 'كور', notes: 'استلقي على الظهر وافردي ذراع ورجل معاكسة ببطء مع إبقاء الظهر ملاصق للأرض.' },
+  // تمارين إضافية — مكتبة v2
+  { name: 'ضغط صدر بالمكينة', target_muscle: 'صدر', notes: 'اضبطي مقعد الجهاز بحيث المقابض في مستوى الصدر وادفعي للأمام مع شد الصدر بالقمة.' },
+  { name: 'بنش بريس مائل', target_muscle: 'صدر وأكتاف', notes: 'ضعي زاوية البنش 30-45 درجة وادفعي الدمبل للأعلى مع تجنب ارتفاع الظهر عن البنش.' },
+  { name: 'رفع أمامي (أبرايت رو)', target_muscle: 'أكتاف وظهر', notes: 'أمسكي البار بقبضة ضيقة وارفعيه عمودياً حتى مستوى الذقن مع المرفقين للخارج.' },
+  { name: 'ماكينة أبداكتور', target_muscle: 'غلوتس وفخذ خارجي', notes: 'اجلسي واضغطي الركبتين للخارج بتحكم ثم أرجعيهما ببطء — ركّزي على شد الغلوتس الجانبي.' },
+  { name: 'ماكينة أداكتور', target_muscle: 'فخذ داخلي', notes: 'اجلسي واضغطي الركبتين للداخل بتحكم ثم أرجعيهما ببطء — ركّزي على شد الفخذ الداخلي.' },
+  { name: 'كرنش عكسي', target_muscle: 'أسفل البطن', notes: 'استلقي على ظهرك، ارفعي الورك عن الأرض باستخدام عضلات البطن السفلية فقط مع ثني الركبتين.' },
 ];
 
 const seeded = db.prepare("SELECT value FROM meta WHERE key='exercises_seeded'").get();
@@ -181,6 +189,26 @@ if (!seeded) {
   });
   seedAll();
   console.log(`✅ تم زرع مكتبة تمارين جاهزة (${EXERCISE_LIBRARY.length} تمرين) — تقدرين تضيفين GIF/فيديو لأي تمرين من لوحة الإدارة.`);
+}
+
+// ===== زرع التمارين الإضافية (v2) — مرة واحدة =====
+const seededV2 = db.prepare("SELECT value FROM meta WHERE key='exercises_seeded_v2'").get();
+if (!seededV2) {
+  const insertEx2 = db.prepare('INSERT OR IGNORE INTO exercises (name,target_muscle,media_url,notes) VALUES (?,?,?,?)');
+  const V2_EXERCISES = [
+    { name: 'ضغط صدر بالمكينة', target_muscle: 'صدر', url: 'https://www.youtube.com/results?search_query=chest+press+machine+technique+form', notes: 'اضبطي مقعد الجهاز بحيث المقابض في مستوى الصدر وادفعي للأمام مع شد الصدر بالقمة.' },
+    { name: 'بنش بريس مائل', target_muscle: 'صدر وأكتاف', url: 'https://www.youtube.com/results?search_query=incline+dumbbell+bench+press+technique', notes: 'ضعي زاوية البنش 30-45 درجة وادفعي الدمبل للأعلى مع تجنب ارتفاع الظهر عن البنش.' },
+    { name: 'رفع أمامي (أبرايت رو)', target_muscle: 'أكتاف وظهر', url: 'https://www.youtube.com/results?search_query=upright+row+barbell+technique+form', notes: 'أمسكي البار بقبضة ضيقة وارفعيه عمودياً حتى مستوى الذقن مع المرفقين للخارج.' },
+    { name: 'ماكينة أبداكتور', target_muscle: 'غلوتس وفخذ خارجي', url: 'https://www.youtube.com/results?search_query=hip+abductor+machine+technique+form', notes: 'اجلسي واضغطي الركبتين للخارج بتحكم ثم أرجعيهما ببطء — ركّزي على شد الغلوتس الجانبي.' },
+    { name: 'ماكينة أداكتور', target_muscle: 'فخذ داخلي', url: 'https://www.youtube.com/results?search_query=hip+adductor+machine+technique+form', notes: 'اجلسي واضغطي الركبتين للداخل بتحكم ثم أرجعيهما ببطء — ركّزي على شد الفخذ الداخلي.' },
+    { name: 'كرنش عكسي', target_muscle: 'أسفل البطن', url: 'https://www.youtube.com/results?search_query=reverse+crunch+exercise+technique+form', notes: 'استلقي على ظهرك، ارفعي الورك عن الأرض باستخدام عضلات البطن السفلية فقط مع ثني الركبتين.' },
+  ];
+  const seedV2 = db.transaction(() => {
+    V2_EXERCISES.forEach(e => insertEx2.run(e.name, e.target_muscle, e.url, e.notes));
+    db.prepare("INSERT INTO meta (key,value) VALUES ('exercises_seeded_v2','1')").run();
+  });
+  seedV2();
+  console.log(`✅ تم زرع ${V2_EXERCISES.length} تمارين إضافية (v2).`);
 }
 
 // ===== إضافة روابط فيديو التكنيك لمكتبة التمارين (مرة واحدة — بعد زرع المكتبة) =====

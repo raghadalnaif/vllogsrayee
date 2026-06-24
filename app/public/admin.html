@@ -99,6 +99,11 @@
         </div>
         <div class="field"><label>نسبة العجز/الزيادة %</label><input class="input" id="tDeficit" type="number" value="0" oninput="calcCalories()" placeholder="20 للعجز، -10 للزيادة"></div>
       </div>
+      <div class="row">
+        <div class="field"><label>نسبة الدهون % <span class="muted" style="font-weight:400">(اختياري — يُحسّن دقة TDEE)</span></label>
+          <input class="input" id="tBodyFat" type="number" inputmode="decimal" placeholder="مثلاً: 25" oninput="calcCalories()">
+        </div>
+      </div>
       <div class="muted" id="calcInfo" style="margin:6px 0;min-height:18px"></div>
     </div>
     <div class="field"><label>هدف السعرات اليومي (تُحسب تلقائياً أو عدّليها يدوياً)</label><input class="input" id="tCal" type="number" value="2000" oninput="updateMacros()"></div>
@@ -209,13 +214,26 @@ function calcCalories(){
   const g=document.getElementById('tGender').value;
   const act=document.getElementById('tActivity').value;
   const def=parseFloat(document.getElementById('tDeficit').value)||0;
+  const bf=parseFloat(document.getElementById('tBodyFat').value);
   const info=document.getElementById('calcInfo');
-  if(!w||!h||!a){info.textContent='أدخلي الوزن والطول والعمر لحساب السعرات تلقائياً';return;}
-  const bmr=g==='male'? (10*w+6.25*h-5*a+5) : (10*w+6.25*h-5*a-161);
+  let bmr, method;
+  if(w && !isNaN(bf) && bf>0){
+    // Katch-McArdle: أدق لما نعرف نسبة الدهون
+    const lbm=w*(1-bf/100);
+    bmr=370+(21.6*lbm);
+    method=`كتلة العضل: ${lbm.toFixed(1)}كجم (Katch-McArdle)`;
+  } else if(w&&h&&a){
+    // Mifflin-St Jeor: المعادلة العادية
+    bmr=g==='male'? (10*w+6.25*h-5*a+5) : (10*w+6.25*h-5*a-161);
+    method='Mifflin-St Jeor';
+  } else {
+    info.textContent='أدخلي الوزن + (نسبة الدهون أو الطول والعمر) لحساب السعرات';
+    return;
+  }
   const tdee=bmr*(ACTIVITY_FACTORS[act]||1.55);
   const target=Math.max(800,Math.round(tdee*(1-def/100)));
   document.getElementById('tCal').value=target;
-  info.textContent=`معدل الأيض: ${Math.round(bmr)} سعرة • الحرق اليومي: ${Math.round(tdee)} سعرة • المستهدف: ${target} سعرة`;
+  info.textContent=`${method} • معدل الأيض: ${Math.round(bmr)} • TDEE: ${Math.round(tdee)} • المستهدف: ${target} سعرة`;
   updateMacros();
 }
 function updateMacros(){
@@ -241,7 +259,7 @@ function _getMacroBody(){
 }
 function openAddTrainee(){
   editingId=null;
-  ['tName','tUser','tPass','tWeight','tHeight','tAge'].forEach(i=>document.getElementById(i).value='');
+  ['tName','tUser','tPass','tWeight','tHeight','tAge','tBodyFat'].forEach(i=>document.getElementById(i).value='');
   document.getElementById('tCal').value='2000';
   document.getElementById('tGender').value='female';
   document.getElementById('tActivity').value='moderate';
@@ -266,6 +284,7 @@ function openEditTrainee(id){
   document.getElementById('tGender').value=t.gender||'female';
   document.getElementById('tActivity').value=t.activity_level||'moderate';
   document.getElementById('tDeficit').value=t.deficit_pct||0;
+  document.getElementById('tBodyFat').value=t.body_fat_pct||'';
   document.getElementById('tCal').value=t.daily_calorie_goal||2000;
   document.getElementById('tMacroStyle').value=t.macro_style||'balanced';
   document.getElementById('calcInfo').textContent='';
@@ -280,6 +299,7 @@ async function saveTrainee(){
   if(!name){toast('اكتبي الاسم',true);return;}
   const calcBody={name, daily_calorie_goal:tCal.value, weight_kg:tWeight.value, height_cm:tHeight.value,
     age:tAge.value, gender:tGender.value, activity_level:tActivity.value, deficit_pct:tDeficit.value,
+    body_fat_pct:document.getElementById('tBodyFat').value||'',
     ..._getMacroBody()};
   if(editingId){
     const r=await api('/api/admin/trainees/'+editingId,{method:'PATCH',body:{action:'edit',...calcBody}});

@@ -102,7 +102,7 @@ app.get('/api/admin/stats', requireAuth, requireAdmin, (req, res) => {
 // ===== الإدارة: المشتركات =====
 app.get('/api/admin/trainees', requireAuth, requireAdmin, (req, res) => {
   const rows = db.prepare(`SELECT id,name,username,password_plain,coach_note,start_date,end_date,daily_calorie_goal,
-    weight_kg,height_cm,age,gender,activity_level,deficit_pct,macro_style,protein_g,carb_g,fat_g,active FROM trainees ORDER BY id DESC`).all();
+    weight_kg,height_cm,age,gender,activity_level,deficit_pct,body_fat_pct,macro_style,protein_g,carb_g,fat_g,active FROM trainees ORDER BY id DESC`).all();
   const t = today();
   rows.forEach(r => {
     r.days_left = daysLeft(r.end_date);
@@ -113,7 +113,7 @@ app.get('/api/admin/trainees', requireAuth, requireAdmin, (req, res) => {
 
 app.post('/api/admin/trainees', requireAuth, requireAdmin, (req, res) => {
   const { name, username, password, months, daily_calorie_goal,
-    weight_kg, height_cm, age, gender, activity_level, deficit_pct,
+    weight_kg, height_cm, age, gender, activity_level, deficit_pct, body_fat_pct,
     macro_style, protein_g, carb_g, fat_g } = req.body;
   if (!name || !username || !password || !months) return res.status(400).json({ message: 'أكملي كل الحقول' });
   if (db.prepare('SELECT id FROM trainees WHERE username=?').get(username))
@@ -122,15 +122,16 @@ app.post('/api/admin/trainees', requireAuth, requireAdmin, (req, res) => {
   const end = new Date(); end.setMonth(end.getMonth() + parseInt(months));
   const info = db.prepare(`INSERT INTO trainees
     (name,username,password_hash,password_plain,start_date,end_date,daily_calorie_goal,
-     weight_kg,height_cm,age,gender,activity_level,deficit_pct,
+     weight_kg,height_cm,age,gender,activity_level,deficit_pct,body_fat_pct,
      macro_style,protein_g,carb_g,fat_g,active,created_at)
-    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,?)`).run(
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,?)`).run(
     name, username, bcrypt.hashSync(password, 10), password,
     start.toISOString().slice(0, 10), end.toISOString().slice(0, 10),
     parseInt(daily_calorie_goal) || 2000,
     weight_kg ? parseFloat(weight_kg) : null, height_cm ? parseFloat(height_cm) : null,
     age ? parseInt(age) : null, gender || 'female', activity_level || 'moderate',
     (deficit_pct !== undefined && deficit_pct !== '') ? parseFloat(deficit_pct) : 0,
+    (body_fat_pct !== undefined && body_fat_pct !== '') ? parseFloat(body_fat_pct) : null,
     macro_style || 'balanced',
     parseInt(protein_g) || 0, parseInt(carb_g) || 0, parseInt(fat_g) || 0,
     new Date().toISOString());
@@ -142,7 +143,7 @@ app.patch('/api/admin/trainees/:id', requireAuth, requireAdmin, (req, res) => {
   const t = db.prepare('SELECT * FROM trainees WHERE id=?').get(id);
   if (!t) return res.status(404).json({ message: 'غير موجودة' });
   const { action, months, password, name, daily_calorie_goal,
-    weight_kg, height_cm, age, gender, activity_level, deficit_pct } = req.body;
+    weight_kg, height_cm, age, gender, activity_level, deficit_pct, body_fat_pct } = req.body;
   if (action === 'extend') {
     const base = t.end_date > today() ? new Date(t.end_date) : new Date();
     base.setMonth(base.getMonth() + (parseInt(months) || 1));
@@ -162,6 +163,7 @@ app.patch('/api/admin/trainees/:id', requireAuth, requireAdmin, (req, res) => {
       name=COALESCE(?,name), daily_calorie_goal=COALESCE(?,daily_calorie_goal),
       weight_kg=COALESCE(?,weight_kg), height_cm=COALESCE(?,height_cm), age=COALESCE(?,age),
       gender=COALESCE(?,gender), activity_level=COALESCE(?,activity_level), deficit_pct=COALESCE(?,deficit_pct),
+      body_fat_pct=?,
       macro_style=COALESCE(?,macro_style), protein_g=COALESCE(?,protein_g),
       carb_g=COALESCE(?,carb_g), fat_g=COALESCE(?,fat_g)
       WHERE id=?`).run(
@@ -169,6 +171,7 @@ app.patch('/api/admin/trainees/:id', requireAuth, requireAdmin, (req, res) => {
       weight_kg ? parseFloat(weight_kg) : null, height_cm ? parseFloat(height_cm) : null,
       age ? parseInt(age) : null, gender || null, activity_level || null,
       (deficit_pct !== undefined && deficit_pct !== '') ? parseFloat(deficit_pct) : null,
+      (body_fat_pct !== undefined && body_fat_pct !== '') ? parseFloat(body_fat_pct) : null,
       macro_style || null,
       protein_g ? parseInt(protein_g) : null, carb_g ? parseInt(carb_g) : null,
       fat_g ? parseInt(fat_g) : null,
