@@ -160,6 +160,11 @@ if (!exerciseCols.includes('alt_free'))
 if (!exerciseCols.includes('name_en'))
   db.exec("ALTER TABLE exercises ADD COLUMN name_en TEXT DEFAULT ''");
 
+// ترقية جدول تمارين الجدول: من أضاف التمرين (المدربة أو المتدربة)
+const peCols = db.prepare("PRAGMA table_info(plan_exercises)").all().map(c => c.name);
+if (!peCols.includes('added_by'))
+  db.exec("ALTER TABLE plan_exercises ADD COLUMN added_by TEXT DEFAULT 'coach'");
+
 // تعبئة الأسماء الإنجليزية للمكتبة الجاهزة (مرة واحدة)
 const EXERCISE_EN = {
   'هيب ثرست':'Hip Thrust','دونكي كيك':'Donkey Kick','غلوت بريدج':'Glute Bridge',

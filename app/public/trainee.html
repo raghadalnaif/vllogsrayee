@@ -121,6 +121,26 @@
 .warmup-btn{border:none;color:#fff;padding:9px 14px;border-radius:10px;font-size:.8rem;font-weight:800;font-family:inherit;width:100%;cursor:pointer}
 /* ===== بديل الأوزان الحرة ===== */
 .alt-free{background:#eef6f0;border-right:3px solid #4A7C59;border-radius:8px;padding:9px 12px;font-size:.82rem;color:#2d5a3d;margin-bottom:10px;line-height:1.6}
+/* ===== الأداء السابق + الرقم القياسي ===== */
+.prev-chip{font-size:.7rem;color:var(--muted);background:var(--bg1);border-radius:8px;padding:3px 8px;white-space:nowrap;flex-shrink:0;font-weight:700}
+.set-row{flex-wrap:wrap}
+.pr-badge{display:inline-block;background:#fff3e0;color:#e65100;border-radius:8px;padding:1px 7px;font-size:.68rem;font-weight:900;margin-right:4px}
+.pr-toast{position:fixed;bottom:84px;left:50%;transform:translateX(-50%) translateY(160px);background:linear-gradient(135deg,#ffb300,#ff8f00);color:#fff;border-radius:16px;padding:14px 22px;z-index:320;display:flex;align-items:center;gap:12px;box-shadow:0 12px 36px rgba(230,81,0,.4);transition:.4s cubic-bezier(.2,1.2,.3,1);max-width:90vw}
+.pr-toast.show{transform:translateX(-50%) translateY(0)}
+.pr-toast .pr-emoji{font-size:2rem}
+.pr-toast .pr-title{font-weight:900;font-size:1rem}
+.pr-toast .pr-sub{font-size:.82rem;font-weight:700;opacity:.95}
+/* ===== إضافة تمرين من المتدربة ===== */
+.add-ex-btn{width:100%;margin-top:12px;padding:12px;background:var(--bg1);border:1.5px dashed var(--gold);border-radius:12px;color:var(--gold);font-weight:800;font-size:.9rem;font-family:inherit;cursor:pointer}
+.add-ex-btn:active{transform:scale(.99)}
+.ex-remove{background:none;border:none;font-size:.85rem;cursor:pointer;padding:2px 4px;flex-shrink:0;opacity:.6}
+.added-tag{font-size:.68rem;color:var(--gold);font-weight:800;padding:0 16px 6px;margin-top:-4px}
+.muscle-chips{display:flex;gap:7px;overflow-x:auto;margin-top:12px;padding-bottom:2px;-webkit-overflow-scrolling:touch}
+.mfilter{flex-shrink:0;background:var(--bg1);border:1.5px solid transparent;color:var(--g1);padding:7px 13px;border-radius:18px;font-size:.8rem;font-weight:700;font-family:inherit;white-space:nowrap;cursor:pointer}
+.mfilter.on{background:var(--gold);color:#fff}
+.picker-item{display:flex;align-items:center;gap:12px;padding:11px 8px;border-bottom:1px solid var(--border);cursor:pointer}
+.picker-item:active{background:var(--bg1)}
+.picker-add{width:32px;height:32px;border-radius:50%;background:var(--gold);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;flex-shrink:0}
 /* ===== بطاقات الماكروز ===== */
 .macro-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
 .macro-card{background:#fff;border-radius:14px;padding:12px 6px 10px;text-align:center;position:relative;overflow:hidden;border:1.5px solid var(--border)}
@@ -348,6 +368,30 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- احتفال الرقم القياسي -->
+<div class="pr-toast" id="prToast">
+  <div class="pr-emoji">🎉</div>
+  <div>
+    <div class="pr-title">رقم قياسي جديد!</div>
+    <div class="pr-sub"></div>
+    <div style="font-size:.74rem;opacity:.9;margin-top:2px">استمري — أنتِ تتطوّرين 💪</div>
+  </div>
+</div>
+
+<!-- منتقي التمارين (إضافة تمرين من المتدربة) -->
+<div class="overlay" id="ovlPicker">
+  <div class="modal" style="max-width:560px;padding:0;overflow:hidden;display:flex;flex-direction:column;max-height:88vh">
+    <div style="padding:18px 20px 12px;border-bottom:1px solid var(--border);position:relative">
+      <button class="x" onclick="closePicker()" style="top:16px;left:16px">✕</button>
+      <h3 style="margin:0 0 12px;text-align:center">أضيفي تمريناً</h3>
+      <input class="input" id="pickerSearch" placeholder="🔍 ابحثي باسم التمرين (عربي أو English)" oninput="renderPicker()">
+      <div class="muscle-chips" id="muscleChips"></div>
+    </div>
+    <div id="pickerList" style="overflow-y:auto;padding:8px 16px 16px;flex:1"></div>
+  </div>
+</div>
+
 <script src="/app-common.js"></script>
 <script>
 let HOME = null, PLAN_LOGS = {}, PLAN_DATA = null;
@@ -497,6 +541,59 @@ async function loadPlan() {
   box.innerHTML = days.map(d => renderDay(d)).join('');
 }
 
+// ===== منتقي التمارين (إضافة تمرين من المتدربة) =====
+let TRAINEE_EX = null, PICKER_DAY = null, PICKER_MUSCLE = 'all';
+const MUSCLE_FILTERS = [
+  {key:'all',      label:'الكل',  ic:'🏋️', re:null},
+  {key:'chest',    label:'صدر',   ic:'🫀', re:/صدر/},
+  {key:'back',     label:'ظهر',   ic:'🔙', re:/ظهر|لات|سحب|تجديف/},
+  {key:'shoulder', label:'أكتاف', ic:'🏋️', re:/كتف|دلت/},
+  {key:'arms',     label:'ذراع',  ic:'💪', re:/باي|تراي|ساعد|ذراع/},
+  {key:'legs',     label:'أرجل',  ic:'🦵', re:/رجل|فخذ|كوادر|هامس|سكوات|سمان|كعب/},
+  {key:'glutes',   label:'غلوتس', ic:'🍑', re:/غلوت/},
+  {key:'core',     label:'بطن',   ic:'🔥', re:/بطن|كور|خصر/},
+];
+
+async function openAddExercise(dayId) {
+  PICKER_DAY = dayId; PICKER_MUSCLE = 'all';
+  document.getElementById('pickerSearch').value = '';
+  document.getElementById('ovlPicker').classList.add('open');
+  if (!TRAINEE_EX) TRAINEE_EX = await api('/api/trainee/exercises') || [];
+  renderMuscleChips();
+  renderPicker();
+}
+function closePicker() { document.getElementById('ovlPicker').classList.remove('open'); }
+function renderMuscleChips() {
+  document.getElementById('muscleChips').innerHTML = MUSCLE_FILTERS.map(f =>
+    `<button class="mfilter ${PICKER_MUSCLE === f.key ? 'on' : ''}" onclick="setMuscle('${f.key}')">${f.ic} ${f.label}</button>`).join('');
+}
+function setMuscle(k) { PICKER_MUSCLE = k; renderMuscleChips(); renderPicker(); }
+function renderPicker() {
+  const q = document.getElementById('pickerSearch').value.trim().toLowerCase();
+  const f = MUSCLE_FILTERS.find(x => x.key === PICKER_MUSCLE);
+  let list = TRAINEE_EX || [];
+  if (f && f.re) list = list.filter(e => f.re.test(e.target_muscle || ''));
+  if (q) list = list.filter(e => ((e.name || '') + ' ' + (e.name_en || '')).toLowerCase().includes(q));
+  document.getElementById('pickerList').innerHTML = list.length ? list.map(e => `
+    <div class="picker-item" onclick="addExerciseToDay(${e.id})">
+      ${exThumb(e)}
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;font-size:.9rem">${esc(e.name)}${e.name_en ? ` <span style="font-size:.72rem;color:var(--muted);direction:ltr">${esc(e.name_en)}</span>` : ''}</div>
+        <div class="muted" style="font-size:.74rem">${esc(e.target_muscle || '')}</div>
+      </div>
+      <span class="picker-add">＋</span>
+    </div>`).join('') : '<div class="empty">لا نتائج مطابقة</div>';
+}
+async function addExerciseToDay(exId) {
+  const r = await api('/api/trainee/days/' + PICKER_DAY + '/add-exercise', {method:'POST', body:{exercise_id:exId}});
+  if (r) { toast('تمت إضافة التمرين ✓'); closePicker(); loadPlan(); }
+}
+async function removeMyExercise(peId) {
+  if (!confirm('حذف هذا التمرين الذي أضفتِه؟')) return;
+  await api('/api/trainee/plan-exercise/' + peId, {method:'DELETE'});
+  loadPlan();
+}
+
 // تحديد نوع اليوم (علوي / سفلي / كامل) من العنوان والعضلات لاقتراح إحماء مناسب
 function warmupCard(d) {
   const txt = ((d.title || '') + ' ' + (d.goal || '') + ' ' +
@@ -534,6 +631,7 @@ function renderDay(d) {
     <div style="margin-top:12px">
       ${d.exercises.length ? d.exercises.map(ex => renderExercise(ex)).join('') : '<div class="muted">لا تمارين في هذا اليوم</div>'}
     </div>
+    <button class="add-ex-btn" onclick="openAddExercise(${d.id})">➕ أضيفي تمريناً من عندك</button>
     <button class="complete-day-btn ${complete ? 'visible' : ''}" id="done-btn-${d.id}" onclick="completeDay(${d.id})">
       🎉 أنهيت تمرين اليوم — سجّلي إتمامه!
     </button>
@@ -579,8 +677,10 @@ function renderExercise(ex) {
         ${ex.target_muscle ? `<span class="muscle-chip">${esc(ex.target_muscle)}</span>` : ''}
       </div>
       <div class="ex-status sm" id="ex-st-${ex.id}">${done ? '✓' : (logs.length + '/' + sets)}</div>
+      ${ex.added_by === 'trainee' ? `<button class="ex-remove" onclick="event.stopPropagation();removeMyExercise(${ex.id})" title="حذف">🗑️</button>` : ''}
       <span class="ex-chevron" id="ex-chev-${ex.id}">${done ? '' : '▼'}</span>
     </div>
+    ${ex.added_by === 'trainee' ? '<div class="added-tag">➕ أضفتِه أنتِ</div>' : ''}
     <div class="ex-body ${autoOpen ? 'open' : ''}" id="ex-body-${ex.id}">
       ${ex.notes ? `<div class="technique-note">📝 ${esc(ex.notes)}</div>` : ''}
       ${ex.alt_free ? `<div class="alt-free">🏋️ <b>بديل بالأوزان الحرة:</b> ${esc(ex.alt_free)} <span style="display:block;margin-top:2px;font-size:.74rem;opacity:.85">لو الجهاز مشغول أو غير متوفر — نفس النتيجة</span></div>` : ''}
@@ -592,6 +692,28 @@ function renderExercise(ex) {
   </div>`;
 }
 
+function prevForSet(ex, setNum) {
+  const arr = ex.previous || [];
+  return arr.find(p => p.set_number === setNum) || arr[setNum - 1] || null;
+}
+
+function prLabel(pr) {
+  const p = [];
+  if (pr.weight) p.push('🏅 أعلى وزن');
+  if (pr.volume) p.push('🏅 أعلى حِمل');
+  if (pr.e1rm)   p.push('🏅 أقوى أداء');
+  return p.join(' • ');
+}
+
+function celebratePR(pr) {
+  const t = document.getElementById('prToast');
+  t.querySelector('.pr-sub').textContent = prLabel(pr).replace(/🏅 /g, '');
+  t.classList.add('show');
+  clearTimeout(window._prTimer);
+  window._prTimer = setTimeout(() => t.classList.remove('show'), 3500);
+  if (navigator.vibrate) navigator.vibrate([40, 60, 40]);
+}
+
 function renderSetRow(ex, setNum, log) {
   if (log) {
     return `<div class="set-row done" id="set-${ex.id}-${setNum}">
@@ -601,10 +723,13 @@ function renderSetRow(ex, setNum, log) {
       <button class="edit-set-btn" onclick="editSet(${ex.id},${setNum},${log.id||0})">✏️</button>
     </div>`;
   }
+  const prev = prevForSet(ex, setNum);
+  const prevTxt = prev ? `${prev.weight > 0 ? prev.weight + '×' : ''}${prev.reps}` : '';
   return `<div class="set-row" id="set-${ex.id}-${setNum}">
     <span class="set-num">ست ${setNum}</span>
-    <input class="input mini" type="number" inputmode="decimal" placeholder="كجم" id="w-${ex.id}-${setNum}">
-    <input class="input mini" type="number" inputmode="numeric" placeholder="تكرار" id="r-${ex.id}-${setNum}"
+    ${prevTxt ? `<span class="prev-chip" title="آخر مرة">↩ ${prevTxt}</span>` : ''}
+    <input class="input mini" type="number" inputmode="decimal" placeholder="${prev && prev.weight > 0 ? prev.weight : 'كجم'}" id="w-${ex.id}-${setNum}">
+    <input class="input mini" type="number" inputmode="numeric" placeholder="${prev ? prev.reps : 'تكرار'}" id="r-${ex.id}-${setNum}"
       onkeydown="if(event.key==='Enter')logSet(${ex.id},${ex.exercise_id},${setNum},${ex.sets||3})">
     <button class="check-btn" onclick="logSet(${ex.id},${ex.exercise_id},${setNum},${ex.sets||3})">✓</button>
   </div>`;
@@ -624,18 +749,21 @@ async function logSet(peId, exId, setNum, totalSets) {
   const r = rEl ? rEl.value : '';
   if (!r) { toast('أدخلي عدد التكرارات', true); return; }
   const res = await api('/api/trainee/log', {method:'POST', body:{plan_exercise_id:peId, exercise_id:exId, set_number:setNum, weight:w||0, reps:r}});
+  if (!res) return;
   if (!PLAN_LOGS[peId]) PLAN_LOGS[peId] = [];
-  PLAN_LOGS[peId].push({id: res && res.id ? res.id : 0, weight:parseFloat(w)||0, reps:parseInt(r)});
+  PLAN_LOGS[peId].push({id: res.id || 0, weight:parseFloat(w)||0, reps:parseInt(r)});
+  const pr = res.pr;
   // تحديث سطر الست بصرياً
   const row = document.getElementById('set-' + peId + '-' + setNum);
-  const logId = res && res.id ? res.id : 0;
+  const logId = res.id || 0;
   if (row) {
     row.className = 'set-row done';
     row.innerHTML = `<span class="set-num">ست ${setNum}</span>
-      <span class="set-done-info">${parseFloat(w)>0 ? w+' كجم × ' : ''}${r} تكرار</span>
+      <span class="set-done-info">${parseFloat(w)>0 ? w+' كجم × ' : ''}${r} تكرار${pr?` <span class="pr-badge">${prLabel(pr)}</span>`:''}</span>
       <span class="set-check-icon">✓</span>
       <button class="edit-set-btn" onclick="editSet(${peId},${setNum},${logId})">✏️</button>`;
   }
+  if (pr) celebratePR(pr);
   const doneCount = PLAN_LOGS[peId].length;
   const card = document.getElementById('ex-' + peId);
   const status = document.getElementById('ex-st-' + peId);
@@ -644,7 +772,7 @@ async function logSet(peId, exId, setNum, totalSets) {
     if (status) status.textContent = '✓';
     const chev = document.getElementById('ex-chev-' + peId);
     if (chev) chev.textContent = '';
-    toast('أحسنتِ! أكملتِ التمرين ✓');
+    if (!pr) toast('أحسنتِ! أكملتِ التمرين ✓');
   } else {
     if (status) status.textContent = doneCount + '/' + totalSets;
   }

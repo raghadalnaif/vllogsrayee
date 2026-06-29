@@ -365,22 +365,76 @@ app.get('/api/trainee/home', requireAuth, requireTrainee, (req, res) => {
 });
 
 app.get('/api/trainee/plan', requireAuth, requireTrainee, (req, res) => {
-  const days = db.prepare('SELECT * FROM plan_days WHERE trainee_id=? ORDER BY day_index').all(req.session.uid);
+  const uid = req.session.uid;
+  const days = db.prepare('SELECT * FROM plan_days WHERE trainee_id=? ORDER BY day_index').all(uid);
   days.forEach(d => {
     d.exercises = db.prepare(`SELECT pe.*, e.name, e.name_en, e.target_muscle, e.media_url, e.notes, e.alt_free
       FROM plan_exercises pe JOIN exercises e ON e.id=pe.exercise_id
       WHERE pe.plan_day_id=? ORDER BY pe.order_index`).all(d.id);
+    // الأداء السابق: آخر جلسة سابقة لكل تمرين (وزن × تكرار لكل ست)
+    d.exercises.forEach(ex => {
+      const lastDate = db.prepare(`SELECT MAX(log_date) d FROM workout_logs
+        WHERE trainee_id=? AND exercise_id=? AND log_date<?`).get(uid, ex.exercise_id, today()).d;
+      ex.previous = lastDate
+        ? db.prepare(`SELECT set_number, weight, reps FROM workout_logs
+            WHERE trainee_id=? AND exercise_id=? AND log_date=? ORDER BY set_number`).all(uid, ex.exercise_id, lastDate)
+        : [];
+    });
   });
   res.json(days);
 });
 
+const e1rm = (w, r) => w > 0 ? +(w * (1 + r / 30)).toFixed(1) : 0; // معادلة إيبلي لتقدير 1RM
+
 app.post('/api/trainee/log', requireAuth, requireTrainee, (req, res) => {
   const { plan_exercise_id, exercise_id, set_number, weight, reps } = req.body;
+  const w = parseFloat(weight) || 0, r = parseInt(reps) || 0;
+  // أفضل أرقام سابقة لنفس التمرين (قبل تسجيل هذا الست) — لاكتشاف رقم قياسي جديد
+  let pr = null;
+  if (exercise_id && w > 0) {
+    const prev = db.prepare(`SELECT COALESCE(MAX(weight),0) maxW, COALESCE(MAX(weight*reps),0) maxV
+      FROM workout_logs WHERE trainee_id=? AND exercise_id=? AND weight>0`).get(req.session.uid, exercise_id);
+    const prevRows = db.prepare(`SELECT weight, reps FROM workout_logs WHERE trainee_id=? AND exercise_id=? AND weight>0`).all(req.session.uid, exercise_id);
+    const prevBest1rm = prevRows.reduce((m, x) => Math.max(m, e1rm(x.weight, x.reps)), 0);
+    const isWeightPR = w > prev.maxW && prev.maxW > 0;
+    const isVolPR = (w * r) > prev.maxV && prev.maxV > 0;
+    const is1rmPR = e1rm(w, r) > prevBest1rm && prevBest1rm > 0;
+    if (isWeightPR || isVolPR || is1rmPR) pr = { weight: isWeightPR, volume: isVolPR, e1rm: is1rmPR };
+  }
   const info = db.prepare(`INSERT INTO workout_logs (trainee_id,plan_exercise_id,exercise_id,log_date,set_number,weight,reps,created_at)
     VALUES (?,?,?,?,?,?,?,?)`).run(
     req.session.uid, plan_exercise_id || null, exercise_id || null, today(),
-    parseInt(set_number) || 1, parseFloat(weight) || 0, parseInt(reps) || 0, new Date().toISOString());
+    parseInt(set_number) || 1, w, r, new Date().toISOString());
+  res.json({ ok: true, id: info.lastInsertRowid, pr });
+});
+
+// مكتبة التمارين للمتدربة (لإضافة تمرين من عندها)
+app.get('/api/trainee/exercises', requireAuth, requireTrainee, (req, res) => {
+  res.json(db.prepare('SELECT id,name,name_en,target_muscle,media_url,alt_free FROM exercises ORDER BY name').all());
+});
+
+// المتدربة تضيف تمريناً إلى يوم من جدولها
+app.post('/api/trainee/days/:dayId/add-exercise', requireAuth, requireTrainee, (req, res) => {
+  const day = db.prepare('SELECT * FROM plan_days WHERE id=? AND trainee_id=?').get(req.params.dayId, req.session.uid);
+  if (!day) return res.status(404).json({ message: 'اليوم غير موجود' });
+  const { exercise_id, sets, reps } = req.body;
+  if (!exercise_id || !db.prepare('SELECT id FROM exercises WHERE id=?').get(exercise_id))
+    return res.status(400).json({ message: 'اختاري تمريناً صحيحاً' });
+  const max = db.prepare('SELECT COALESCE(MAX(order_index),0) m FROM plan_exercises WHERE plan_day_id=?').get(day.id).m;
+  const info = db.prepare(`INSERT INTO plan_exercises (plan_day_id,exercise_id,sets,reps,target_weight,order_index,added_by)
+    VALUES (?,?,?,?,?,?,'trainee')`).run(day.id, exercise_id, parseInt(sets) || 3, reps || '8-12', '', max + 1);
   res.json({ ok: true, id: info.lastInsertRowid });
+});
+
+// المتدربة تحذف تمريناً أضافته بنفسها فقط
+app.delete('/api/trainee/plan-exercise/:id', requireAuth, requireTrainee, (req, res) => {
+  const pe = db.prepare(`SELECT pe.* FROM plan_exercises pe
+    JOIN plan_days pd ON pd.id=pe.plan_day_id
+    WHERE pe.id=? AND pd.trainee_id=? AND pe.added_by='trainee'`).get(req.params.id, req.session.uid);
+  if (!pe) return res.status(403).json({ message: 'لا يمكن حذف تمارين المدربة' });
+  db.prepare('DELETE FROM plan_exercises WHERE id=?').run(pe.id);
+  db.prepare('DELETE FROM workout_logs WHERE plan_exercise_id=?').run(pe.id);
+  res.json({ ok: true });
 });
 
 app.delete('/api/trainee/log/:id', requireAuth, requireTrainee, (req, res) => {
