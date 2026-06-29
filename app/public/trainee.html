@@ -137,9 +137,14 @@
 .add-ex-btn:active{transform:scale(.99)}
 .ex-remove{background:none;border:none;font-size:.85rem;cursor:pointer;padding:2px 4px;flex-shrink:0;opacity:.6}
 .added-tag{font-size:.68rem;color:var(--gold);font-weight:800;padding:0 16px 6px;margin-top:-4px}
-.muscle-chips{display:flex;gap:7px;overflow-x:auto;margin-top:12px;padding-bottom:2px;-webkit-overflow-scrolling:touch}
-.mfilter{flex-shrink:0;background:var(--bg1);border:1.5px solid transparent;color:var(--g1);padding:7px 13px;border-radius:18px;font-size:.8rem;font-weight:700;font-family:inherit;white-space:nowrap;cursor:pointer}
-.mfilter.on{background:var(--gold);color:#fff}
+.muscle-chips{display:flex;gap:8px;overflow-x:auto;margin-top:12px;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+.mcard{flex-shrink:0;width:62px;background:var(--bg1);border:1.5px solid transparent;border-radius:14px;padding:6px 4px 5px;display:flex;flex-direction:column;align-items:center;gap:2px;font-family:inherit;cursor:pointer}
+.mcard.on{border-color:var(--gold);background:#fff;box-shadow:0 3px 10px rgba(74,124,89,.12)}
+.mcard-img{height:42px;display:flex;align-items:center;justify-content:center}
+.mcard-img .muscle-map{width:23px;margin:0}
+.mcard-all{font-size:1.6rem}
+.mcard-lbl{font-size:.7rem;font-weight:800;color:var(--g1);white-space:nowrap}
+.mcard.on .mcard-lbl{color:var(--gold)}
 .picker-item{display:flex;align-items:center;gap:12px;padding:11px 8px;border-bottom:1px solid var(--border);cursor:pointer}
 .picker-item:active{background:var(--bg1)}
 .picker-add{width:32px;height:32px;border-radius:50%;background:var(--gold);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;flex-shrink:0}
@@ -546,14 +551,14 @@ async function loadPlan() {
 // ===== منتقي التمارين (إضافة تمرين من المتدربة) =====
 let TRAINEE_EX = null, PICKER_DAY = null, PICKER_MUSCLE = 'all';
 const MUSCLE_FILTERS = [
-  {key:'all',      label:'الكل',  ic:'🏋️', re:null},
-  {key:'chest',    label:'صدر',   ic:'🫀', re:/صدر/},
-  {key:'back',     label:'ظهر',   ic:'🔙', re:/ظهر|لات|سحب|تجديف/},
-  {key:'shoulder', label:'أكتاف', ic:'🏋️', re:/كتف|دلت/},
-  {key:'arms',     label:'ذراع',  ic:'💪', re:/باي|تراي|ساعد|ذراع/},
-  {key:'legs',     label:'أرجل',  ic:'🦵', re:/رجل|فخذ|كوادر|هامس|سكوات|سمان|كعب/},
-  {key:'glutes',   label:'غلوتس', ic:'🍑', re:/غلوت/},
-  {key:'core',     label:'بطن',   ic:'🔥', re:/بطن|كور|خصر/},
+  {key:'all',      label:'الكل',  dia:null,     re:null},
+  {key:'chest',    label:'صدر',   dia:'صدر',    re:/صدر/},
+  {key:'back',     label:'ظهر',   dia:'ظهر',    re:/ظهر|لات|سحب|تجديف/},
+  {key:'shoulder', label:'أكتاف', dia:'كتف',    re:/كتف|دلت/},
+  {key:'arms',     label:'ذراع',  dia:'باي',    re:/باي|تراي|ساعد|ذراع/},
+  {key:'legs',     label:'أرجل',  dia:'كوادر',  re:/رجل|فخذ|كوادر|هامس|سكوات|سمان|كعب/},
+  {key:'glutes',   label:'غلوتس', dia:'غلوت',   re:/غلوت/},
+  {key:'core',     label:'بطن',   dia:'بطن',    re:/بطن|كور|خصر/},
 ];
 
 async function openAddExercise(dayId) {
@@ -566,8 +571,13 @@ async function openAddExercise(dayId) {
 }
 function closePicker() { document.getElementById('ovlPicker').classList.remove('open'); }
 function renderMuscleChips() {
-  document.getElementById('muscleChips').innerHTML = MUSCLE_FILTERS.map(f =>
-    `<button class="mfilter ${PICKER_MUSCLE === f.key ? 'on' : ''}" onclick="setMuscle('${f.key}')">${f.ic} ${f.label}</button>`).join('');
+  document.getElementById('muscleChips').innerHTML = MUSCLE_FILTERS.map(f => {
+    const img = f.dia ? muscleDiagram(f.dia) : '<div class="mcard-all">🏋️</div>';
+    return `<button class="mcard ${PICKER_MUSCLE === f.key ? 'on' : ''}" onclick="setMuscle('${f.key}')">
+      <span class="mcard-img">${img}</span>
+      <span class="mcard-lbl">${f.label}</span>
+    </button>`;
+  }).join('');
 }
 function setMuscle(k) { PICKER_MUSCLE = k; renderMuscleChips(); renderPicker(); }
 function renderPicker() {
