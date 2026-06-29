@@ -57,6 +57,23 @@ function daysLeft(end) {
   const d = Math.round((new Date(end) - new Date(today())) / 86400000);
   return Math.max(0, d);
 }
+// حساب الأيام المتبقية للدورة الشهرية + المرحلة الحالية
+function cycleInfo(t) {
+  if (!t || !t.last_period_date) return null;
+  const len = t.cycle_length || 28;
+  const now = new Date(today());
+  const next = new Date(t.last_period_date);
+  next.setDate(next.getDate() + len);
+  let daysUntil = Math.round((next - now) / 86400000);
+  while (daysUntil < 0) { next.setDate(next.getDate() + len); daysUntil = Math.round((next - now) / 86400000); }
+  const dayInCycle = ((len - daysUntil) % len + len) % len; // 0..len-1
+  let phase = 'الطور الجريبي', phaseTip = 'طاقتك ترتفع — وقت ممتاز لزيادة الأوزان';
+  if (dayInCycle <= 4)         { phase = 'الحيض';        phaseTip = 'اسمعي لجسمك — خففي الحمل إذا احتجتِ'; }
+  else if (dayInCycle <= 12)   { phase = 'الطور الجريبي'; phaseTip = 'طاقة عالية — أفضل وقت للتمارين الثقيلة'; }
+  else if (dayInCycle <= 16)   { phase = 'التبويض';      phaseTip = 'ذروة قوتك — استغليها وانتبهي للمفاصل'; }
+  else                         { phase = 'الطور الجسمي';  phaseTip = 'طبيعي تشعرين بإرهاق — تمارين متوسطة وكارديو خفيف'; }
+  return { daysUntil, nextDate: next.toISOString().slice(0, 10), cycleLength: len, lastDate: t.last_period_date, phase, phaseTip };
+}
 
 // ===== المصادقة =====
 app.post('/api/login', (req, res) => {
@@ -102,7 +119,7 @@ app.get('/api/admin/stats', requireAuth, requireAdmin, (req, res) => {
 // ===== الإدارة: المشتركات =====
 app.get('/api/admin/trainees', requireAuth, requireAdmin, (req, res) => {
   const rows = db.prepare(`SELECT id,name,username,password_plain,coach_note,start_date,end_date,daily_calorie_goal,
-    weight_kg,height_cm,age,gender,activity_level,deficit_pct,body_fat_pct,macro_style,protein_g,carb_g,fat_g,active FROM trainees ORDER BY id DESC`).all();
+    weight_kg,height_cm,age,gender,activity_level,deficit_pct,body_fat_pct,macro_style,protein_g,carb_g,fat_g,active,tracked FROM trainees ORDER BY id DESC`).all();
   const t = today();
   rows.forEach(r => {
     r.days_left = daysLeft(r.end_date);
@@ -114,7 +131,7 @@ app.get('/api/admin/trainees', requireAuth, requireAdmin, (req, res) => {
 app.post('/api/admin/trainees', requireAuth, requireAdmin, (req, res) => {
   const { name, username, password, months, daily_calorie_goal,
     weight_kg, height_cm, age, gender, activity_level, deficit_pct, body_fat_pct,
-    macro_style, protein_g, carb_g, fat_g } = req.body;
+    macro_style, protein_g, carb_g, fat_g, tracked } = req.body;
   if (!name || !username || !password || !months) return res.status(400).json({ message: 'أكملي كل الحقول' });
   if (db.prepare('SELECT id FROM trainees WHERE username=?').get(username))
     return res.status(400).json({ message: 'اسم المستخدم مستخدم مسبقاً' });
@@ -123,8 +140,8 @@ app.post('/api/admin/trainees', requireAuth, requireAdmin, (req, res) => {
   const info = db.prepare(`INSERT INTO trainees
     (name,username,password_hash,password_plain,start_date,end_date,daily_calorie_goal,
      weight_kg,height_cm,age,gender,activity_level,deficit_pct,body_fat_pct,
-     macro_style,protein_g,carb_g,fat_g,active,created_at)
-    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,?)`).run(
+     macro_style,protein_g,carb_g,fat_g,tracked,active,created_at)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,?)`).run(
     name, username, bcrypt.hashSync(password, 10), password,
     start.toISOString().slice(0, 10), end.toISOString().slice(0, 10),
     parseInt(daily_calorie_goal) || 2000,
@@ -134,6 +151,7 @@ app.post('/api/admin/trainees', requireAuth, requireAdmin, (req, res) => {
     (body_fat_pct !== undefined && body_fat_pct !== '') ? parseFloat(body_fat_pct) : null,
     macro_style || 'balanced',
     parseInt(protein_g) || 0, parseInt(carb_g) || 0, parseInt(fat_g) || 0,
+    (tracked === 0 || tracked === '0' || tracked === false) ? 0 : 1,
     new Date().toISOString());
   res.json({ id: info.lastInsertRowid });
 });
@@ -157,13 +175,15 @@ app.patch('/api/admin/trainees/:id', requireAuth, requireAdmin, (req, res) => {
       .run(bcrypt.hashSync(password, 10), password, id);
   } else if (action === 'coach_note') {
     db.prepare('UPDATE trainees SET coach_note=? WHERE id=?').run(req.body.note || null, id);
+  } else if (action === 'tracked') {
+    db.prepare('UPDATE trainees SET tracked=? WHERE id=?').run(req.body.tracked ? 1 : 0, id);
   } else if (action === 'edit') {
-    const { macro_style, protein_g, carb_g, fat_g } = req.body;
+    const { macro_style, protein_g, carb_g, fat_g, tracked } = req.body;
     db.prepare(`UPDATE trainees SET
       name=COALESCE(?,name), daily_calorie_goal=COALESCE(?,daily_calorie_goal),
       weight_kg=COALESCE(?,weight_kg), height_cm=COALESCE(?,height_cm), age=COALESCE(?,age),
       gender=COALESCE(?,gender), activity_level=COALESCE(?,activity_level), deficit_pct=COALESCE(?,deficit_pct),
-      body_fat_pct=?,
+      body_fat_pct=?, tracked=COALESCE(?,tracked),
       macro_style=COALESCE(?,macro_style), protein_g=COALESCE(?,protein_g),
       carb_g=COALESCE(?,carb_g), fat_g=COALESCE(?,fat_g)
       WHERE id=?`).run(
@@ -172,6 +192,7 @@ app.patch('/api/admin/trainees/:id', requireAuth, requireAdmin, (req, res) => {
       age ? parseInt(age) : null, gender || null, activity_level || null,
       (deficit_pct !== undefined && deficit_pct !== '') ? parseFloat(deficit_pct) : null,
       (body_fat_pct !== undefined && body_fat_pct !== '') ? parseFloat(body_fat_pct) : null,
+      (tracked === undefined || tracked === null || tracked === '') ? null : (tracked ? 1 : 0),
       macro_style || null,
       protein_g ? parseInt(protein_g) : null, carb_g ? parseInt(carb_g) : null,
       fat_g ? parseInt(fat_g) : null,
@@ -291,7 +312,8 @@ app.get('/api/admin/trainees/:id/report', requireAuth, requireAdmin, (req, res) 
   const recentSets = db.prepare(`SELECT w.log_date, w.set_number, w.weight, w.reps, e.name exercise
     FROM workout_logs w LEFT JOIN exercises e ON e.id=w.exercise_id
     WHERE w.trainee_id=? ORDER BY w.id DESC LIMIT 60`).all(id);
-  res.json({ trainee, logs, totalSets, lastWorkout, cals, recentSets });
+  const measurements = db.prepare(`SELECT * FROM measurements WHERE trainee_id=? ORDER BY log_date ASC, id ASC`).all(id);
+  res.json({ trainee, logs, totalSets, lastWorkout, cals, recentSets, measurements });
 });
 
 // ===== الإدارة: تغيير كلمة المرور =====
@@ -316,6 +338,8 @@ app.get('/api/trainee/home', requireAuth, requireTrainee, (req, res) => {
       .all(t.id, today()).map(r => r.plan_day_id)
   );
   planDays.forEach(d => { d.doneToday = completedToday.has(d.id); });
+  const lastMeas = db.prepare('SELECT log_date FROM measurements WHERE trainee_id=? ORDER BY log_date DESC, id DESC LIMIT 1').get(t.id);
+  const daysSinceMeas = lastMeas ? Math.round((new Date(today()) - new Date(lastMeas.log_date)) / 86400000) : null;
   res.json({
     name: t.name, daysLeft: daysLeft(t.end_date), endDate: t.end_date,
     calorieGoal: t.daily_calorie_goal, caloriesToday: cal.c,
@@ -323,7 +347,11 @@ app.get('/api/trainee/home', requireAuth, requireTrainee, (req, res) => {
     proteinToday: Math.round(cal.p), carbToday: Math.round(cal.cb), fatToday: Math.round(cal.f),
     setsToday, hasPlan: planDays.length > 0,
     planDays,
-    coachNote: t.coach_note || null
+    coachNote: t.coach_note || null,
+    tracked: t.tracked ? 1 : 0,
+    cycle: cycleInfo(t),
+    needsMeasurement: (daysSinceMeas === null || daysSinceMeas >= 7),
+    lastMeasurementDays: daysSinceMeas
   });
 });
 
@@ -391,11 +419,46 @@ app.delete('/api/trainee/calories/:id', requireAuth, requireTrainee, (req, res) 
 });
 
 app.get('/api/trainee/progress', requireAuth, requireTrainee, (req, res) => {
+  const uid = req.session.uid;
   const days = db.prepare(`SELECT log_date, COUNT(*) sets FROM workout_logs WHERE trainee_id=?
-    GROUP BY log_date ORDER BY log_date DESC LIMIT 14`).all(req.session.uid);
+    GROUP BY log_date ORDER BY log_date DESC LIMIT 14`).all(uid);
   const cals = db.prepare(`SELECT log_date, SUM(calories) calories FROM calorie_logs WHERE trainee_id=?
-    GROUP BY log_date ORDER BY log_date DESC LIMIT 14`).all(req.session.uid);
-  res.json({ days, cals });
+    GROUP BY log_date ORDER BY log_date DESC LIMIT 14`).all(uid);
+  const measurements = db.prepare(`SELECT * FROM measurements WHERE trainee_id=?
+    ORDER BY log_date ASC, id ASC`).all(uid);
+  const t = db.prepare('SELECT last_period_date, cycle_length FROM trainees WHERE id=?').get(uid);
+  res.json({ days, cals, measurements, cycle: cycleInfo(t) });
+});
+
+// تسجيل قياسات التطور (وزن + سنتيمترات)
+app.post('/api/trainee/measurement', requireAuth, requireTrainee, (req, res) => {
+  const { weight_kg, waist_cm, hip_cm, thigh_cm, arm_cm, chest_cm, notes, last_period_date, cycle_length } = req.body;
+  const num = v => (v === '' || v === undefined || v === null) ? null : parseFloat(v);
+  if (![weight_kg, waist_cm, hip_cm, thigh_cm, arm_cm, chest_cm].some(v => num(v) !== null))
+    return res.status(400).json({ message: 'أدخلي قياساً واحداً على الأقل' });
+  db.prepare(`INSERT INTO measurements (trainee_id,log_date,weight_kg,waist_cm,hip_cm,thigh_cm,arm_cm,chest_cm,notes,created_at)
+    VALUES (?,?,?,?,?,?,?,?,?,?)`).run(req.session.uid, today(),
+    num(weight_kg), num(waist_cm), num(hip_cm), num(thigh_cm), num(arm_cm), num(chest_cm),
+    notes || '', new Date().toISOString());
+  if (num(weight_kg)) db.prepare('UPDATE trainees SET weight_kg=? WHERE id=?').run(num(weight_kg), req.session.uid);
+  if (last_period_date) db.prepare('UPDATE trainees SET last_period_date=? WHERE id=?').run(last_period_date, req.session.uid);
+  if (cycle_length) db.prepare('UPDATE trainees SET cycle_length=? WHERE id=?').run(parseInt(cycle_length) || 28, req.session.uid);
+  res.json({ ok: true });
+});
+
+// تحديث معلومات الدورة الشهرية فقط
+app.post('/api/trainee/cycle', requireAuth, requireTrainee, (req, res) => {
+  const { last_period_date, cycle_length } = req.body;
+  if (last_period_date) db.prepare('UPDATE trainees SET last_period_date=? WHERE id=?').run(last_period_date, req.session.uid);
+  if (cycle_length) db.prepare('UPDATE trainees SET cycle_length=? WHERE id=?').run(parseInt(cycle_length) || 28, req.session.uid);
+  const t = db.prepare('SELECT last_period_date, cycle_length FROM trainees WHERE id=?').get(req.session.uid);
+  res.json({ ok: true, cycle: cycleInfo(t) });
+});
+
+// حذف قياس
+app.delete('/api/trainee/measurement/:id', requireAuth, requireTrainee, (req, res) => {
+  db.prepare('DELETE FROM measurements WHERE id=? AND trainee_id=?').run(req.params.id, req.session.uid);
+  res.json({ ok: true });
 });
 
 // ===== الإدارة: التنبيهات =====
@@ -406,7 +469,7 @@ app.get('/api/admin/notifications', requireAuth, requireAdmin, (req, res) => {
     FROM workout_sessions ws
     JOIN trainees tr ON tr.id = ws.trainee_id
     LEFT JOIN plan_days pd ON pd.id = ws.plan_day_id
-    WHERE ws.session_date=?
+    WHERE ws.session_date=? AND tr.tracked=1
     ORDER BY ws.completed_at DESC`).all(t);
   const threeDaysAgo = new Date();
   threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
@@ -415,7 +478,7 @@ app.get('/api/admin/notifications', requireAuth, requireAdmin, (req, res) => {
     SELECT tr.id, tr.name, MAX(wl.log_date) as last_workout
     FROM trainees tr
     LEFT JOIN workout_logs wl ON wl.trainee_id = tr.id
-    WHERE tr.active=1 AND tr.end_date >= ?
+    WHERE tr.active=1 AND tr.tracked=1 AND tr.end_date >= ?
     GROUP BY tr.id
     HAVING last_workout IS NULL OR last_workout < ?
     ORDER BY last_workout ASC`).all(t, cutoff);

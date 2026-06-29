@@ -122,6 +122,24 @@
 .macro-bar{height:10px;border-radius:99px;overflow:hidden;display:flex;margin:10px 0 6px}
 .macro-legend{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;font-size:.72rem;color:var(--muted);margin-bottom:2px}
 .mc-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-left:3px;vertical-align:middle}
+/* ===== متابعة التطور ===== */
+.meas-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.meas-field label{display:block;font-size:.76rem;font-weight:700;color:var(--g1);margin-bottom:4px}
+.meas-field input{width:100%;background:var(--bg3);border:1.5px solid var(--border);border-radius:11px;padding:10px 12px;font-size:.9rem;color:var(--text)}
+.meas-field input:focus{outline:none;border-color:var(--gold);background:#fff;box-shadow:0 0 0 3px var(--goldL)}
+.chart-box{background:#fff;border:1px solid var(--border);border-radius:16px;padding:14px 10px 8px;margin-bottom:14px;box-shadow:var(--sh-sm)}
+.delta-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.delta-pill{flex:1;min-width:90px;background:var(--bg3);border-radius:12px;padding:8px 10px;text-align:center}
+.delta-pill .dp-lbl{font-size:.7rem;color:var(--muted)}
+.delta-pill .dp-val{font-weight:900;font-size:1.05rem;margin-top:2px}
+.dp-down{color:#16A34A}.dp-up{color:#dc2626}.dp-flat{color:var(--g2)}
+.cycle-card{background:linear-gradient(135deg,#fce4ec,#fde7ef);border:1.5px solid #e91e8c;border-radius:16px;padding:16px;margin-bottom:14px}
+.cycle-card h4{margin:0 0 4px;color:#c2185b;font-size:.95rem}
+.cycle-big{font-size:2.4rem;font-weight:900;color:#c2185b;line-height:1}
+.cycle-phase{display:inline-block;background:#fff;color:#c2185b;border-radius:20px;padding:3px 12px;font-size:.74rem;font-weight:800;margin-top:6px}
+.reminder-banner{background:linear-gradient(135deg,#fff3e0,#ffe9c7);border:1.5px solid #e68a00;border-radius:14px;padding:14px 16px;margin-bottom:14px;display:flex;gap:12px;align-items:center}
+.reminder-banner .rb-ic{font-size:1.6rem}
+.reminder-banner .rb-txt{flex:1;font-size:.85rem;font-weight:700;color:#8a5200;line-height:1.5}
 /* ===== دليل ===== */
 .guide-hero{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;border-radius:16px;padding:20px;margin-bottom:16px;text-align:center}
 .guide-hero h3{margin:0 0 6px;font-size:1.2rem}
@@ -226,7 +244,7 @@
   <!-- التقدم -->
   <div class="page" id="p-prog">
     <h2 class="page-h">تقدمي</h2>
-    <p class="page-sub">آخر 14 يوم</p>
+    <p class="page-sub">سجّلي قياساتك أسبوعياً وشوفي تطورك</p>
     <div id="progBody"><div class="empty">جاري التحميل...</div></div>
   </div>
 
@@ -375,6 +393,16 @@ async function loadHome() {
     </button>`).join('');
   document.getElementById('homeBody').innerHTML = `
     ${d.coachNote ? `<div class="coach-note"><div class="from">📌 رسالة من مدربتك</div><div class="msg">${esc(d.coachNote)}</div></div>` : ''}
+    ${d.needsMeasurement ? `<div class="reminder-banner" onclick="go('prog')" style="cursor:pointer">
+      <span class="rb-ic">📏</span>
+      <div class="rb-txt">${d.lastMeasurementDays===null ? 'سجّلي قياساتك الأولى (وزن + سنتيمترات) لنبدأ متابعة تطوّرك' : 'مرّ '+d.lastMeasurementDays+' يوم على آخر قياس — حدّثي قياساتك الأسبوعية'}</div>
+      <span style="color:#e68a00;font-weight:900">‹</span>
+    </div>` : ''}
+    ${d.cycle ? `<div onclick="go('prog')" style="cursor:pointer;display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#fce4ec,#fde7ef);border:1.5px solid #e91e8c;border-radius:14px;padding:10px 14px;margin-bottom:14px">
+      <span style="font-size:1.3rem">🌸</span>
+      <div style="flex:1;font-size:.83rem;font-weight:700;color:#c2185b">باقي ${d.cycle.daysUntil} يوم لدورتك • ${d.cycle.phase}</div>
+      <span style="color:#c2185b;font-weight:900">‹</span>
+    </div>` : ''}
     <div style="margin-bottom:14px">
       <div style="font-weight:800;font-size:.9rem;margin-bottom:10px;display:flex;align-items:center;gap:6px">
         <span style="color:var(--gold)">📊</span> السعرات والماكروز اليومية
@@ -1192,34 +1220,161 @@ async function addCalorie() {
 async function delCal(id){await api('/api/trainee/calories/'+id,{method:'DELETE'});loadCalories();}
 
 // ===== التقدم =====
+// رسم بياني SVG خطي بسيط للتطور
+function lineChart(points, opts={}) {
+  // points: [{x:label, y:value}] بالترتيب الزمني
+  const vals = points.map(p=>p.y).filter(v=>v!=null);
+  if (vals.length < 2) return '<div class="empty" style="padding:24px">سجّلي قياسين على الأقل لعرض الرسم البياني 📊</div>';
+  const W=300, H=140, pad=24;
+  const min=Math.min(...vals), max=Math.max(...vals);
+  const range=(max-min)||1;
+  const n=points.length;
+  const xAt=i=> pad + (i/(n-1))*(W-2*pad);
+  const yAt=v=> H-pad - ((v-min)/range)*(H-2*pad);
+  let path='', dots='', area='';
+  points.forEach((p,i)=>{
+    if(p.y==null) return;
+    const x=xAt(i), y=yAt(p.y);
+    path += (path?' L':'M')+x.toFixed(1)+' '+y.toFixed(1);
+    dots += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.5" fill="${opts.color||'#4A7C59'}"/>`;
+  });
+  const first=points.find(p=>p.y!=null), last=[...points].reverse().find(p=>p.y!=null);
+  area = `M${xAt(0).toFixed(1)} ${(H-pad)} ` + points.map((p,i)=>p.y!=null?`L${xAt(i).toFixed(1)} ${yAt(p.y).toFixed(1)}`:'').join(' ') + ` L${xAt(n-1).toFixed(1)} ${(H-pad)} Z`;
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block">
+    <defs><linearGradient id="g-${opts.id||'c'}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="${opts.color||'#4A7C59'}" stop-opacity=".22"/>
+      <stop offset="1" stop-color="${opts.color||'#4A7C59'}" stop-opacity="0"/></linearGradient></defs>
+    <path d="${area}" fill="url(#g-${opts.id||'c'})"/>
+    <path d="${path}" fill="none" stroke="${opts.color||'#4A7C59'}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    ${dots}
+    <text x="${xAt(0)}" y="${H-6}" font-size="9" fill="#9AB5A3" text-anchor="middle">${first?first.x:''}</text>
+    <text x="${xAt(n-1)}" y="${H-6}" font-size="9" fill="#9AB5A3" text-anchor="middle">${last?last.x:''}</text>
+    <text x="${pad-4}" y="${yAt(max)+3}" font-size="9" fill="#9AB5A3" text-anchor="end">${max}</text>
+    <text x="${pad-4}" y="${yAt(min)+3}" font-size="9" fill="#9AB5A3" text-anchor="end">${min}</text>
+  </svg>`;
+}
+
+function deltaPill(label, first, last, unit, lowerIsBetter=true) {
+  if (first==null || last==null) return '';
+  const diff = +(last-first).toFixed(1);
+  const good = lowerIsBetter ? diff<0 : diff>0;
+  const cls = diff===0 ? 'dp-flat' : (good ? 'dp-down' : 'dp-up');
+  const arrow = diff===0 ? '—' : (diff<0 ? '▼' : '▲');
+  return `<div class="delta-pill"><div class="dp-lbl">${label}</div><div class="dp-val ${cls}">${arrow} ${Math.abs(diff)}${unit}</div></div>`;
+}
+
 async function loadProgress() {
   const d = await api('/api/trainee/progress');
   const box = document.getElementById('progBody');
   if (!d) return;
+  const ms = d.measurements || [];
+  const shortDate = s => s ? s.slice(5) : '';
+  const wPoints = ms.filter(m=>m.weight_kg!=null).map(m=>({x:shortDate(m.log_date), y:m.weight_kg}));
+  const firstM = ms[0], lastM = ms[ms.length-1];
   const maxSets = Math.max(1,...d.days.map(x=>x.sets));
-  const totalDays = d.days.length;
   const totalSets = d.days.reduce((s,x)=>s+x.sets,0);
-  const avgCal = d.cals.length ? Math.round(d.cals.reduce((s,x)=>s+x.calories,0)/d.cals.length) : 0;
+
+  const cycle = d.cycle;
+  const cycleHtml = cycle ? `
+    <div class="cycle-card">
+      <h4>🌸 الدورة الشهرية</h4>
+      <div class="cycle-big">${cycle.daysUntil} <span style="font-size:.9rem;font-weight:700">يوم</span></div>
+      <div style="font-size:.8rem;color:#a3578a;margin-top:2px">المتبقي لدورتك القادمة (${cycle.nextDate})</div>
+      <div class="cycle-phase">${cycle.phase}</div>
+      <div style="font-size:.78rem;color:#8a5278;margin-top:8px;line-height:1.6">💡 ${cycle.phaseTip}</div>
+      <button class="btn ghost sm" style="margin-top:10px" onclick="openCycle()">تحديث تاريخ الدورة</button>
+    </div>` : `
+    <div class="card" style="border:1.5px dashed #e91e8c;background:#fdf2f7">
+      <b style="color:#c2185b">🌸 تتبّع دورتك الشهرية</b>
+      <p style="font-size:.82rem;color:#a3578a;margin:6px 0 12px;line-height:1.6">سجّلي تاريخ آخر دورة لنحسب لك المتبقي ونكيّف نصائح التمرين مع مرحلتك.</p>
+      <button class="btn sm" onclick="openCycle()">+ إضافة تاريخ الدورة</button>
+    </div>`;
+
   box.innerHTML = `
-    <div class="stats">
-      <div class="stat"><div class="n">${totalDays}</div><div class="l">أيام تدرّبتِ</div></div>
-      <div class="stat"><div class="n">${totalSets}</div><div class="l">إجمالي الستات</div></div>
-      <div class="stat"><div class="n">${avgCal||'—'}</div><div class="l">متوسط السعرات</div></div>
+    ${cycleHtml}
+
+    <div class="card" style="margin-bottom:14px">
+      <b>➕ سجّلي قياساتك اليوم</b>
+      <p class="muted" style="margin:4px 0 4px">عبّئي ما تقدرين — يفضّل أسبوعياً بنفس الوقت</p>
+      <div class="meas-grid">
+        <div class="meas-field"><label>⚖️ الوزن (كجم)</label><input id="m-weight" type="number" step="0.1" inputmode="decimal" placeholder="مثال: 62.5"></div>
+        <div class="meas-field"><label>📏 الخصر (سم)</label><input id="m-waist" type="number" step="0.1" inputmode="decimal" placeholder="سم"></div>
+        <div class="meas-field"><label>🍑 الورك (سم)</label><input id="m-hip" type="number" step="0.1" inputmode="decimal" placeholder="سم"></div>
+        <div class="meas-field"><label>🦵 الفخذ (سم)</label><input id="m-thigh" type="number" step="0.1" inputmode="decimal" placeholder="سم"></div>
+        <div class="meas-field"><label>💪 الذراع (سم)</label><input id="m-arm" type="number" step="0.1" inputmode="decimal" placeholder="سم"></div>
+        <div class="meas-field"><label>👚 الصدر (سم)</label><input id="m-chest" type="number" step="0.1" inputmode="decimal" placeholder="سم"></div>
+      </div>
+      <button class="btn full" style="margin-top:12px" onclick="submitMeasurement()">✓ حفظ القياسات</button>
     </div>
+
+    <div class="chart-box">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:0 6px 8px"><b>⚖️ تطوّر الوزن</b><span class="muted">${wPoints.length} قياس</span></div>
+      ${lineChart(wPoints,{color:'#4A7C59',id:'w'})}
+    </div>
+
+    ${ms.length>=2 ? `<div class="card" style="margin-bottom:14px">
+      <b>📊 التغيّر منذ البداية</b>
+      <div class="delta-row">
+        ${deltaPill('الوزن', firstM.weight_kg, lastM.weight_kg, 'كجم')}
+        ${deltaPill('الخصر', firstM.waist_cm, lastM.waist_cm, 'سم')}
+        ${deltaPill('الورك', firstM.hip_cm, lastM.hip_cm, 'سم')}
+        ${deltaPill('الفخذ', firstM.thigh_cm, lastM.thigh_cm, 'سم')}
+      </div>
+      <p class="muted" style="margin-top:10px;font-size:.74rem">▼ نقص أخضر = اتجاه ممتاز • القياسات أصدق من الميزان وحده</p>
+    </div>` : ''}
+
+    ${ms.length ? `<div class="card" style="margin-bottom:14px">
+      <b>📒 سجل القياسات</b>
+      ${[...ms].reverse().map(m=>`<div class="list-item" style="flex-direction:column;align-items:stretch">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div class="nm">${m.log_date}</div>
+          <button class="edit-set-btn" onclick="delMeasurement(${m.id})">🗑️</button>
+        </div>
+        <div class="muted" style="margin-top:4px">${[
+          m.weight_kg!=null?`⚖️ ${m.weight_kg}كجم`:'',
+          m.waist_cm!=null?`خصر ${m.waist_cm}`:'',
+          m.hip_cm!=null?`ورك ${m.hip_cm}`:'',
+          m.thigh_cm!=null?`فخذ ${m.thigh_cm}`:'',
+          m.arm_cm!=null?`ذراع ${m.arm_cm}`:'',
+          m.chest_cm!=null?`صدر ${m.chest_cm}`:''
+        ].filter(Boolean).join(' • ')}</div>
+      </div>`).join('')}
+    </div>` : ''}
+
     <div class="card">
       <b>🏋️ نشاط التمرين</b>
-      <p class="muted" style="margin:4px 0 6px">عدد الستات المسجّلة في كل يوم</p>
+      <p class="muted" style="margin:4px 0 6px">عدد الستات المسجّلة (${totalSets} إجمالاً)</p>
       ${d.days.length ? d.days.map(x=>`
         <div style="margin-top:12px">
           <div style="display:flex;justify-content:space-between;font-weight:700;font-size:.82rem"><span>${x.log_date}</span><span style="color:var(--gold)">${x.sets} ست</span></div>
           <div class="bar"><i style="width:${Math.round(x.sets/maxSets*100)}%"></i></div>
         </div>`).join('') : '<div class="empty">لا تمارين مسجّلة بعد — ابدئي أول تمرين 💪</div>'}
-    </div>
-    <div class="card">
-      <b>🍎 السعرات اليومية</b>
-      <p class="muted" style="margin:4px 0 10px">سجل سعراتك خلال الأيام السابقة</p>
-      ${d.cals.length ? d.cals.map(x=>`<div class="list-item"><div class="info"><div class="nm">${x.log_date}</div></div><b style="color:var(--gold)">${x.calories} سعرة</b></div>`).join('') : '<div class="empty">لا سعرات مسجّلة</div>'}
     </div>`;
+}
+
+async function submitMeasurement() {
+  const g = id => document.getElementById(id).value;
+  const body = {
+    weight_kg:g('m-weight'), waist_cm:g('m-waist'), hip_cm:g('m-hip'),
+    thigh_cm:g('m-thigh'), arm_cm:g('m-arm'), chest_cm:g('m-chest')
+  };
+  const r = await api('/api/trainee/measurement', {method:'POST', body});
+  if (r) { toast('تم حفظ قياساتك ✓ استمري!'); loadProgress(); }
+}
+
+async function delMeasurement(id) {
+  if (!confirm('حذف هذا القياس؟')) return;
+  await api('/api/trainee/measurement/'+id, {method:'DELETE'});
+  loadProgress();
+}
+
+function openCycle() {
+  const last = prompt('تاريخ أول يوم في آخر دورة شهرية (سنة-شهر-يوم)\nمثال: 2026-06-20');
+  if (!last) return;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(last.trim())) { toast('صيغة التاريخ غير صحيحة', true); return; }
+  const len = prompt('كم عدد أيام دورتك عادةً؟ (الافتراضي 28)', '28') || '28';
+  api('/api/trainee/cycle', {method:'POST', body:{last_period_date:last.trim(), cycle_length:parseInt(len)||28}})
+    .then(r=>{ if(r){ toast('تم تحديث الدورة ✓'); loadProgress(); } });
 }
 
 loadHome();

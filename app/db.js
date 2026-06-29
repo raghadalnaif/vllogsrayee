@@ -110,10 +110,25 @@ CREATE TABLE IF NOT EXISTS cardio_logs (
   created_at TEXT
 );
 
+CREATE TABLE IF NOT EXISTS measurements (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  trainee_id INTEGER NOT NULL,
+  log_date TEXT NOT NULL,
+  weight_kg REAL,
+  waist_cm REAL,
+  hip_cm REAL,
+  thigh_cm REAL,
+  arm_cm REAL,
+  chest_cm REAL,
+  notes TEXT DEFAULT '',
+  created_at TEXT
+);
+
 CREATE INDEX IF NOT EXISTS idx_wl_trainee_date ON workout_logs(trainee_id, log_date);
 CREATE INDEX IF NOT EXISTS idx_cl_trainee_date ON calorie_logs(trainee_id, log_date);
 CREATE INDEX IF NOT EXISTS idx_ws_trainee_date ON workout_sessions(trainee_id, session_date);
 CREATE INDEX IF NOT EXISTS idx_cardio_trainee_date ON cardio_logs(trainee_id, session_date);
+CREATE INDEX IF NOT EXISTS idx_meas_trainee_date ON measurements(trainee_id, log_date);
 `);
 
 // ترقية قواعد بيانات قديمة (أُنشئت قبل إضافة أعمدة حاسبة السعرات)
@@ -134,6 +149,9 @@ addColIfMissing('fat_g', 'INTEGER DEFAULT 0');
 addColIfMissing('password_plain', 'TEXT DEFAULT NULL');
 addColIfMissing('coach_note', 'TEXT DEFAULT NULL');
 addColIfMissing('body_fat_pct', 'REAL DEFAULT NULL');
+addColIfMissing('tracked', 'INTEGER DEFAULT 1');          // مع متابعة (تنبيهات) أو بدون
+addColIfMissing('last_period_date', 'TEXT DEFAULT NULL'); // تاريخ آخر دورة شهرية
+addColIfMissing('cycle_length', 'INTEGER DEFAULT 28');    // طول الدورة بالأيام
 
 const EXERCISE_LIBRARY = [
   // غلوتس

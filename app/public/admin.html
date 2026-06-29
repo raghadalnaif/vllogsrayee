@@ -146,6 +146,12 @@
     <button class="x" onclick="closeM('ovlAdd')">✕</button>
     <h3 id="addTitle">مشتركة جديدة</h3>
     <div class="field"><label>الاسم</label><input class="input" id="tName"></div>
+    <div class="field"><label>نوع الاشتراك</label>
+      <select class="input" id="tTracked">
+        <option value="1">🔔 مع متابعة — تصلني تنبيهات نشاطها</option>
+        <option value="0">🔕 بدون متابعة — بدون تنبيهات</option>
+      </select>
+    </div>
     <div id="addOnlyFields">
       <div class="row">
         <div class="field"><label>اسم المستخدم</label><input class="input" id="tUser"></div>
@@ -323,7 +329,8 @@ function renderTrainees(q=''){
         <div style="width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.2rem;flex-shrink:0">${esc(initial)}</div>
         <div style="flex:1;min-width:0">
           <div style="font-weight:800;font-size:1.05rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap">${esc(t.name)}
-            ${t.status==='active'?`<span class="badge green">نشطة</span>`:`<span class="badge red">منتهية</span>`}</div>
+            ${t.status==='active'?`<span class="badge green">نشطة</span>`:`<span class="badge red">منتهية</span>`}
+            ${t.tracked?`<span class="badge gold">🔔 متابعة</span>`:`<span class="badge" style="background:var(--bg1);color:var(--g2)">🔕 بدون</span>`}</div>
           <div class="muted">@${esc(t.username)} • 🔑 ${esc(t.password_plain||'—')}</div>
         </div>
       </div>
@@ -434,6 +441,7 @@ function openAddTrainee(){
   document.getElementById('tDeficit').value='0';
   document.getElementById('tMacroStyle').value='balanced';
   document.getElementById('tMonths').value='1';
+  document.getElementById('tTracked').value='1';
   document.getElementById('calcInfo').textContent='';
   document.getElementById('macroInfo').textContent='';
   document.getElementById('addTitle').textContent='مشتركة جديدة';
@@ -455,6 +463,7 @@ function openEditTrainee(id){
   document.getElementById('tBodyFat').value=t.body_fat_pct||'';
   document.getElementById('tCal').value=t.daily_calorie_goal||2000;
   document.getElementById('tMacroStyle').value=t.macro_style||'balanced';
+  document.getElementById('tTracked').value=String(t.tracked==null?1:t.tracked);
   document.getElementById('calcInfo').textContent='';
   document.getElementById('addTitle').textContent='تعديل: '+t.name;
   document.getElementById('addOnlyFields').style.display='none';
@@ -468,6 +477,7 @@ async function saveTrainee(){
   const calcBody={name, daily_calorie_goal:tCal.value, weight_kg:tWeight.value, height_cm:tHeight.value,
     age:tAge.value, gender:tGender.value, activity_level:tActivity.value, deficit_pct:tDeficit.value,
     body_fat_pct:document.getElementById('tBodyFat').value||'',
+    tracked:parseInt(document.getElementById('tTracked').value),
     ..._getMacroBody()};
   if(editingId){
     const r=await api('/api/admin/trainees/'+editingId,{method:'PATCH',body:{action:'edit',...calcBody}});
@@ -631,6 +641,16 @@ async function openReport(id,name){
     </div>
     <div class="card"><b>السعرات حسب اليوم</b>
       ${d.cals.length? d.cals.map(c=>`<div class="list-item" style="margin-top:8px"><div class="info"><div class="nm">${c.log_date}</div></div><span class="muted">${c.calories} سعرة • ${Math.round(c.protein)}g بروتين</span></div>`).join('') : '<div class="empty">لا سعرات مسجّلة</div>'}
+    </div>
+    <div class="card"><b>📏 قياسات التطور (وزن + سنتيمتر)</b>
+      ${(d.measurements&&d.measurements.length)? [...d.measurements].reverse().map(m=>`<div class="list-item" style="margin-top:6px"><div class="info"><div class="nm">${m.log_date}</div><div class="meta">${[
+          m.weight_kg!=null?`⚖️ ${m.weight_kg}كجم`:'',
+          m.waist_cm!=null?`خصر ${m.waist_cm}`:'',
+          m.hip_cm!=null?`ورك ${m.hip_cm}`:'',
+          m.thigh_cm!=null?`فخذ ${m.thigh_cm}`:'',
+          m.arm_cm!=null?`ذراع ${m.arm_cm}`:'',
+          m.chest_cm!=null?`صدر ${m.chest_cm}`:''
+        ].filter(Boolean).join(' • ')}</div></div></div>`).join('') : '<div class="empty">لم تسجّل قياسات بعد</div>'}
     </div>
     <div class="card"><b>آخر الستات المسجّلة</b>
       ${d.recentSets.length? d.recentSets.map(s=>`<div class="list-item" style="margin-top:6px"><div class="info"><div class="nm">${esc(s.exercise||'تمرين')}</div><div class="meta">${s.log_date} • ست ${s.set_number}</div></div><b style="color:var(--gold)">${s.weight}كجم × ${s.reps}</b></div>`).join('') : '<div class="empty">لا ستات</div>'}
