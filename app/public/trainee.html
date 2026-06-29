@@ -108,6 +108,16 @@
 .cardio-row .field{flex:1;margin:0}
 .edit-set-btn{background:none;border:none;color:var(--muted);font-size:.8rem;cursor:pointer;padding:2px 6px;border-radius:6px;flex-shrink:0}
 .edit-set-btn:hover{background:var(--border);color:var(--white)}
+/* ===== بطاقة الإحماء ===== */
+.warmup-card{background:#fffaf0;border:1.5px solid #e68a00;border-radius:14px;padding:13px 15px;margin-top:12px}
+.warmup-head{font-weight:900;font-size:.9rem;margin-bottom:4px}
+.warmup-sub{font-size:.78rem;color:var(--muted);line-height:1.6;margin-bottom:8px}
+.warmup-list{list-style:none;padding:0;margin:0 0 10px;display:flex;flex-direction:column;gap:5px}
+.warmup-list li{position:relative;padding-right:18px;font-size:.82rem;font-weight:600;color:var(--white)}
+.warmup-list li::before{content:'✓';position:absolute;right:0;color:#4A7C59;font-weight:900}
+.warmup-btn{border:none;color:#fff;padding:9px 14px;border-radius:10px;font-size:.8rem;font-weight:800;font-family:inherit;width:100%;cursor:pointer}
+/* ===== بديل الأوزان الحرة ===== */
+.alt-free{background:#eef6f0;border-right:3px solid #4A7C59;border-radius:8px;padding:9px 12px;font-size:.82rem;color:#2d5a3d;margin-bottom:10px;line-height:1.6}
 /* ===== بطاقات الماكروز ===== */
 .macro-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
 .macro-card{background:#fff;border-radius:14px;padding:12px 6px 10px;text-align:center;position:relative;overflow:hidden;border:1.5px solid var(--border)}
@@ -484,6 +494,24 @@ async function loadPlan() {
   box.innerHTML = days.map(d => renderDay(d)).join('');
 }
 
+// تحديد نوع اليوم (علوي / سفلي / كامل) من العنوان والعضلات لاقتراح إحماء مناسب
+function warmupCard(d) {
+  const txt = ((d.title || '') + ' ' + (d.goal || '') + ' ' +
+    (d.exercises || []).map(e => e.target_muscle || '').join(' ')).toLowerCase();
+  const lower = /(سفلي|رجل|أرجل|ارجل|غلوت|جلوت|سكوات|فخذ|هامسترينج|باطن|سمان|ديدليفت|لانج|هيب)/.test(txt);
+  const upper = /(علوي|صدر|ظهر|كتف|باي|تراي|بنش|سحب|ضغط|عضل.?ة الذراع|لات|دلت)/.test(txt);
+  let kind, ex, color;
+  if (lower && !upper)      { kind = '🦵 يوم سفلي'; color = '#e68a00'; ex = ['دوران الورك 10 لكل جهة','أرجحة الساق 10 لكل رجل','قرفصاء بوزن الجسم 15 عدة','تفعيل الغلوتس بالباند 20 عدة']; }
+  else if (upper && !lower) { kind = '💪 يوم علوي'; color = '#1565c0'; ex = ['دوران الكتفين 10 أمام + 10 خلف','فتح وإغلاق الصدر 12 عدة','تدوير المعصمين 10 لكل جهة','إحماء خفيف بالأوزان قبل أول تمرين']; }
+  else                      { kind = '🔥 إحماء عام'; color = '#4A7C59'; ex = ['دوران الكتفين والورك','رفع الركبتين 20 عدة','قرفصاء بوزن الجسم 15 عدة','إحماء ديناميكي 5-8 دقائق']; }
+  return `<div class="warmup-card" style="border-color:${color}">
+    <div class="warmup-head" style="color:${color}">⚠️ لا تنسي الإحماء — ${kind}</div>
+    <div class="warmup-sub">5-10 دقائق إحماء قبل التمرين تقلل الإصابات وترفع أداءك. ابدئي بهذه الحركات:</div>
+    <ul class="warmup-list">${ex.map(e => `<li>${e}</li>`).join('')}</ul>
+    <button class="warmup-btn" style="background:${color}" onclick="go('guide')">▶ افتحي روتين الإحماء بالفيديو</button>
+  </div>`;
+}
+
 function renderDay(d) {
   const totalSets = d.exercises.reduce((s, e) => s + (e.sets || 3), 0);
   const doneSets  = d.exercises.reduce((s, e) => s + Math.min(e.sets || 3, (PLAN_LOGS[e.id] || []).length), 0);
@@ -499,6 +527,7 @@ function renderDay(d) {
       <span id="dp-text-${d.id}">${doneSets}/${totalSets} ست</span>
       <div class="day-prog-bar"><i id="dp-bar-${d.id}" style="width:${pct}%"></i></div>
     </div>
+    ${warmupCard(d)}
     <div style="margin-top:12px">
       ${d.exercises.length ? d.exercises.map(ex => renderExercise(ex)).join('') : '<div class="muted">لا تمارين في هذا اليوم</div>'}
     </div>
@@ -550,6 +579,7 @@ function renderExercise(ex) {
     </div>
     <div class="ex-body ${autoOpen ? 'open' : ''}" id="ex-body-${ex.id}">
       ${ex.notes ? `<div class="technique-note">📝 ${esc(ex.notes)}</div>` : ''}
+      ${ex.alt_free ? `<div class="alt-free">🏋️ <b>بديل بالأوزان الحرة:</b> ${esc(ex.alt_free)} <span style="display:block;margin-top:2px;font-size:.74rem;opacity:.85">لو الجهاز مشغول أو غير متوفر — نفس النتيجة</span></div>` : ''}
       ${mediaTag(ex.media_url, ex.name)}
       <div class="sets-list">
         ${Array.from({length: sets}, (_, i) => renderSetRow(ex, i + 1, logs[i])).join('')}

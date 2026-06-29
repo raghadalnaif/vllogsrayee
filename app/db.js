@@ -153,6 +153,11 @@ addColIfMissing('tracked', 'INTEGER DEFAULT 1');          // مع متابعة (
 addColIfMissing('last_period_date', 'TEXT DEFAULT NULL'); // تاريخ آخر دورة شهرية
 addColIfMissing('cycle_length', 'INTEGER DEFAULT 28');    // طول الدورة بالأيام
 
+// ترقية جدول التمارين: بديل بالأوزان الحرة لو التمرين على جهاز
+const exerciseCols = db.prepare("PRAGMA table_info(exercises)").all().map(c => c.name);
+if (!exerciseCols.includes('alt_free'))
+  db.exec("ALTER TABLE exercises ADD COLUMN alt_free TEXT DEFAULT ''");
+
 const EXERCISE_LIBRARY = [
   // غلوتس
   { name: 'هيب ثرست', target_muscle: 'غلوتس', notes: 'ضعي الكتفين على بنش والقدمين على الأرض، ادفعي الحوض للأعلى حتى الاستقامة الكاملة مع شد الغلوتس في القمة.' },

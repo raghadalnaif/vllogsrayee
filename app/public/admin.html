@@ -43,6 +43,7 @@
       <div class="field"><label>رابط صورة/فيديو (GIF أو mp4) — اختياري</label><input class="input" id="exUrl" placeholder="https://..."></div>
       <div class="field"><label>أو ارفعي ملف من جهازك</label><input class="input" id="exFile" type="file" accept="image/*,video/*"></div>
       <div class="field"><label>ملاحظات (اختياري)</label><textarea class="input" id="exNotes" rows="2" placeholder="تفاصيل عن الأداء الصحيح"></textarea></div>
+      <div class="field"><label>🏋️ بديل بالأوزان الحرة — لو التمرين على جهاز (اختياري)</label><input class="input" id="exAlt" placeholder="مثلاً: دمبل تشست بريس بدل جهاز الصدر"></div>
       <button class="btn full" onclick="addExercise()" id="exBtn">+ إضافة للمكتبة</button>
     </div>
     <div id="libList" style="margin-top:16px"></div>
@@ -522,7 +523,8 @@ async function loadLib(){
       :'<div class="ex-thumb"></div>';
     return `<div class="list-item">
       ${media}
-      <div class="info"><div class="nm">${esc(e.name)}</div><div class="meta">${esc(e.target_muscle||'—')}</div></div>
+      <div class="info"><div class="nm">${esc(e.name)}</div><div class="meta">${esc(e.target_muscle||'—')}${e.alt_free?` • 🏋️ بديل: ${esc(e.alt_free)}`:''}</div></div>
+      <button class="btn ghost sm" onclick="editAlt(${e.id})">🏋️ بديل</button>
       <button class="btn danger sm" onclick="delEx(${e.id})">حذف</button>
     </div>`;
   }).join('') : '<div class="empty">المكتبة فاضية — أضيفي أول تمرين</div>';
@@ -535,17 +537,25 @@ async function addExercise(){
   fd.append('target_muscle',document.getElementById('exMuscle').value.trim());
   fd.append('media_url',document.getElementById('exUrl').value.trim());
   fd.append('notes',document.getElementById('exNotes').value.trim());
+  fd.append('alt_free',document.getElementById('exAlt').value.trim());
   const f=document.getElementById('exFile').files[0];
   if(f)fd.append('media',f);
   const btn=document.getElementById('exBtn');btn.disabled=true;btn.textContent='جاري الرفع...';
   const r=await api('/api/admin/exercises',{method:'POST',body:fd});
   btn.disabled=false;btn.textContent='+ إضافة للمكتبة';
   if(!r)return;
-  ['exName','exMuscle','exUrl','exNotes'].forEach(i=>document.getElementById(i).value='');
+  ['exName','exMuscle','exUrl','exNotes','exAlt'].forEach(i=>document.getElementById(i).value='');
   document.getElementById('exFile').value='';
   toast('تمت الإضافة ✓');loadLib();
 }
 async function delEx(id){if(!confirm('حذف التمرين من المكتبة؟'))return;const r=await api('/api/admin/exercises/'+id,{method:'DELETE'});if(r){toast('تم الحذف');loadLib();}}
+async function editAlt(id){
+  const ex=EXERCISES.find(x=>x.id===id);
+  const v=prompt('بديل بالأوزان الحرة لـ "'+(ex?ex.name:'')+'"\n(مثلاً: دمبل تشست بريس) — اتركيه فاضي للحذف', ex&&ex.alt_free?ex.alt_free:'');
+  if(v===null)return;
+  const r=await api('/api/admin/exercises/'+id,{method:'PATCH',body:{alt_free:v.trim()}});
+  if(r){toast('تم حفظ البديل ✓');loadLib();}
+}
 
 // ===== منشئ الجدول =====
 async function openPlan(id,name){

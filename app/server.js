@@ -218,13 +218,22 @@ app.get('/api/admin/exercises', requireAuth, requireAdmin, (req, res) => {
 });
 
 app.post('/api/admin/exercises', requireAuth, requireAdmin, upload.single('media'), (req, res) => {
-  const { name, target_muscle, media_url, notes } = req.body;
+  const { name, target_muscle, media_url, notes, alt_free } = req.body;
   if (!name) return res.status(400).json({ message: 'اكتبي اسم التمرين' });
   let media = media_url || '';
   if (req.file) media = '/uploads/' + req.file.filename;
-  const info = db.prepare('INSERT INTO exercises (name,target_muscle,media_url,notes) VALUES (?,?,?,?)')
-    .run(name, target_muscle || '', media, notes || '');
+  const info = db.prepare('INSERT INTO exercises (name,target_muscle,media_url,notes,alt_free) VALUES (?,?,?,?,?)')
+    .run(name, target_muscle || '', media, notes || '', alt_free || '');
   res.json({ id: info.lastInsertRowid });
+});
+
+app.patch('/api/admin/exercises/:id', requireAuth, requireAdmin, (req, res) => {
+  const { alt_free, media_url } = req.body;
+  if (alt_free !== undefined)
+    db.prepare('UPDATE exercises SET alt_free=? WHERE id=?').run(alt_free || '', req.params.id);
+  if (media_url !== undefined)
+    db.prepare('UPDATE exercises SET media_url=? WHERE id=?').run(media_url || '', req.params.id);
+  res.json({ ok: true });
 });
 
 app.delete('/api/admin/exercises/:id', requireAuth, requireAdmin, (req, res) => {
@@ -358,7 +367,7 @@ app.get('/api/trainee/home', requireAuth, requireTrainee, (req, res) => {
 app.get('/api/trainee/plan', requireAuth, requireTrainee, (req, res) => {
   const days = db.prepare('SELECT * FROM plan_days WHERE trainee_id=? ORDER BY day_index').all(req.session.uid);
   days.forEach(d => {
-    d.exercises = db.prepare(`SELECT pe.*, e.name, e.target_muscle, e.media_url, e.notes
+    d.exercises = db.prepare(`SELECT pe.*, e.name, e.target_muscle, e.media_url, e.notes, e.alt_free
       FROM plan_exercises pe JOIN exercises e ON e.id=pe.exercise_id
       WHERE pe.plan_day_id=? ORDER BY pe.order_index`).all(d.id);
   });
