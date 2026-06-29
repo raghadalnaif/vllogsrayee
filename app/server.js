@@ -368,7 +368,7 @@ app.get('/api/trainee/plan', requireAuth, requireTrainee, (req, res) => {
   const uid = req.session.uid;
   const days = db.prepare('SELECT * FROM plan_days WHERE trainee_id=? ORDER BY day_index').all(uid);
   days.forEach(d => {
-    d.exercises = db.prepare(`SELECT pe.*, e.name, e.name_en, e.target_muscle, e.media_url, e.notes, e.alt_free
+    d.exercises = db.prepare(`SELECT pe.*, e.name, e.name_en, e.target_muscle, e.media_url, e.demo_url, e.notes, e.alt_free
       FROM plan_exercises pe JOIN exercises e ON e.id=pe.exercise_id
       WHERE pe.plan_day_id=? ORDER BY pe.order_index`).all(d.id);
     // الأداء السابق: آخر جلسة سابقة لكل تمرين (وزن × تكرار لكل ست)
@@ -410,7 +410,7 @@ app.post('/api/trainee/log', requireAuth, requireTrainee, (req, res) => {
 
 // مكتبة التمارين للمتدربة (لإضافة تمرين من عندها)
 app.get('/api/trainee/exercises', requireAuth, requireTrainee, (req, res) => {
-  res.json(db.prepare('SELECT id,name,name_en,target_muscle,media_url,alt_free FROM exercises ORDER BY name').all());
+  res.json(db.prepare('SELECT id,name,name_en,target_muscle,media_url,demo_url,alt_free FROM exercises ORDER BY name').all());
 });
 
 // المتدربة تضيف تمريناً إلى يوم من جدولها

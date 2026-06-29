@@ -83,6 +83,15 @@ function muscleDiagram(target) {
   </div>`;
 }
 
+// صورة تكنيك متحرّكة (إطاران: بداية/نهاية الحركة) — تُحمّل فقط عند فتح التمرين
+function demoAnim(ex) {
+  if (!ex || !ex.demo_url) return '';
+  return `<div class="demo-anim">
+    <img class="df0" src="${esc(ex.demo_url)}/0.jpg" loading="lazy" alt="${esc(ex.name)}">
+    <img class="df1" src="${esc(ex.demo_url)}/1.jpg" loading="lazy" alt="">
+  </div>`;
+}
+
 // صورة مصغّرة للتمرين: صورة حقيقية (تحميل كسول) أو بلاطة أيقونة فورية
 function exThumb(ex) {
   const url = ex.media_url || '';

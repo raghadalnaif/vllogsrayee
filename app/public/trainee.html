@@ -694,6 +694,7 @@ function renderExercise(ex) {
     </div>
     ${ex.added_by === 'trainee' ? '<div class="added-tag">➕ أضفتِه أنتِ</div>' : ''}
     <div class="ex-body ${autoOpen ? 'open' : ''}" id="ex-body-${ex.id}">
+      ${demoAnim(ex)}
       ${muscleDiagram(ex.target_muscle) ? `<div class="muscle-target-box">${muscleDiagram(ex.target_muscle)}<div class="mt-label">🎯 ${esc(ex.target_muscle)}</div></div>` : ''}
       ${ex.notes ? `<div class="technique-note">📝 ${esc(ex.notes)}</div>` : ''}
       ${ex.alt_free ? `<div class="alt-free">🏋️ <b>بديل بالأوزان الحرة:</b> ${esc(ex.alt_free)} <span style="display:block;margin-top:2px;font-size:.74rem;opacity:.85">لو الجهاز مشغول أو غير متوفر — نفس النتيجة</span></div>` : ''}
