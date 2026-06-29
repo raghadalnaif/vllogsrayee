@@ -684,6 +684,7 @@ function renderExercise(ex) {
     </div>
     ${ex.added_by === 'trainee' ? '<div class="added-tag">➕ أضفتِه أنتِ</div>' : ''}
     <div class="ex-body ${autoOpen ? 'open' : ''}" id="ex-body-${ex.id}">
+      ${muscleDiagram(ex.target_muscle) ? `<div class="muscle-target-box">${muscleDiagram(ex.target_muscle)}<div class="mt-label">🎯 ${esc(ex.target_muscle)}</div></div>` : ''}
       ${ex.notes ? `<div class="technique-note">📝 ${esc(ex.notes)}</div>` : ''}
       ${ex.alt_free ? `<div class="alt-free">🏋️ <b>بديل بالأوزان الحرة:</b> ${esc(ex.alt_free)} <span style="display:block;margin-top:2px;font-size:.74rem;opacity:.85">لو الجهاز مشغول أو غير متوفر — نفس النتيجة</span></div>` : ''}
       ${mediaTag(ex.media_url, ex.name)}
@@ -1094,7 +1095,8 @@ function renderGuide() {
     <div class="card" style="background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;border:none;text-align:center;margin-top:4px">
       <div style="font-size:1rem;font-weight:900;margin-bottom:6px">💪 النتائج تجيء من الاستمرارية والالتزام</div>
       <div style="font-size:.82rem;opacity:.9">70% التزام لمدة طويلة أفضل بكثير من الكمال لشهر واحد فقط — ابدئي ولا تتوقفي</div>
-    </div>`;
+    </div>
+    <div style="text-align:center;font-size:.66rem;color:var(--muted);margin-top:10px">الرسوم التشريحية: Wikimedia Commons — رخصة CC BY-SA</div>`;
 }
 
 function mediaTag(url, name) {

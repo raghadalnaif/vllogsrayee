@@ -56,6 +56,33 @@ function muscleVisual(m) {
   return ['🏋️', '#f1f8e9', '#558b2f'];
 }
 
+// خريطة العضلة المستهدفة (رسم تشريحي) — مصدر الصور: Wikimedia Commons (CC BY-SA)
+function muscleNum(m) {
+  m = String(m || '');
+  if (/غلوت|جلوت/.test(m))            return { n: 8,  back: true };
+  if (/هامس/.test(m))                 return { n: 11, back: true };
+  if (/ظهر|لات|سحب|تجديف/.test(m))    return { n: 12, back: true };
+  if (/تراب|trap/.test(m))            return { n: 9,  back: true };
+  if (/صدر/.test(m))                  return { n: 4 };
+  if (/كتف|دلت/.test(m))              return { n: 2 };
+  if (/باي/.test(m))                  return { n: 1 };
+  if (/تراي/.test(m))                 return { n: 5 };
+  if (/خصر/.test(m))                  return { n: 14 };
+  if (/بطن|كور/.test(m))              return { n: 6 };
+  if (/سمان|كعب/.test(m))             return { n: 7 };
+  if (/كوادر|فخذ|رجل|أرجل|سكوات/.test(m)) return { n: 10 };
+  return null;
+}
+function muscleDiagram(target) {
+  const mm = muscleNum(target);
+  if (!mm) return '';
+  const body = mm.back ? 'body-back' : 'body-front';
+  return `<div class="muscle-map">
+    <img class="mm-base" src="/img/muscles/${body}.svg" loading="lazy" alt="">
+    <img class="mm-hi" src="/img/muscles/m${mm.n}.svg" loading="lazy" alt="العضلة المستهدفة">
+  </div>`;
+}
+
 // صورة مصغّرة للتمرين: صورة حقيقية (تحميل كسول) أو بلاطة أيقونة فورية
 function exThumb(ex) {
   const url = ex.media_url || '';
