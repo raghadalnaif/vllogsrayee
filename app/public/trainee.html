@@ -7,6 +7,9 @@
 <link rel="stylesheet" href="/style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
+/* ===== تنقل سفلي: مساحة سفلية للمحتوى ===== */
+.wrap{padding-bottom:96px}
+.rest-bar{bottom:72px!important}
 /* ===== بطاقات أيام التمرين (Home) ===== */
 .home-top{display:flex;gap:12px;align-items:stretch;margin-bottom:14px}
 .days-left-card{flex:0 0 auto;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;border-radius:16px;padding:16px 18px;text-align:center;min-width:100px;display:flex;flex-direction:column;align-items:center;justify-content:center}
@@ -144,16 +147,11 @@
 <body>
 <div class="topbar">
   <div class="logo">vllogsraye<small>متابعتي</small></div>
-  <button class="btn ghost sm" onclick="logout()">خروج</button>
-</div>
-<div class="tabs" style="overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch">
-  <button class="tab on"  onclick="go('home',this)">🏠 اليوم</button>
-  <button class="tab"     onclick="go('plan',this)">💪 تمريني</button>
-  <button class="tab"     onclick="go('meals',this)">🥗 وجباتي</button>
-  <button class="tab"     onclick="go('cal',this)">🍎 سعراتي</button>
-  <button class="tab"     onclick="go('prog',this)">📈 تقدمي</button>
-  <button class="tab"     onclick="go('guide',this)">📖 دليلي</button>
-  <button class="tab"     onclick="go('codes',this)">🎁 أكواد</button>
+  <div style="display:flex;gap:8px;align-items:center">
+    <button class="icon-btn" data-nav="guide" onclick="go('guide')" title="دليلي">📖</button>
+    <button class="icon-btn" data-nav="codes" onclick="go('codes')" title="أكواد الخصم">🎁</button>
+    <button class="btn ghost sm" onclick="logout()">خروج</button>
+  </div>
 </div>
 
 <div class="wrap">
@@ -325,11 +323,11 @@ let HOME = null, PLAN_LOGS = {}, PLAN_DATA = null;
 let restInterval = null, workoutStart = null;
 
 // ===== التنقل =====
-async function go(p, el) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
-  el.classList.add('on');
+async function go(p) {
+  document.querySelectorAll('[data-nav]').forEach(t => t.classList.toggle('on', t.dataset.nav === p));
   document.querySelectorAll('.page').forEach(x => x.classList.remove('on'));
   document.getElementById('p-' + p).classList.add('on');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
   if (p === 'home')  loadHome();
   if (p === 'plan')  loadPlan();
   if (p === 'meals') renderMeals();
@@ -347,7 +345,7 @@ function copyTraineeCode(code, elId, btn) {
 }
 
 function goToDay(dayId) {
-  document.querySelectorAll('.tab')[1].click();
+  go('plan');
   setTimeout(() => {
     const el = document.getElementById('day-' + dayId);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -435,7 +433,7 @@ async function loadHome() {
       </div>
     </div>
     ${d.hasPlan
-      ? `<button class="btn full" onclick="document.querySelectorAll('.tab')[1].click()">💪 ابدئي تمرين اليوم</button>`
+      ? `<button class="btn full" onclick="go('plan')">💪 ابدئي تمرين اليوم</button>`
       : `<div class="card"><div class="empty">لم يتم إسناد جدول لك بعد — تواصلي مع المدربة 💬</div></div>`}`;
 }
 
@@ -1199,22 +1197,41 @@ async function loadProgress() {
   const box = document.getElementById('progBody');
   if (!d) return;
   const maxSets = Math.max(1,...d.days.map(x=>x.sets));
+  const totalDays = d.days.length;
+  const totalSets = d.days.reduce((s,x)=>s+x.sets,0);
+  const avgCal = d.cals.length ? Math.round(d.cals.reduce((s,x)=>s+x.calories,0)/d.cals.length) : 0;
   box.innerHTML = `
-    <div class="card">
-      <b>أيام التمرين (الستات المسجّلة)</b>
-      ${d.days.length ? d.days.map(x=>`
-        <div style="margin-top:10px">
-          <div style="display:flex;justify-content:space-between" class="muted"><span>${x.log_date}</span><span>${x.sets} ست</span></div>
-          <div class="bar"><i style="width:${Math.round(x.sets/maxSets*100)}%"></i></div>
-        </div>`).join('') : '<div class="empty">لا تمارين مسجّلة بعد</div>'}
+    <div class="stats">
+      <div class="stat"><div class="n">${totalDays}</div><div class="l">أيام تدرّبتِ</div></div>
+      <div class="stat"><div class="n">${totalSets}</div><div class="l">إجمالي الستات</div></div>
+      <div class="stat"><div class="n">${avgCal||'—'}</div><div class="l">متوسط السعرات</div></div>
     </div>
     <div class="card">
-      <b>السعرات اليومية</b>
-      ${d.cals.length ? d.cals.map(x=>`<div class="list-item" style="margin-top:8px"><div class="info"><div class="nm">${x.log_date}</div></div><b style="color:var(--gold)">${x.calories} سعرة</b></div>`).join('') : '<div class="empty">لا سعرات مسجّلة</div>'}
+      <b>🏋️ نشاط التمرين</b>
+      <p class="muted" style="margin:4px 0 6px">عدد الستات المسجّلة في كل يوم</p>
+      ${d.days.length ? d.days.map(x=>`
+        <div style="margin-top:12px">
+          <div style="display:flex;justify-content:space-between;font-weight:700;font-size:.82rem"><span>${x.log_date}</span><span style="color:var(--gold)">${x.sets} ست</span></div>
+          <div class="bar"><i style="width:${Math.round(x.sets/maxSets*100)}%"></i></div>
+        </div>`).join('') : '<div class="empty">لا تمارين مسجّلة بعد — ابدئي أول تمرين 💪</div>'}
+    </div>
+    <div class="card">
+      <b>🍎 السعرات اليومية</b>
+      <p class="muted" style="margin:4px 0 10px">سجل سعراتك خلال الأيام السابقة</p>
+      ${d.cals.length ? d.cals.map(x=>`<div class="list-item"><div class="info"><div class="nm">${x.log_date}</div></div><b style="color:var(--gold)">${x.calories} سعرة</b></div>`).join('') : '<div class="empty">لا سعرات مسجّلة</div>'}
     </div>`;
 }
 
 loadHome();
 </script>
+
+<!-- شريط التنقل السفلي -->
+<nav class="bottomnav">
+  <button class="navItem on" data-nav="home"  onclick="go('home')"><span class="ni-ic">🏠</span><span class="ni-lb">اليوم</span></button>
+  <button class="navItem"    data-nav="plan"  onclick="go('plan')"><span class="ni-ic">💪</span><span class="ni-lb">تمريني</span></button>
+  <button class="navItem"    data-nav="meals" onclick="go('meals')"><span class="ni-ic">🥗</span><span class="ni-lb">وجباتي</span></button>
+  <button class="navItem"    data-nav="cal"   onclick="go('cal')"><span class="ni-ic">🍎</span><span class="ni-lb">سعراتي</span></button>
+  <button class="navItem"    data-nav="prog"  onclick="go('prog')"><span class="ni-ic">📈</span><span class="ni-lb">تقدمي</span></button>
+</nav>
 </body>
 </html>

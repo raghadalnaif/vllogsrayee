@@ -29,6 +29,7 @@
       <div><h2 class="page-h">المشتركات</h2><p class="page-sub" style="margin:0">أضيفي مشتركة وحدّدي مدة اشتراكها</p></div>
       <button class="btn" onclick="openAddTrainee()">+ مشتركة</button>
     </div>
+    <div class="field" style="margin-bottom:16px"><input class="input" placeholder="🔍 ابحثي باسم المشتركة أو اسم المستخدم" oninput="filterTrainees(this.value)"></div>
     <div id="trnList"><div class="empty">جاري التحميل...</div></div>
   </div>
 
@@ -303,17 +304,36 @@ async function loadDash(){
 // ===== المشتركات =====
 async function loadTrainees(){
   TRAINEES=await api('/api/admin/trainees')||[];
-  document.getElementById('trnList').innerHTML=TRAINEES.length? TRAINEES.map(t=>`
+  renderTrainees();
+}
+function filterTrainees(q){ renderTrainees((q||'').trim().toLowerCase()); }
+function renderTrainees(q=''){
+  const box=document.getElementById('trnList');
+  const list = q ? TRAINEES.filter(t=>(t.name+' '+t.username).toLowerCase().includes(q)) : TRAINEES;
+  if(!TRAINEES.length){ box.innerHTML='<div class="empty">لا مشتركات بعد — أضيفي أول مشتركة</div>'; return; }
+  if(!list.length){ box.innerHTML='<div class="empty">لا نتائج مطابقة للبحث</div>'; return; }
+  box.innerHTML = list.map(t=>{
+    const initial = (t.name||'?').trim().charAt(0);
+    const total = 30; // تقدير بصري لشريط المدة
+    const pct = Math.max(4, Math.min(100, Math.round(t.days_left/total*100)));
+    const barColor = t.days_left<=3 ? '#dc2626' : (t.days_left<=7 ? '#e68a00' : 'var(--gold)');
+    return `
     <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:start;gap:10px;flex-wrap:wrap">
-        <div>
-          <div style="font-weight:800;font-size:1.05rem">${esc(t.name)}
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+        <div style="width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.2rem;flex-shrink:0">${esc(initial)}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:800;font-size:1.05rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap">${esc(t.name)}
             ${t.status==='active'?`<span class="badge green">نشطة</span>`:`<span class="badge red">منتهية</span>`}</div>
-          <div class="muted">@${esc(t.username)} • 🔑 ${esc(t.password_plain||'—')} • ${t.days_left} يوم متبقي • ينتهي ${t.end_date}</div>
-          <div class="muted">${t.daily_calorie_goal||2000} سعرة ${t.protein_g?`• بروتين ${t.protein_g}g • كارب ${t.carb_g}g • دهون ${t.fat_g}g`:''}</div>
-          ${t.coach_note?`<div style="margin-top:6px;padding:6px 10px;background:#e8f5ec;border-radius:8px;font-size:.8rem;border-right:3px solid var(--gold)">📌 ${esc(t.coach_note)}</div>`:''}
+          <div class="muted">@${esc(t.username)} • 🔑 ${esc(t.password_plain||'—')}</div>
         </div>
       </div>
+      <div style="display:flex;justify-content:space-between;font-size:.78rem;font-weight:700;margin-bottom:2px">
+        <span class="muted">${t.days_left} يوم متبقي</span>
+        <span class="muted">ينتهي ${t.end_date}</span>
+      </div>
+      <div class="bar"><i style="width:${pct}%;background:${barColor}"></i></div>
+      <div class="muted" style="margin-top:8px">🍎 ${t.daily_calorie_goal||2000} سعرة ${t.protein_g?`• بروتين ${t.protein_g}g • كارب ${t.carb_g}g • دهون ${t.fat_g}g`:''}</div>
+      ${t.coach_note?`<div style="margin-top:6px;padding:6px 10px;background:#e8f5ec;border-radius:8px;font-size:.8rem;border-right:3px solid var(--gold)">📌 ${esc(t.coach_note)}</div>`:''}
       <div class="row" style="margin-top:12px">
         <button class="btn sm" onclick="openPlan(${t.id},'${esc(t.name)}')">📋 الجدول</button>
         <button class="btn ghost sm" onclick="openReport(${t.id},'${esc(t.name)}')">📈 التقرير</button>
@@ -326,7 +346,7 @@ async function loadTrainees(){
         <button class="btn ghost sm" onclick="resetPass(${t.id})">🔑 باسورد</button>
         <button class="btn danger sm" onclick="delT(${t.id},'${esc(t.name)}')">حذف</button>
       </div>
-    </div>`).join('') : '<div class="empty">لا مشتركات بعد — أضيفي أول مشتركة</div>';
+    </div>`;}).join('');
 }
 
 function applyGoalPreset(){
