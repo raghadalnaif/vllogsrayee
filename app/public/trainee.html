@@ -32,7 +32,10 @@
 .ex-card.ex-done{border-color:#4A7C59;background:#f0faf3}
 .ex-header{display:flex;align-items:center;gap:10px;padding:14px 16px;cursor:pointer;user-select:none}
 .ex-status{min-width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:800;background:var(--bg1);color:var(--gold);flex-shrink:0}
+.ex-status.sm{min-width:30px;height:30px;font-size:.72rem}
 .ex-card.ex-done .ex-status{background:#4A7C59;color:#fff;font-size:1.1rem}
+.ex-card.ex-done .ex-status.sm{font-size:.95rem}
+.ex-name{display:flex;flex-direction:column}
 .ex-main{flex:1;min-width:0}
 .ex-name{font-weight:800;font-size:.98rem}
 .ex-summary{font-size:.78rem;color:var(--muted);margin-top:2px}
@@ -569,12 +572,13 @@ function renderExercise(ex) {
   const autoOpen = logs.length > 0 && !done;
   return `<div class="ex-card ${done ? 'ex-done' : ''}" id="ex-${ex.id}">
     <div class="ex-header" onclick="toggleEx(${ex.id})">
-      <div class="ex-status" id="ex-st-${ex.id}">${done ? '✓' : (logs.length + '/' + sets)}</div>
+      ${exThumb(ex)}
       <div class="ex-main">
-        <div class="ex-name">${esc(ex.name)}</div>
+        <div class="ex-name">${esc(ex.name)}${ex.name_en ? `<span class="ex-en">${esc(ex.name_en)}</span>` : ''}</div>
         <div class="ex-summary">${sets} مجموعات × ${esc(ex.reps || '')} تكرار${ex.target_weight ? ' • وزن مقترح: ' + esc(ex.target_weight) : ''}</div>
         ${ex.target_muscle ? `<span class="muscle-chip">${esc(ex.target_muscle)}</span>` : ''}
       </div>
+      <div class="ex-status sm" id="ex-st-${ex.id}">${done ? '✓' : (logs.length + '/' + sets)}</div>
       <span class="ex-chevron" id="ex-chev-${ex.id}">${done ? '' : '▼'}</span>
     </div>
     <div class="ex-body ${autoOpen ? 'open' : ''}" id="ex-body-${ex.id}">

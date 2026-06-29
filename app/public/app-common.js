@@ -41,3 +41,26 @@ async function logout() {
   await fetch('/api/logout', { method: 'POST' });
   location.href = '/';
 }
+
+// أيقونة + لون حسب العضلة المستهدفة (بدون تحميل من الإنترنت — يناسب النت البطيء)
+function muscleVisual(m) {
+  m = String(m || '');
+  if (/غلوت|جلوت/.test(m))            return ['🍑', '#fce4ec', '#c2185b'];
+  if (/سمان|كعب/.test(m))             return ['🦶', '#e8f5e9', '#2e7d32'];
+  if (/رجل|فخذ|كوادر|هامس|سكوات/.test(m)) return ['🦵', '#e0f2f1', '#00796b'];
+  if (/ظهر|لات|سحب|تجديف/.test(m))    return ['🔙', '#e3f2fd', '#1565c0'];
+  if (/باي|تراي|ذراع|ساعد/.test(m))   return ['💪', '#fff3e0', '#e65100'];
+  if (/كتف|دلت/.test(m))              return ['🏋️', '#ede7f6', '#5e35b1'];
+  if (/صدر/.test(m))                  return ['🫀', '#ffebee', '#c62828'];
+  if (/بطن|كور|خصر/.test(m))          return ['🔥', '#fffde7', '#f9a825'];
+  return ['🏋️', '#f1f8e9', '#558b2f'];
+}
+
+// صورة مصغّرة للتمرين: صورة حقيقية (تحميل كسول) أو بلاطة أيقونة فورية
+function exThumb(ex) {
+  const url = ex.media_url || '';
+  if (/\.(gif|jpg|jpeg|png|webp)$/i.test(url))
+    return `<img class="ex-thumb" loading="lazy" src="${esc(url)}" alt="${esc(ex.name)}">`;
+  const [ic, bg] = muscleVisual(ex.target_muscle);
+  return `<div class="ex-thumb-tile" style="background:${bg}">${ic}</div>`;
+}

@@ -153,10 +153,36 @@ addColIfMissing('tracked', 'INTEGER DEFAULT 1');          // مع متابعة (
 addColIfMissing('last_period_date', 'TEXT DEFAULT NULL'); // تاريخ آخر دورة شهرية
 addColIfMissing('cycle_length', 'INTEGER DEFAULT 28');    // طول الدورة بالأيام
 
-// ترقية جدول التمارين: بديل بالأوزان الحرة لو التمرين على جهاز
+// ترقية جدول التمارين: بديل بالأوزان الحرة + الاسم بالإنجليزي
 const exerciseCols = db.prepare("PRAGMA table_info(exercises)").all().map(c => c.name);
 if (!exerciseCols.includes('alt_free'))
   db.exec("ALTER TABLE exercises ADD COLUMN alt_free TEXT DEFAULT ''");
+if (!exerciseCols.includes('name_en'))
+  db.exec("ALTER TABLE exercises ADD COLUMN name_en TEXT DEFAULT ''");
+
+// تعبئة الأسماء الإنجليزية للمكتبة الجاهزة (مرة واحدة)
+const EXERCISE_EN = {
+  'هيب ثرست':'Hip Thrust','دونكي كيك':'Donkey Kick','غلوت بريدج':'Glute Bridge',
+  'كيك باك بالكيبل':'Cable Kickback','سكوات سومو':'Sumo Squat','ديدليفت مستقيم الأرجل':'Romanian Deadlift',
+  'سكوات خلفي (باربل)':'Barbell Back Squat','فاير هايدرنت':'Fire Hydrant','سكوات':'Squat','لانجز':'Lunges',
+  'ليغ بريس':'Leg Press','ليغ إكستنشن':'Leg Extension','ليغ كيرل':'Leg Curl',
+  'سبليت سكوات بلغاري':'Bulgarian Split Squat','رفع الكعبين (كاف ريز)':'Calf Raise','ستيب أب':'Step Up',
+  'لات بُل داون':'Lat Pulldown','سحب جالس (سيتد رو)':'Seated Row','تجديف منحني (بنت أوفر رو)':'Bent-Over Row',
+  'ديدليفت':'Deadlift','عقلة بمساعدة (بُل أب)':'Assisted Pull-Up','سوبرمان':'Superman','فيس بُل':'Face Pull',
+  'تجديف بدمبل بيد واحدة':'One-Arm Dumbbell Row','بايسبس كيرل':'Biceps Curl','ترايسبس بُش داون':'Triceps Pushdown',
+  'هامر كيرل':'Hammer Curl','ترايسبس إكستنشن خلف الرأس':'Overhead Triceps Extension','شولدر بريس':'Shoulder Press',
+  'رفرفة جانبية (لاترال ريز)':'Lateral Raise','بنش بريس بالدمبل':'Dumbbell Bench Press','ضغط (بوش أب)':'Push-Up',
+  'بلانك':'Plank','كرنش':'Crunch','رفع الأرجل معلق':'Hanging Leg Raise','روسيان تويست':'Russian Twist',
+  'ماونتن كلايمر':'Mountain Climber','بلانك جانبي':'Side Plank','بايسكل كرنش':'Bicycle Crunch','ديد باغ':'Dead Bug',
+  'ضغط صدر بالمكينة':'Machine Chest Press','بنش بريس مائل':'Incline Bench Press','رفع أمامي (أبرايت رو)':'Upright Row',
+  'ماكينة أبداكتور':'Hip Abductor Machine','ماكينة أداكتور':'Hip Adductor Machine','كرنش عكسي':'Reverse Crunch',
+};
+if (!db.prepare("SELECT value FROM meta WHERE key='ex_en_seeded'").get()) {
+  const updEn = db.prepare("UPDATE exercises SET name_en=? WHERE name=? AND (name_en IS NULL OR name_en='')");
+  db.transaction(() => { for (const [ar, en] of Object.entries(EXERCISE_EN)) updEn.run(en, ar); })();
+  db.prepare("INSERT OR REPLACE INTO meta (key,value) VALUES ('ex_en_seeded','1')").run();
+  console.log('✅ تمت تعبئة الأسماء الإنجليزية للتمارين');
+}
 
 const EXERCISE_LIBRARY = [
   // غلوتس

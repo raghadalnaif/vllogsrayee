@@ -38,7 +38,8 @@
     <h2 class="page-h">مكتبة التمارين</h2>
     <p class="page-sub">أضيفي التمرين مع صورة GIF أو فيديو يوضّح التكنيك والعضلة المستهدفة</p>
     <div class="card">
-      <div class="field"><label>اسم التمرين</label><input class="input" id="exName" placeholder="مثلاً: بنش بريس"></div>
+      <div class="field"><label>اسم التمرين (عربي)</label><input class="input" id="exName" placeholder="مثلاً: بنش بريس"></div>
+      <div class="field"><label>الاسم بالإنجليزي (اختياري)</label><input class="input" id="exNameEn" placeholder="e.g. Bench Press" style="direction:ltr"></div>
       <div class="field"><label>العضلة المستهدفة</label><input class="input" id="exMuscle" placeholder="مثلاً: صدر + ترايسبس"></div>
       <div class="field"><label>رابط صورة/فيديو (GIF أو mp4) — اختياري</label><input class="input" id="exUrl" placeholder="https://..."></div>
       <div class="field"><label>أو ارفعي ملف من جهازك</label><input class="input" id="exFile" type="file" accept="image/*,video/*"></div>
@@ -513,17 +514,9 @@ async function loadLib(){
   EXERCISES=await api('/api/admin/exercises')||[];
   document.getElementById('libList').innerHTML=EXERCISES.length? EXERCISES.map(e=>{
     const isYT=e.media_url&&!(/\.(gif|jpg|jpeg|png|webp|mp4|webm|mov)$/i.test(e.media_url));
-    const isImg=e.media_url&&(/\.(gif|jpg|jpeg|png|webp)$/i.test(e.media_url));
-    const media=isYT
-      ?`<a href="${esc(e.media_url)}" target="_blank" rel="noopener"
-          style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:#ff0000;
-          color:#fff;border-radius:8px;font-size:.72rem;font-weight:700;text-decoration:none">
-          <i class="fab fa-youtube"></i> يوتيوب</a>`
-      :isImg?`<img class="ex-thumb" src="${esc(e.media_url)}" alt="">`
-      :'<div class="ex-thumb"></div>';
     return `<div class="list-item">
-      ${media}
-      <div class="info"><div class="nm">${esc(e.name)}</div><div class="meta">${esc(e.target_muscle||'—')}${e.alt_free?` • 🏋️ بديل: ${esc(e.alt_free)}`:''}</div></div>
+      ${exThumb(e)}
+      <div class="info"><div class="nm">${esc(e.name)}${e.name_en?` <span style="font-size:.75rem;color:var(--g2);font-weight:600;direction:ltr">${esc(e.name_en)}</span>`:''}</div><div class="meta">${esc(e.target_muscle||'—')}${isYT?' • ▶ فيديو':''}${e.alt_free?` • 🏋️ بديل: ${esc(e.alt_free)}`:''}</div></div>
       <button class="btn ghost sm" onclick="editAlt(${e.id})">🏋️ بديل</button>
       <button class="btn danger sm" onclick="delEx(${e.id})">حذف</button>
     </div>`;
@@ -534,6 +527,7 @@ async function addExercise(){
   if(!name){toast('اكتبي اسم التمرين',true);return;}
   const fd=new FormData();
   fd.append('name',name);
+  fd.append('name_en',document.getElementById('exNameEn').value.trim());
   fd.append('target_muscle',document.getElementById('exMuscle').value.trim());
   fd.append('media_url',document.getElementById('exUrl').value.trim());
   fd.append('notes',document.getElementById('exNotes').value.trim());
@@ -544,7 +538,7 @@ async function addExercise(){
   const r=await api('/api/admin/exercises',{method:'POST',body:fd});
   btn.disabled=false;btn.textContent='+ إضافة للمكتبة';
   if(!r)return;
-  ['exName','exMuscle','exUrl','exNotes','exAlt'].forEach(i=>document.getElementById(i).value='');
+  ['exName','exNameEn','exMuscle','exUrl','exNotes','exAlt'].forEach(i=>document.getElementById(i).value='');
   document.getElementById('exFile').value='';
   toast('تمت الإضافة ✓');loadLib();
 }

@@ -218,12 +218,12 @@ app.get('/api/admin/exercises', requireAuth, requireAdmin, (req, res) => {
 });
 
 app.post('/api/admin/exercises', requireAuth, requireAdmin, upload.single('media'), (req, res) => {
-  const { name, target_muscle, media_url, notes, alt_free } = req.body;
+  const { name, name_en, target_muscle, media_url, notes, alt_free } = req.body;
   if (!name) return res.status(400).json({ message: 'اكتبي اسم التمرين' });
   let media = media_url || '';
   if (req.file) media = '/uploads/' + req.file.filename;
-  const info = db.prepare('INSERT INTO exercises (name,target_muscle,media_url,notes,alt_free) VALUES (?,?,?,?,?)')
-    .run(name, target_muscle || '', media, notes || '', alt_free || '');
+  const info = db.prepare('INSERT INTO exercises (name,name_en,target_muscle,media_url,notes,alt_free) VALUES (?,?,?,?,?,?)')
+    .run(name, name_en || '', target_muscle || '', media, notes || '', alt_free || '');
   res.json({ id: info.lastInsertRowid });
 });
 
@@ -367,7 +367,7 @@ app.get('/api/trainee/home', requireAuth, requireTrainee, (req, res) => {
 app.get('/api/trainee/plan', requireAuth, requireTrainee, (req, res) => {
   const days = db.prepare('SELECT * FROM plan_days WHERE trainee_id=? ORDER BY day_index').all(req.session.uid);
   days.forEach(d => {
-    d.exercises = db.prepare(`SELECT pe.*, e.name, e.target_muscle, e.media_url, e.notes, e.alt_free
+    d.exercises = db.prepare(`SELECT pe.*, e.name, e.name_en, e.target_muscle, e.media_url, e.notes, e.alt_free
       FROM plan_exercises pe JOIN exercises e ON e.id=pe.exercise_id
       WHERE pe.plan_day_id=? ORDER BY pe.order_index`).all(d.id);
   });
