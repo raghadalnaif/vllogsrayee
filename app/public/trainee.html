@@ -180,6 +180,19 @@
 .reminder-banner{background:linear-gradient(135deg,#fff3e0,#ffe9c7);border:1.5px solid #e68a00;border-radius:14px;padding:14px 16px;margin-bottom:14px;display:flex;gap:12px;align-items:center}
 .reminder-banner .rb-ic{font-size:1.6rem}
 .reminder-banner .rb-txt{flex:1;font-size:.85rem;font-weight:700;color:#8a5200;line-height:1.5}
+.banner-x{background:rgba(0,0,0,.06);border:none;width:26px;height:26px;border-radius:50%;font-size:.8rem;font-weight:900;cursor:pointer;flex-shrink:0;color:inherit;display:flex;align-items:center;justify-content:center}
+.banner-x:hover{background:rgba(0,0,0,.12)}
+/* ===== بطاقة تمرين اليوم ===== */
+.today-card{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;border-radius:18px;padding:20px;text-align:center;box-shadow:0 10px 30px rgba(74,124,89,.25)}
+.today-card.done{background:linear-gradient(135deg,#16A34A,#138a3e)}
+.today-card .tc-label{font-size:.85rem;font-weight:700;opacity:.9;margin-bottom:6px}
+.today-card .tc-title{font-size:1.45rem;font-weight:900;margin-bottom:16px;line-height:1.3}
+.today-card .tc-done{font-size:1.2rem;font-weight:900;margin-bottom:10px}
+.today-card .tc-next{font-size:.9rem;opacity:.95;margin-bottom:14px}
+.today-card .btn{background:#fff;color:var(--gold);box-shadow:none}
+.today-card.done .btn{color:#16A34A}
+.today-card .tc-daysleft{margin-top:14px;font-size:.78rem;opacity:.9;font-weight:700}
+.plan-toggle{width:100%;margin-bottom:14px;padding:11px;background:var(--bg1);border:1.5px solid var(--border);border-radius:12px;color:var(--gold);font-weight:800;font-size:.85rem;font-family:inherit;cursor:pointer}
 /* ===== دليل ===== */
 .guide-hero{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;border-radius:16px;padding:20px;margin-bottom:16px;text-align:center}
 .guide-hero h3{margin:0 0 6px;font-size:1.2rem}
@@ -386,6 +399,25 @@
   </div>
 </div>
 
+<!-- نافذة الدورة الشهرية -->
+<div class="overlay" id="ovlCycle">
+  <div class="modal" style="max-width:400px">
+    <button class="x" onclick="closeCycle()">✕</button>
+    <h3>🌸 تتبّع الدورة الشهرية</h3>
+    <div class="field"><label>متى بدأت آخر دورة؟ (اختاري من التقويم)</label>
+      <input class="input" type="date" id="cyDate"></div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">
+      <button class="btn ghost sm" onclick="cyQuick(0)">بدأت اليوم</button>
+      <button class="btn ghost sm" onclick="cyQuick(1)">أمس</button>
+      <button class="btn ghost sm" onclick="cyQuick(2)">قبل يومين</button>
+      <button class="btn ghost sm" onclick="cyQuick(3)">قبل ٣ أيام</button>
+    </div>
+    <div class="field"><label>كم يوم عدد دورتك عادةً؟</label>
+      <input class="input" type="number" id="cyLen" value="28" inputmode="numeric"></div>
+    <button class="btn full" onclick="saveCycle()">حفظ</button>
+  </div>
+</div>
+
 <!-- منتقي التمارين (إضافة تمرين من المتدربة) -->
 <div class="overlay" id="ovlPicker">
   <div class="modal" style="max-width:560px;padding:0;overflow:hidden;display:flex;flex-direction:column;max-height:88vh">
@@ -402,7 +434,7 @@
 <script src="/app-common.js"></script>
 <script>
 let HOME = null, PLAN_LOGS = {}, PLAN_DATA = null;
-let restInterval = null, workoutStart = null;
+let restInterval = null, workoutStart = null, FOCUS_DAY = null, PLAN_SHOW_ALL = false;
 
 // ===== التنقل =====
 async function go(p) {
@@ -446,26 +478,20 @@ async function loadHome() {
   const d = await api('/api/trainee/home');
   if (!d) return;
   HOME = d;
-  const calPct = d.calorieGoal ? Math.min(100, Math.round(d.caloriesToday / d.calorieGoal * 100)) : 0;
-  const chips = (d.planDays || []).map(day => `
-    <button class="day-chip ${day.doneToday ? 'done' : ''}" onclick="goToDay(${day.id})">
-      <div class="chip-icon">${day.doneToday ? '✓' : day.day_index}</div>
-      <div style="flex:1;text-align:right;min-width:0">
-        <div style="font-size:.82rem;font-weight:700">${esc(day.title)}</div>
-        ${day.doneToday ? '<div class="chip-title">مكتمل اليوم ✓</div>' : ''}
-      </div>
-    </button>`).join('');
+  const dStr = new Date().toISOString().slice(0,10);
+  const remDismissed = localStorage.getItem('dismiss_meas') === dStr;
+  const cycDismissed = localStorage.getItem('dismiss_cycle') === dStr;
   document.getElementById('homeBody').innerHTML = `
     ${d.coachNote ? `<div class="coach-note"><div class="from">📌 رسالة من مدربتك</div><div class="msg">${esc(d.coachNote)}</div></div>` : ''}
-    ${d.needsMeasurement ? `<div class="reminder-banner" onclick="go('prog')" style="cursor:pointer">
+    ${(d.needsMeasurement && !remDismissed) ? `<div class="reminder-banner dismissable" onclick="go('prog')" style="cursor:pointer">
       <span class="rb-ic">📏</span>
       <div class="rb-txt">${d.lastMeasurementDays===null ? 'سجّلي قياساتك الأولى (وزن + سنتيمترات) لنبدأ متابعة تطوّرك' : 'مرّ '+d.lastMeasurementDays+' يوم على آخر قياس — حدّثي قياساتك الأسبوعية'}</div>
-      <span style="color:#e68a00;font-weight:900">‹</span>
+      <button class="banner-x" onclick="event.stopPropagation();dismissBanner('meas',this)">✕</button>
     </div>` : ''}
-    ${d.cycle ? `<div onclick="go('prog')" style="cursor:pointer;display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#fce4ec,#fde7ef);border:1.5px solid #e91e8c;border-radius:14px;padding:10px 14px;margin-bottom:14px">
+    ${(d.cycle && !cycDismissed) ? `<div class="dismissable" onclick="go('prog')" style="cursor:pointer;display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#fce4ec,#fde7ef);border:1.5px solid #e91e8c;border-radius:14px;padding:10px 14px;margin-bottom:14px">
       <span style="font-size:1.3rem">🌸</span>
       <div style="flex:1;font-size:.83rem;font-weight:700;color:#c2185b">باقي ${d.cycle.daysUntil} يوم لدورتك • ${d.cycle.phase}</div>
-      <span style="color:#c2185b;font-weight:900">‹</span>
+      <button class="banner-x" style="color:#c2185b" onclick="event.stopPropagation();dismissBanner('cycle',this)">✕</button>
     </div>` : ''}
     <div style="margin-bottom:14px">
       <div style="font-weight:800;font-size:.9rem;margin-bottom:10px;display:flex;align-items:center;gap:6px">
@@ -511,23 +537,31 @@ async function loadHome() {
         </div>`;
       })()}
     </div>
-    <div class="home-top" style="margin-bottom:14px">
-      <div class="days-left-card">
-        <div class="days-num">${d.daysLeft}</div>
-        <div class="days-lbl">يوم متبقي</div>
-        <div class="days-end">ينتهي ${d.endDate}</div>
-      </div>
-      <div class="plan-days-card">
-        <h4>💪 أيام التمرين</h4>
-        <div class="day-chips">
-          ${chips || '<div class="muted" style="font-size:.8rem">لا يوجد جدول بعد</div>'}
-        </div>
-      </div>
-    </div>
-    ${d.hasPlan
-      ? `<button class="btn full" onclick="go('plan')">💪 ابدئي تمرين اليوم</button>`
-      : `<div class="card"><div class="empty">لم يتم إسناد جدول لك بعد — تواصلي مع المدربة 💬</div></div>`}`;
+    ${renderTodayWorkout(d)}`;
 }
+
+function renderTodayWorkout(d) {
+  if (!d.hasPlan) return `<div class="card"><div class="empty">لم يتم إسناد جدول لك بعد — تواصلي مع المدربة 💬</div></div>`;
+  const td = d.todayDay;
+  const done = d.doneTodayCount > 0;
+  const daysChip = `<div class="tc-daysleft">⏳ باقي ${d.daysLeft} يوم على اشتراكك</div>`;
+  if (done) {
+    return `<div class="today-card done">
+      <div class="tc-done">🎉 أنهيتِ تمرين اليوم — أحسنتِ!</div>
+      ${td ? `<div class="tc-next">تمرينك القادم: <b>${esc(td.title)}</b></div>
+        <button class="btn full" onclick="startToday(${td.id})">ابدئي التمرين القادم</button>` : ''}
+      ${daysChip}
+    </div>`;
+  }
+  return `<div class="today-card">
+    <div class="tc-label">💪 تمرين اليوم</div>
+    <div class="tc-title">${td ? esc(td.title) : 'تمرين'}</div>
+    <button class="btn full" onclick="startToday(${td ? td.id : 0})">▶ ابدئي تمرين اليوم</button>
+    ${daysChip}
+  </div>`;
+}
+
+function startToday(dayId) { FOCUS_DAY = dayId || null; PLAN_SHOW_ALL = false; go('plan'); }
 
 // ===== الجدول (بوست‑كامب) =====
 async function loadPlan() {
@@ -545,8 +579,18 @@ async function loadPlan() {
     PLAN_LOGS[l.plan_exercise_id].push(l);
   });
   PLAN_DATA = days;
-  box.innerHTML = days.map(d => renderDay(d)).join('');
+  const focusId = FOCUS_DAY || (HOME && HOME.todayDay && HOME.todayDay.id);
+  let shown = days;
+  if (!PLAN_SHOW_ALL && focusId) {
+    const f = days.find(d => d.id === focusId);
+    if (f) shown = [f];
+  }
+  const toggle = days.length > 1
+    ? `<button class="plan-toggle" onclick="togglePlanAll()">${PLAN_SHOW_ALL ? '🎯 عرض تمرين اليوم فقط' : '📅 عرض كل أيام الجدول'}</button>`
+    : '';
+  box.innerHTML = toggle + shown.map(d => renderDay(d)).join('');
 }
+function togglePlanAll() { PLAN_SHOW_ALL = !PLAN_SHOW_ALL; loadPlan(); }
 
 // ===== منتقي التمارين (إضافة تمرين من المتدربة) =====
 let TRAINEE_EX = null, PICKER_DAY = null, PICKER_MUSCLE = 'all';
@@ -816,9 +860,18 @@ function updateDayProgress() {
 
 async function completeDay(dayId) {
   const dur = workoutStart ? Math.round((Date.now()-workoutStart)/60000) : 0;
-  await api('/api/trainee/complete-workout', {method:'POST', body:{plan_day_id:dayId, duration_min:dur}});
-  toast('🎉 أحسنتِ! سُجّل إتمام تمرين اليوم');
-  workoutStart = null;
+  const r = await api('/api/trainee/complete-workout', {method:'POST', body:{plan_day_id:dayId, duration_min:dur}});
+  if (!r) return;
+  workoutStart = null; FOCUS_DAY = null; PLAN_SHOW_ALL = false;
+  toast(`🎉 أنهيتِ تمرينك${dur > 0 ? ' في ' + dur + ' دقيقة' : ''} ✓`);
+  await loadHome();
+  go('home');
+}
+
+function dismissBanner(key, btn) {
+  localStorage.setItem('dismiss_' + key, new Date().toISOString().slice(0,10));
+  const b = btn.closest('.dismissable');
+  if (b) b.remove();
 }
 
 // ===== مؤقت الراحة =====
@@ -1545,12 +1598,23 @@ async function delMeasurement(id) {
 }
 
 function openCycle() {
-  const last = prompt('تاريخ أول يوم في آخر دورة شهرية (سنة-شهر-يوم)\nمثال: 2026-06-20');
-  if (!last) return;
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(last.trim())) { toast('صيغة التاريخ غير صحيحة', true); return; }
-  const len = prompt('كم عدد أيام دورتك عادةً؟ (الافتراضي 28)', '28') || '28';
-  api('/api/trainee/cycle', {method:'POST', body:{last_period_date:last.trim(), cycle_length:parseInt(len)||28}})
-    .then(r=>{ if(r){ toast('تم تحديث الدورة ✓'); loadProgress(); } });
+  const c = HOME && HOME.cycle;
+  document.getElementById('cyDate').value = c && c.lastDate ? c.lastDate : '';
+  document.getElementById('cyDate').max = new Date().toISOString().slice(0,10);
+  document.getElementById('cyLen').value = c && c.cycleLength ? c.cycleLength : 28;
+  document.getElementById('ovlCycle').classList.add('open');
+}
+function closeCycle() { document.getElementById('ovlCycle').classList.remove('open'); }
+function cyQuick(n) {
+  const d = new Date(); d.setDate(d.getDate() - n);
+  document.getElementById('cyDate').value = d.toISOString().slice(0,10);
+}
+async function saveCycle() {
+  const last = document.getElementById('cyDate').value;
+  const len = document.getElementById('cyLen').value || '28';
+  if (!last) { toast('اختاري تاريخ بداية الدورة', true); return; }
+  const r = await api('/api/trainee/cycle', {method:'POST', body:{last_period_date:last, cycle_length:parseInt(len)||28}});
+  if (r) { toast('تم تحديث الدورة ✓'); closeCycle(); loadProgress(); loadHome(); }
 }
 
 loadHome();

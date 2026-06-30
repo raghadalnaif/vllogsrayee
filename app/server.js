@@ -347,6 +347,10 @@ app.get('/api/trainee/home', requireAuth, requireTrainee, (req, res) => {
       .all(t.id, today()).map(r => r.plan_day_id)
   );
   planDays.forEach(d => { d.doneToday = completedToday.has(d.id); });
+  // تحديد تمرين اليوم تلقائياً (بالتناوب حسب عدد الجلسات المكتملة)
+  const totalSessions = db.prepare('SELECT COUNT(*) c FROM workout_sessions WHERE trainee_id=?').get(t.id).c;
+  const doneTodayCount = completedToday.size;
+  const todayDay = planDays.length ? planDays[totalSessions % planDays.length] : null;
   const lastMeas = db.prepare('SELECT log_date FROM measurements WHERE trainee_id=? ORDER BY log_date DESC, id DESC LIMIT 1').get(t.id);
   const daysSinceMeas = lastMeas ? Math.round((new Date(today()) - new Date(lastMeas.log_date)) / 86400000) : null;
   res.json({
@@ -355,7 +359,7 @@ app.get('/api/trainee/home', requireAuth, requireTrainee, (req, res) => {
     proteinGoal: t.protein_g || 0, carbGoal: t.carb_g || 0, fatGoal: t.fat_g || 0,
     proteinToday: Math.round(cal.p), carbToday: Math.round(cal.cb), fatToday: Math.round(cal.f),
     setsToday, hasPlan: planDays.length > 0,
-    planDays,
+    planDays, todayDay, doneTodayCount,
     coachNote: t.coach_note || null,
     tracked: t.tracked ? 1 : 0,
     cycle: cycleInfo(t),
