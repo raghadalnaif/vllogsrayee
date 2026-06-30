@@ -1505,9 +1505,6 @@ async function loadProgress() {
     </div>`;
 
   box.innerHTML = `
-    ${cycleHtml}
-    ${waterNote}
-
     <div class="card" style="margin-bottom:14px">
       <b>➕ سجّلي قياساتك اليوم</b>
       <p class="muted" style="margin:4px 0 4px">عبّئي ما تقدرين — يفضّل أسبوعياً بنفس الوقت</p>
@@ -1521,6 +1518,9 @@ async function loadProgress() {
       </div>
       <button class="btn full" style="margin-top:12px" onclick="submitMeasurement()">✓ حفظ القياسات</button>
     </div>
+
+    ${cycleHtml}
+    ${waterNote}
 
     <div class="chart-box">
       <div style="display:flex;justify-content:space-between;align-items:center;padding:0 6px 8px"><b>⚖️ تطوّر الوزن</b><span class="muted">${wPoints.length} قياس</span></div>
