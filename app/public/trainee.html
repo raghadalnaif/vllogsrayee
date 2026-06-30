@@ -173,10 +173,8 @@
 .delta-pill .dp-lbl{font-size:.7rem;color:var(--muted)}
 .delta-pill .dp-val{font-weight:900;font-size:1.05rem;margin-top:2px}
 .dp-down{color:#16A34A}.dp-up{color:#dc2626}.dp-flat{color:var(--g2)}
-.cycle-card{background:linear-gradient(135deg,#fce4ec,#fde7ef);border:1.5px solid #e91e8c;border-radius:16px;padding:16px;margin-bottom:14px}
-.cycle-card h4{margin:0 0 4px;color:#c2185b;font-size:.95rem}
-.cycle-big{font-size:2.4rem;font-weight:900;color:#c2185b;line-height:1}
-.cycle-phase{display:inline-block;background:#fff;color:#c2185b;border-radius:20px;padding:3px 12px;font-size:.74rem;font-weight:800;margin-top:6px}
+.cycle-card{background:linear-gradient(135deg,#e8f5ec,#f0faf3);border:1.5px solid var(--gold);border-radius:16px;padding:16px;margin-bottom:14px}
+.cycle-card h4{margin:0 0 4px;color:var(--gold);font-size:.95rem}
 .reminder-banner{background:linear-gradient(135deg,#fff3e0,#ffe9c7);border:1.5px solid #e68a00;border-radius:14px;padding:14px 16px;margin-bottom:14px;display:flex;gap:12px;align-items:center}
 .water-note{background:#eaf3f8;border-right:3px solid #5E8AA0;border-radius:12px;padding:12px 14px;font-size:.83rem;color:#2d5468;line-height:1.7;margin-bottom:14px}
 .reminder-banner .rb-ic{font-size:1.6rem}
@@ -1490,9 +1488,9 @@ async function loadProgress() {
   const cycleHtml = `
     <div class="cycle-card">
       <h4>🌸 الدورة الشهرية</h4>
-      ${cycle ? `<div style="font-size:.86rem;color:#8a5278;margin-bottom:10px">آخر دورة سجّلتيها: <b style="color:#c2185b">${cycle.lastDate}</b>${cycle.daysSince>=0?` (قبل ${cycle.daysSince} يوم)`:''}</div>`
-              : `<div style="font-size:.84rem;color:#a3578a;margin-bottom:10px;line-height:1.6">سجّلي تاريخ بداية دورتك لتتابعيها بسهولة.</div>`}
-      <label style="display:block;font-size:.78rem;font-weight:700;color:#c2185b;margin-bottom:6px">متى بدأت دورتك؟</label>
+      ${cycle ? `<div style="font-size:.86rem;color:var(--g2);margin-bottom:10px">آخر دورة سجّلتيها: <b style="color:var(--gold)">${cycle.lastDate}</b>${cycle.daysSince>=0?` (قبل ${cycle.daysSince} يوم)`:''}</div>`
+              : `<div style="font-size:.84rem;color:var(--g2);margin-bottom:10px;line-height:1.6">سجّلي تاريخ بداية دورتك لتتابعيها بسهولة.</div>`}
+      <label style="display:block;font-size:.78rem;font-weight:700;color:var(--gold);margin-bottom:6px">متى بدأت دورتك؟</label>
       <input class="input" type="date" id="cyDate" style="margin-bottom:8px">
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
         <button class="btn ghost sm" onclick="cyQuick(0)">بدأت اليوم</button>
