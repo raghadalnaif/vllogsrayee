@@ -400,26 +400,6 @@
   </div>
 </div>
 
-<!-- نافذة الدورة الشهرية -->
-<div class="overlay" id="ovlCycle">
-  <div class="modal" style="max-width:400px">
-    <button class="x" onclick="closeCycle()">✕</button>
-    <h3>🌸 تتبّع الدورة الشهرية</h3>
-    <div class="field"><label>متى بدأت آخر دورة؟ (اختاري من التقويم)</label>
-      <input class="input" type="date" id="cyDate"></div>
-    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">
-      <button class="btn ghost sm" onclick="cyQuick(0)">بدأت اليوم</button>
-      <button class="btn ghost sm" onclick="cyQuick(1)">أمس</button>
-      <button class="btn ghost sm" onclick="cyQuick(2)">قبل يومين</button>
-      <button class="btn ghost sm" onclick="cyQuick(3)">قبل ٣ أيام</button>
-    </div>
-    <div class="field"><label>كل كم يوم تجيكِ الدورة؟</label>
-      <input class="input" type="number" id="cyLen" value="28" inputmode="numeric" min="15" max="45">
-      <div style="font-size:.72rem;color:var(--muted);margin-top:5px;line-height:1.6">المقصود <b>طول الدورة كاملة</b>: من أول يوم في الدورة إلى أول يوم في الدورة الجاية — غالباً <b>٢٨ يوم</b>.<br>(مو عدد أيام نزول الدم)</div></div>
-    <button class="btn full" onclick="saveCycle()">حفظ</button>
-  </div>
-</div>
-
 <!-- منتقي التمارين (إضافة تمرين من المتدربة) -->
 <div class="overlay" id="ovlPicker">
   <div class="modal" style="max-width:560px;padding:0;overflow:hidden;display:flex;flex-direction:column;max-height:88vh">
@@ -489,11 +469,6 @@ async function loadHome() {
       <span class="rb-ic">📏</span>
       <div class="rb-txt">${d.lastMeasurementDays===null ? 'سجّلي قياساتك الأولى (وزن + سنتيمترات) لنبدأ متابعة تطوّرك' : 'مرّ '+d.lastMeasurementDays+' يوم على آخر قياس — حدّثي قياساتك الأسبوعية'}</div>
       <button class="banner-x" onclick="event.stopPropagation();dismissBanner('meas',this)">✕</button>
-    </div>` : ''}
-    ${(d.cycle && !cycDismissed) ? `<div class="dismissable" onclick="go('prog')" style="cursor:pointer;display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#fce4ec,#fde7ef);border:1.5px solid #e91e8c;border-radius:14px;padding:10px 14px;margin-bottom:14px">
-      <span style="font-size:1.3rem">🌸</span>
-      <div style="flex:1;font-size:.83rem;font-weight:700;color:#c2185b">باقي ${d.cycle.daysUntil} يوم لدورتك • ${d.cycle.phase}</div>
-      <button class="banner-x" style="color:#c2185b" onclick="event.stopPropagation();dismissBanner('cycle',this)">✕</button>
     </div>` : ''}
     <div style="margin-bottom:14px">
       <div style="font-weight:800;font-size:.9rem;margin-bottom:10px;display:flex;align-items:center;gap:6px">
@@ -1509,25 +1484,26 @@ async function loadProgress() {
   // ملاحظة احتباس السوائل: فقط إذا سجّلت زيادة وزن خلال/قبل الدورة
   const wMs = ms.filter(m => m.weight_kg != null);
   const gainedWeight = wMs.length >= 2 && wMs[wMs.length-1].weight_kg > wMs[wMs.length-2].weight_kg;
-  const waterPhase = cycle && (cycle.phase === 'الحيض' || cycle.phase === 'الطور الجسمي');
+  const waterPhase = cycle && cycle.daysSince != null && cycle.daysSince <= 12;
   const waterNote = (gainedWeight && waterPhase) ? `
     <div class="water-note">💧 <b>لا تقلقي —</b> زيادة أو ثبات الوزن وقت الدورة أو قبلها أمر طبيعي تماماً بسبب احتباس السوائل، ويزول من نفسه بعد الدورة. ركّزي على التزامك لا على رقم الميزان 💚</div>` : '';
-  const cycleHtml = cycle ? `
+  const cycleHtml = `
     <div class="cycle-card">
       <h4>🌸 الدورة الشهرية</h4>
-      <div class="cycle-big">${cycle.daysUntil} <span style="font-size:.9rem;font-weight:700">يوم</span></div>
-      <div style="font-size:.8rem;color:#a3578a;margin-top:2px">المتبقي لدورتك القادمة (${cycle.nextDate})</div>
-      <div class="cycle-phase">${cycle.phase}</div>
-      <div style="font-size:.78rem;color:#8a5278;margin-top:8px;line-height:1.6">💡 ${cycle.phaseTip}</div>
-      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
-        <button class="btn ghost sm" onclick="openCycle()">✏️ تعديل التاريخ</button>
-        <button class="btn ghost sm" onclick="resetCycle()">🗑️ حذف وإعادة</button>
+      ${cycle ? `<div style="font-size:.86rem;color:#8a5278;margin-bottom:10px">آخر دورة سجّلتيها: <b style="color:#c2185b">${cycle.lastDate}</b>${cycle.daysSince>=0?` (قبل ${cycle.daysSince} يوم)`:''}</div>`
+              : `<div style="font-size:.84rem;color:#a3578a;margin-bottom:10px;line-height:1.6">سجّلي تاريخ بداية دورتك لتتابعيها بسهولة.</div>`}
+      <label style="display:block;font-size:.78rem;font-weight:700;color:#c2185b;margin-bottom:6px">متى بدأت دورتك؟</label>
+      <input class="input" type="date" id="cyDate" style="margin-bottom:8px">
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+        <button class="btn ghost sm" onclick="cyQuick(0)">بدأت اليوم</button>
+        <button class="btn ghost sm" onclick="cyQuick(1)">أمس</button>
+        <button class="btn ghost sm" onclick="cyQuick(2)">قبل يومين</button>
+        <button class="btn ghost sm" onclick="cyQuick(3)">قبل ٣ أيام</button>
       </div>
-    </div>` : `
-    <div class="card" style="border:1.5px dashed #e91e8c;background:#fdf2f7">
-      <b style="color:#c2185b">🌸 تتبّع دورتك الشهرية</b>
-      <p style="font-size:.82rem;color:#a3578a;margin:6px 0 12px;line-height:1.6">سجّلي تاريخ آخر دورة لنحسب لك المتبقي ونكيّف نصائح التمرين مع مرحلتك.</p>
-      <button class="btn sm" onclick="openCycle()">+ إضافة تاريخ الدورة</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn sm" style="flex:1" onclick="saveCyclePeriod()">💾 حفظ تاريخ الدورة</button>
+        ${cycle ? `<button class="btn ghost sm" onclick="resetCycle()">🗑️ حذف</button>` : ''}
+      </div>
     </div>`;
 
   box.innerHTML = `
@@ -1609,32 +1585,20 @@ async function delMeasurement(id) {
   loadProgress();
 }
 
-function openCycle() {
-  const c = HOME && HOME.cycle;
-  document.getElementById('cyDate').value = c && c.lastDate ? c.lastDate : '';
-  document.getElementById('cyDate').max = new Date().toISOString().slice(0,10);
-  document.getElementById('cyLen').value = c && c.cycleLength ? c.cycleLength : 28;
-  document.getElementById('ovlCycle').classList.add('open');
-}
-function closeCycle() { document.getElementById('ovlCycle').classList.remove('open'); }
 function cyQuick(n) {
   const d = new Date(); d.setDate(d.getDate() - n);
   document.getElementById('cyDate').value = d.toISOString().slice(0,10);
 }
-async function resetCycle() {
-  if (!confirm('حذف تاريخ الدورة الحالي وإعادة الإدخال من جديد؟')) return;
-  const r = await api('/api/trainee/cycle', {method:'POST', body:{reset:true}});
-  if (r) { toast('تم الحذف — أضيفي تاريخاً جديداً'); await loadHome(); loadProgress(); openCycle(); }
-}
-async function saveCycle() {
+async function saveCyclePeriod() {
   const last = document.getElementById('cyDate').value;
-  const lenN = parseInt(document.getElementById('cyLen').value) || 28;
-  if (!last) { toast('اختاري تاريخ بداية الدورة', true); return; }
-  if (lenN < 15) {
-    if (!confirm('عدد الأيام (' + lenN + ') صغير جداً.\nالمقصود طول الدورة كاملة — غالباً ٢٨ يوم، وليس عدد أيام نزول الدم.\nهل تريدين المتابعة بهذا الرقم؟')) return;
-  }
-  const r = await api('/api/trainee/cycle', {method:'POST', body:{last_period_date:last, cycle_length:lenN}});
-  if (r) { toast('تم تحديث الدورة ✓'); closeCycle(); loadProgress(); loadHome(); }
+  if (!last) { toast('اختاري تاريخ بداية دورتك', true); return; }
+  const r = await api('/api/trainee/cycle', {method:'POST', body:{last_period_date:last}});
+  if (r) { toast('تم تسجيل تاريخ الدورة ✓'); loadProgress(); loadHome(); }
+}
+async function resetCycle() {
+  if (!confirm('حذف تاريخ الدورة المسجّل؟')) return;
+  const r = await api('/api/trainee/cycle', {method:'POST', body:{reset:true}});
+  if (r) { toast('تم الحذف'); await loadHome(); loadProgress(); }
 }
 
 loadHome();

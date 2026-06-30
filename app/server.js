@@ -62,22 +62,11 @@ function daysLeft(end) {
   const d = Math.round((new Date(end) - new Date(today())) / 86400000);
   return Math.max(0, d);
 }
-// حساب الأيام المتبقية للدورة الشهرية + المرحلة الحالية
+// تسجيل بسيط لتاريخ الدورة (بدون عدّاد) — فقط آخر تاريخ وكم يوم مضى
 function cycleInfo(t) {
   if (!t || !t.last_period_date) return null;
-  const len = t.cycle_length || 28;
-  const now = new Date(today());
-  const next = new Date(t.last_period_date);
-  next.setDate(next.getDate() + len);
-  let daysUntil = Math.round((next - now) / 86400000);
-  while (daysUntil < 0) { next.setDate(next.getDate() + len); daysUntil = Math.round((next - now) / 86400000); }
-  const dayInCycle = ((len - daysUntil) % len + len) % len; // 0..len-1
-  let phase = 'الطور الجريبي', phaseTip = 'طاقتك ترتفع — وقت ممتاز لزيادة الأوزان';
-  if (dayInCycle <= 4)         { phase = 'الحيض';        phaseTip = 'اسمعي لجسمك — خففي الحمل إذا احتجتِ'; }
-  else if (dayInCycle <= 12)   { phase = 'الطور الجريبي'; phaseTip = 'طاقة عالية — أفضل وقت للتمارين الثقيلة'; }
-  else if (dayInCycle <= 16)   { phase = 'التبويض';      phaseTip = 'ذروة قوتك — استغليها وانتبهي للمفاصل'; }
-  else                         { phase = 'الطور الجسمي';  phaseTip = 'طبيعي تشعرين بإرهاق — تمارين متوسطة وكارديو خفيف'; }
-  return { daysUntil, nextDate: next.toISOString().slice(0, 10), cycleLength: len, lastDate: t.last_period_date, phase, phaseTip };
+  const daysSince = Math.round((new Date(today()) - new Date(t.last_period_date)) / 86400000);
+  return { lastDate: t.last_period_date, daysSince };
 }
 
 // ===== المصادقة =====
