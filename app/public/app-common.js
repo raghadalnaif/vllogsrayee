@@ -86,13 +86,15 @@ function muscleDiagram(target) {
 // امتداد إطارات الصورة: التشريحية svg، الفعلية jpg
 function demoExt(demoUrl) { return /\/anat\//.test(demoUrl || '') ? 'svg' : 'jpg'; }
 
-// صورة تكنيك متحرّكة (إطاران: بداية/نهاية الحركة) — تُحمّل فقط عند فتح التمرين
+// صورة تكنيك متحرّكة داخل التمرين — تُفضّل الصورة الفعلية (واقعية)
 function demoAnim(ex) {
-  if (!ex || !ex.demo_url) return '';
-  const e = demoExt(ex.demo_url);
+  if (!ex) return '';
+  const url = ex.demo_real || ex.demo_url;
+  if (!url) return '';
+  const e = demoExt(url);
   return `<div class="demo-anim">
-    <img class="df0" src="${esc(ex.demo_url)}/0.${e}" loading="lazy" alt="${esc(ex.name)}">
-    <img class="df1" src="${esc(ex.demo_url)}/1.${e}" loading="lazy" alt="">
+    <img class="df0" src="${esc(url)}/0.${e}" loading="lazy" alt="${esc(ex.name)}">
+    <img class="df1" src="${esc(url)}/1.${e}" loading="lazy" alt="">
   </div>`;
 }
 
