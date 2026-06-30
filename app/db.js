@@ -162,28 +162,25 @@ if (!exerciseCols.includes('name_en'))
 if (!exerciseCols.includes('demo_url'))
   db.exec("ALTER TABLE exercises ADD COLUMN demo_url TEXT DEFAULT ''");
 
-// تعبئة صور التكنيك (إطارين متحرّكين) — مصدر عام الملكية: free-exercise-db (Unlicense)
+// تعبئة صور التمارين — تشريحية (Everkinetic, CC BY-SA) مع البديل الفعلي (free-exercise-db, Unlicense)
 const EXERCISE_DEMO = {
-  'هيب ثرست':'/img/ex/Barbell_Hip_Thrust','دونكي كيك':'/img/ex/Glute_Kickback','غلوت بريدج':'/img/ex/Barbell_Glute_Bridge',
-  'كيك باك بالكيبل':'/img/ex/Glute_Kickback','سكوات سومو':'/img/ex/Plie_Dumbbell_Squat','ديدليفت مستقيم الأرجل':'/img/ex/Romanian_Deadlift',
-  'سكوات خلفي (باربل)':'/img/ex/Barbell_Full_Squat','سكوات':'/img/ex/Bodyweight_Squat','لانجز':'/img/ex/Dumbbell_Lunges',
-  'ليغ بريس':'/img/ex/Leg_Press','ليغ إكستنشن':'/img/ex/Leg_Extensions','ليغ كيرل':'/img/ex/Lying_Leg_Curls',
-  'سبليت سكوات بلغاري':'/img/ex/Suspended_Split_Squat','رفع الكعبين (كاف ريز)':'/img/ex/Standing_Calf_Raises','ستيب أب':'/img/ex/Dumbbell_Step_Ups',
-  'لات بُل داون':'/img/ex/Wide-Grip_Lat_Pulldown','سحب جالس (سيتد رو)':'/img/ex/Seated_Cable_Rows','تجديف منحني (بنت أوفر رو)':'/img/ex/Bent_Over_Barbell_Row',
-  'ديدليفت':'/img/ex/Barbell_Deadlift','عقلة بمساعدة (بُل أب)':'/img/ex/Pullups','سوبرمان':'/img/ex/Superman','فيس بُل':'/img/ex/Face_Pull',
-  'تجديف بدمبل بيد واحدة':'/img/ex/One-Arm_Dumbbell_Row','بايسبس كيرل':'/img/ex/Dumbbell_Bicep_Curl','ترايسبس بُش داون':'/img/ex/Triceps_Pushdown',
-  'هامر كيرل':'/img/ex/Hammer_Curls','ترايسبس إكستنشن خلف الرأس':'/img/ex/Standing_Dumbbell_Triceps_Extension','شولدر بريس':'/img/ex/Dumbbell_Shoulder_Press',
-  'رفرفة جانبية (لاترال ريز)':'/img/ex/Side_Lateral_Raise','بنش بريس بالدمبل':'/img/ex/Dumbbell_Bench_Press','ضغط (بوش أب)':'/img/ex/Pushups',
-  'بلانك':'/img/ex/Plank','كرنش':'/img/ex/Crunches','رفع الأرجل معلق':'/img/ex/Hanging_Leg_Raise','روسيان تويست':'/img/ex/Russian_Twist',
-  'ماونتن كلايمر':'/img/ex/Mountain_Climbers','بلانك جانبي':'/img/ex/Side_Bridge','بايسكل كرنش':'/img/ex/Air_Bike','ديد باغ':'/img/ex/Dead_Bug',
-  'ضغط صدر بالمكينة':'/img/ex/Machine_Bench_Press','بنش بريس مائل':'/img/ex/Incline_Dumbbell_Press','رفع أمامي (أبرايت رو)':'/img/ex/Upright_Barbell_Row',
-  'ماكينة أبداكتور':'/img/ex/Thigh_Abductor','ماكينة أداكتور':'/img/ex/Thigh_Adductor','كرنش عكسي':'/img/ex/Reverse_Crunch',
+  'كيك باك بالكيبل':'/img/anat/0112','ديدليفت مستقيم الأرجل':'/img/anat/0118','سكوات خلفي (باربل)':'/img/anat/0122','لانجز':'/img/anat/0115',
+  'ليغ بريس':'/img/anat/0127','ليغ إكستنشن':'/img/anat/0142','ليغ كيرل':'/img/anat/0117','رفع الكعبين (كاف ريز)':'/img/anat/0282','ستيب أب':'/img/anat/0137',
+  'سحب جالس (سيتد رو)':'/img/anat/0025','سوبرمان':'/img/anat/0105','بايسبس كيرل':'/img/anat/0224','ترايسبس بُش داون':'/img/anat/0205','هامر كيرل':'/img/anat/0227',
+  'ترايسبس إكستنشن خلف الرأس':'/img/anat/0201','بنش بريس بالدمبل':'/img/anat/0055','ضغط (بوش أب)':'/img/anat/0077','كرنش':'/img/anat/0291','بلانك جانبي':'/img/anat/0113',
+  'ضغط صدر بالمكينة':'/img/anat/0066','بنش بريس مائل':'/img/anat/0043','رفع أمامي (أبرايت رو)':'/img/anat/0016','ماكينة أداكتور':'/img/anat/0135',
+  'هيب ثرست':'/img/ex/Barbell_Hip_Thrust','دونكي كيك':'/img/ex/Glute_Kickback','غلوت بريدج':'/img/ex/Barbell_Glute_Bridge','سكوات سومو':'/img/ex/Plie_Dumbbell_Squat',
+  'سكوات':'/img/ex/Bodyweight_Squat','سبليت سكوات بلغاري':'/img/ex/Suspended_Split_Squat','لات بُل داون':'/img/ex/Wide-Grip_Lat_Pulldown','تجديف منحني (بنت أوفر رو)':'/img/ex/Bent_Over_Barbell_Row',
+  'ديدليفت':'/img/ex/Barbell_Deadlift','عقلة بمساعدة (بُل أب)':'/img/ex/Pullups','فيس بُل':'/img/ex/Face_Pull','تجديف بدمبل بيد واحدة':'/img/ex/One-Arm_Dumbbell_Row',
+  'شولدر بريس':'/img/ex/Dumbbell_Shoulder_Press','رفرفة جانبية (لاترال ريز)':'/img/ex/Side_Lateral_Raise','بلانك':'/img/ex/Plank','رفع الأرجل معلق':'/img/ex/Hanging_Leg_Raise',
+  'روسيان تويست':'/img/ex/Russian_Twist','ماونتن كلايمر':'/img/ex/Mountain_Climbers','بايسكل كرنش':'/img/ex/Air_Bike','ديد باغ':'/img/ex/Dead_Bug',
+  'ماكينة أبداكتور':'/img/ex/Thigh_Abductor','كرنش عكسي':'/img/ex/Reverse_Crunch',
 };
-if (!db.prepare("SELECT value FROM meta WHERE key='ex_demo_seeded'").get()) {
-  const updD = db.prepare("UPDATE exercises SET demo_url=? WHERE name=? AND (demo_url IS NULL OR demo_url='')");
+if (!db.prepare("SELECT value FROM meta WHERE key='ex_demo2_seeded'").get()) {
+  const updD = db.prepare("UPDATE exercises SET demo_url=? WHERE name=?");
   db.transaction(() => { for (const [ar, p] of Object.entries(EXERCISE_DEMO)) updD.run(p, ar); })();
-  db.prepare("INSERT OR REPLACE INTO meta (key,value) VALUES ('ex_demo_seeded','1')").run();
-  console.log('✅ تمت تعبئة صور تكنيك التمارين');
+  db.prepare("INSERT OR REPLACE INTO meta (key,value) VALUES ('ex_demo2_seeded','1')").run();
+  console.log('✅ تمت تعبئة صور التمارين (تشريحية + فعلية)');
 }
 
 // ترقية جدول تمارين الجدول: من أضاف التمرين (المدربة أو المتدربة)

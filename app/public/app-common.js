@@ -83,20 +83,26 @@ function muscleDiagram(target) {
   </div>`;
 }
 
+// امتداد إطارات الصورة: التشريحية svg، الفعلية jpg
+function demoExt(demoUrl) { return /\/anat\//.test(demoUrl || '') ? 'svg' : 'jpg'; }
+
 // صورة تكنيك متحرّكة (إطاران: بداية/نهاية الحركة) — تُحمّل فقط عند فتح التمرين
 function demoAnim(ex) {
   if (!ex || !ex.demo_url) return '';
+  const e = demoExt(ex.demo_url);
   return `<div class="demo-anim">
-    <img class="df0" src="${esc(ex.demo_url)}/0.jpg" loading="lazy" alt="${esc(ex.name)}">
-    <img class="df1" src="${esc(ex.demo_url)}/1.jpg" loading="lazy" alt="">
+    <img class="df0" src="${esc(ex.demo_url)}/0.${e}" loading="lazy" alt="${esc(ex.name)}">
+    <img class="df1" src="${esc(ex.demo_url)}/1.${e}" loading="lazy" alt="">
   </div>`;
 }
 
-// صورة مصغّرة للتمرين: صورة حقيقية (تحميل كسول) أو بلاطة أيقونة فورية
+// صورة مصغّرة للتمرين: صورة التمرين الحقيقية (تشريحية/فعلية أو مرفوعة) — تحميل كسول
 function exThumb(ex) {
   const url = ex.media_url || '';
   if (/\.(gif|jpg|jpeg|png|webp)$/i.test(url))
     return `<img class="ex-thumb" loading="lazy" src="${esc(url)}" alt="${esc(ex.name)}">`;
+  if (ex.demo_url)
+    return `<img class="ex-thumb" loading="lazy" src="${esc(ex.demo_url)}/0.${demoExt(ex.demo_url)}" alt="${esc(ex.name)}">`;
   const [ic, bg] = muscleVisual(ex.target_muscle);
   return `<div class="ex-thumb-tile" style="background:${bg}">${ic}</div>`;
 }
