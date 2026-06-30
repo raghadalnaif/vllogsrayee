@@ -520,9 +520,13 @@ app.post('/api/trainee/measurement', requireAuth, requireTrainee, (req, res) => 
 
 // تحديث معلومات الدورة الشهرية فقط
 app.post('/api/trainee/cycle', requireAuth, requireTrainee, (req, res) => {
-  const { last_period_date, cycle_length } = req.body;
-  if (last_period_date) db.prepare('UPDATE trainees SET last_period_date=? WHERE id=?').run(last_period_date, req.session.uid);
-  if (cycle_length) db.prepare('UPDATE trainees SET cycle_length=? WHERE id=?').run(parseInt(cycle_length) || 28, req.session.uid);
+  const { last_period_date, cycle_length, reset } = req.body;
+  if (reset) {
+    db.prepare('UPDATE trainees SET last_period_date=NULL WHERE id=?').run(req.session.uid);
+  } else {
+    if (last_period_date) db.prepare('UPDATE trainees SET last_period_date=? WHERE id=?').run(last_period_date, req.session.uid);
+    if (cycle_length) db.prepare('UPDATE trainees SET cycle_length=? WHERE id=?').run(parseInt(cycle_length) || 28, req.session.uid);
+  }
   const t = db.prepare('SELECT last_period_date, cycle_length FROM trainees WHERE id=?').get(req.session.uid);
   res.json({ ok: true, cycle: cycleInfo(t) });
 });

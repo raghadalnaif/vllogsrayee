@@ -1518,7 +1518,10 @@ async function loadProgress() {
       <div style="font-size:.8rem;color:#a3578a;margin-top:2px">المتبقي لدورتك القادمة (${cycle.nextDate})</div>
       <div class="cycle-phase">${cycle.phase}</div>
       <div style="font-size:.78rem;color:#8a5278;margin-top:8px;line-height:1.6">💡 ${cycle.phaseTip}</div>
-      <button class="btn ghost sm" style="margin-top:10px" onclick="openCycle()">تحديث تاريخ الدورة</button>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+        <button class="btn ghost sm" onclick="openCycle()">✏️ تعديل التاريخ</button>
+        <button class="btn ghost sm" onclick="resetCycle()">🗑️ حذف وإعادة</button>
+      </div>
     </div>` : `
     <div class="card" style="border:1.5px dashed #e91e8c;background:#fdf2f7">
       <b style="color:#c2185b">🌸 تتبّع دورتك الشهرية</b>
@@ -1616,6 +1619,11 @@ function closeCycle() { document.getElementById('ovlCycle').classList.remove('op
 function cyQuick(n) {
   const d = new Date(); d.setDate(d.getDate() - n);
   document.getElementById('cyDate').value = d.toISOString().slice(0,10);
+}
+async function resetCycle() {
+  if (!confirm('حذف تاريخ الدورة الحالي وإعادة الإدخال من جديد؟')) return;
+  const r = await api('/api/trainee/cycle', {method:'POST', body:{reset:true}});
+  if (r) { toast('تم الحذف — أضيفي تاريخاً جديداً'); await loadHome(); loadProgress(); openCycle(); }
 }
 async function saveCycle() {
   const last = document.getElementById('cyDate').value;
