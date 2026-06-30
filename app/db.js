@@ -167,7 +167,7 @@ if (!exerciseCols.includes('demo_real'))
 // صور الشرح الفعلية (داخل التمرين) — free-exercise-db (Public Domain)
 const EXERCISE_REAL = {
   "هيب ثرست":"/img/ex/Barbell_Hip_Thrust","دونكي كيك":"/img/ex/Glute_Kickback","غلوت بريدج":"/img/ex/Barbell_Glute_Bridge",
-  "كيك باك بالكيبل":"/img/ex/Glute_Kickback","سكوات سومو":"/img/ex/Plie_Dumbbell_Squat","ديدليفت مستقيم الأرجل":"/img/ex/Romanian_Deadlift",
+  "كيك باك بالكيبل":"/img/ex/One-Legged_Cable_Kickback","سكوات سومو":"/img/ex/Plie_Dumbbell_Squat","ديدليفت مستقيم الأرجل":"/img/ex/Romanian_Deadlift",
   "سكوات خلفي (باربل)":"/img/ex/Barbell_Full_Squat","سكوات":"/img/ex/Bodyweight_Squat","لانجز":"/img/ex/Dumbbell_Lunges",
   "ليغ بريس":"/img/ex/Leg_Press","ليغ إكستنشن":"/img/ex/Leg_Extensions","ليغ كيرل":"/img/ex/Lying_Leg_Curls",
   "سبليت سكوات بلغاري":"/img/ex/Suspended_Split_Squat","رفع الكعبين (كاف ريز)":"/img/ex/Standing_Calf_Raises","ستيب أب":"/img/ex/Dumbbell_Step_Ups",
@@ -181,10 +181,10 @@ const EXERCISE_REAL = {
   "ضغط صدر بالمكينة":"/img/ex/Machine_Bench_Press","بنش بريس مائل":"/img/ex/Incline_Dumbbell_Press","رفع أمامي (أبرايت رو)":"/img/ex/Upright_Barbell_Row",
   "ماكينة أبداكتور":"/img/ex/Thigh_Abductor","ماكينة أداكتور":"/img/ex/Thigh_Adductor","كرنش عكسي":"/img/ex/Reverse_Crunch",
 };
-if (!db.prepare("SELECT value FROM meta WHERE key='ex_real_seeded'").get()) {
+if (!db.prepare("SELECT value FROM meta WHERE key='ex_real_seeded2'").get()) {
   const updR = db.prepare("UPDATE exercises SET demo_real=? WHERE name=?");
   db.transaction(() => { for (const [ar, p] of Object.entries(EXERCISE_REAL)) updR.run(p, ar); })();
-  db.prepare("INSERT OR REPLACE INTO meta (key,value) VALUES ('ex_real_seeded','1')").run();
+  db.prepare("INSERT OR REPLACE INTO meta (key,value) VALUES ('ex_real_seeded2','1')").run();
   console.log('✅ تمت تعبئة صور الشرح الفعلية داخل التمارين');
 }
 
