@@ -33,7 +33,12 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage, limits: { fileSize: 25 * 1024 * 1024 } });
 app.use('/uploads', express.static(UPLOAD_DIR));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'), {
+  setHeaders: (res, p) => {
+    // اجعل صفحات HTML والسكربت تتحدّث دائماً (تمنع التخزين المؤقت القديم على الجوال)
+    if (p.endsWith('.html') || p.endsWith('.js')) res.setHeader('Cache-Control', 'no-cache');
+  }
+}));
 
 // ===== أدوات مساعدة =====
 const today = () => new Date().toISOString().slice(0, 10);
