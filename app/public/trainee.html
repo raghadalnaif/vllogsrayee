@@ -413,8 +413,9 @@
       <button class="btn ghost sm" onclick="cyQuick(2)">قبل يومين</button>
       <button class="btn ghost sm" onclick="cyQuick(3)">قبل ٣ أيام</button>
     </div>
-    <div class="field"><label>كم يوم عدد دورتك عادةً؟</label>
-      <input class="input" type="number" id="cyLen" value="28" inputmode="numeric"></div>
+    <div class="field"><label>كل كم يوم تجيكِ الدورة؟</label>
+      <input class="input" type="number" id="cyLen" value="28" inputmode="numeric" min="15" max="45">
+      <div style="font-size:.72rem;color:var(--muted);margin-top:5px;line-height:1.6">المقصود <b>طول الدورة كاملة</b>: من أول يوم في الدورة إلى أول يوم في الدورة الجاية — غالباً <b>٢٨ يوم</b>.<br>(مو عدد أيام نزول الدم)</div></div>
     <button class="btn full" onclick="saveCycle()">حفظ</button>
   </div>
 </div>
@@ -1627,9 +1628,12 @@ async function resetCycle() {
 }
 async function saveCycle() {
   const last = document.getElementById('cyDate').value;
-  const len = document.getElementById('cyLen').value || '28';
+  const lenN = parseInt(document.getElementById('cyLen').value) || 28;
   if (!last) { toast('اختاري تاريخ بداية الدورة', true); return; }
-  const r = await api('/api/trainee/cycle', {method:'POST', body:{last_period_date:last, cycle_length:parseInt(len)||28}});
+  if (lenN < 15) {
+    if (!confirm('عدد الأيام (' + lenN + ') صغير جداً.\nالمقصود طول الدورة كاملة — غالباً ٢٨ يوم، وليس عدد أيام نزول الدم.\nهل تريدين المتابعة بهذا الرقم؟')) return;
+  }
+  const r = await api('/api/trainee/cycle', {method:'POST', body:{last_period_date:last, cycle_length:lenN}});
   if (r) { toast('تم تحديث الدورة ✓'); closeCycle(); loadProgress(); loadHome(); }
 }
 
